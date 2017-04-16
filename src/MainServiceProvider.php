@@ -10,6 +10,9 @@ use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\Middle\ServerMiddleware\ErrorHandlerMiddleware;
 use jschreuder\Middle\ServerMiddleware\JsonRequestParserMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
+use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
+use jschreuder\SpotDesk\Service\AuthenticationService\JwtAuthenticationService;
+use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -28,10 +31,24 @@ class MainServiceProvider implements ServiceProviderInterface
                     $container['app.router'],
                     $container['app.error_handlers.404']
                 ),
+                new AuthenticationMiddleware($container['app.authentication']),
                 new ErrorHandlerMiddleware(
                     $container['logger'],
                     $container['app.error_handlers.500']
                 )
+            );
+        };
+
+        $container['app.authentication'] = function () use ($container) {
+            return new JwtAuthenticationService(
+                $container['repository.user'],
+                $container['password.algo'],
+                $container['password.options'],
+                $container['site.url'],
+                new Sha512(),
+                $container['session.secret_key'],
+                $container['session.duration'],
+                $container['session.refresh_after']
             );
         };
 

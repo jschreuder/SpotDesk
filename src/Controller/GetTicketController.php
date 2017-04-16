@@ -38,7 +38,7 @@ class GetTicketController implements ControllerInterface
                 'updates' => $ticket->getUpdates(),
                 'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
             ],
-            'updates' => array_map(function (TicketUpdate $ticketUpdate): array {
+            'ticket_updates' => array_map(function (TicketUpdate $ticketUpdate): array {
                 return [
                     'ticket_update_id' => $ticketUpdate->getId()->toString(),
                     'message' => $ticketUpdate->getMessage(),

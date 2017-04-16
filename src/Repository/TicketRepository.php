@@ -120,7 +120,8 @@ class TicketRepository
             SELECT t.*
             FROM `tickets` t
             LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
-            LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email) 
+            LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
+            INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = 'open'
             WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
             ORDER BY t.`created_at`
         ");

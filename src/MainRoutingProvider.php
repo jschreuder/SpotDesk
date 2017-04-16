@@ -4,10 +4,13 @@ namespace jschreuder\SpotDesk;
 
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
+use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\GetOpenTicketsController;
+use jschreuder\SpotDesk\Controller\GetTicketController;
 use Pimple\Container;
+use Ramsey\Uuid\Uuid;
 
 class MainRoutingProvider implements RoutingProviderInterface
 {
@@ -21,8 +24,13 @@ class MainRoutingProvider implements RoutingProviderInterface
 
     public function registerRoutes(RouterInterface $router): void
     {
+        /** @var  SymfonyRouter  $router */
+
         // Tickets
-        $router->get('tickets.open', '/tickets', function () {
+        $router->get('tickets.get_one', '/tickets/{ticket_id}', function () {
+            return new GetTicketController($this->container['repository.tickets']);
+        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        $router->get('tickets.list_open', '/tickets', function () {
             return new GetOpenTicketsController($this->container['repository.tickets']);
         });
 

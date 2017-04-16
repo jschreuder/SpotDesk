@@ -6,6 +6,7 @@ use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
+use jschreuder\SpotDesk\Controller\ChangeTicketStatusController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\GetOpenTicketsController;
@@ -36,6 +37,12 @@ class MainRoutingProvider implements RoutingProviderInterface
         });
         $router->post('tickets.add_update', '/tickets/{ticket_id}', function () {
             return new AddTicketUpdateController(
+                $this->container['repository.tickets'],
+                $this->container['repository.statuses']
+            );
+        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        $router->put('tickets.status_update', '/tickets/{ticket_id}/status', function () {
+            return new ChangeTicketStatusController(
                 $this->container['repository.tickets'],
                 $this->container['repository.statuses']
             );

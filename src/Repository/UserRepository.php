@@ -36,4 +36,18 @@ class UserRepository
 
         return $this->arrayToUser($query->fetch(\PDO::FETCH_ASSOC));
     }
+
+    public function updatePassword(User $user, string $newPassword): void
+    {
+        $query = $this->db->prepare("
+            UPDATE `users` 
+            SET `password` = :password 
+            WHERE `email` = :email
+        ");
+        $query->execute(['password' => $newPassword, 'email' => $user->getEmail()->toString()]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to update password for user: ' . $user->getEmail()->toString());
+        }
+    }
 }

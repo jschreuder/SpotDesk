@@ -22,7 +22,8 @@
         "monolog/monolog": "^1.22",
         "symfony/routing": "^3.2",
         "symfony/console": "^3.2",
-        "ramsey/uuid": "^3.6"
+        "ramsey/uuid": "^3.6",
+        "lcobucci/jwt": "^3.2"
     },
     "autoload": {
         "psr-4": {

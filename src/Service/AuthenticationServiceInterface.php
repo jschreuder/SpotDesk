@@ -1,10 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: jschreuder
- * Date: 16-4-17
- * Time: 17:38
- */
+<?php declare(strict_types=1);
 
 namespace jschreuder\SpotDesk\Service;
 

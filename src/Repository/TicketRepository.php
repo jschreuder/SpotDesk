@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace jschreuder\SpotDesk\Repository;
 
@@ -189,13 +189,14 @@ class TicketRepository
         ?Department $department
     ): bool
     {
+        $departmentWhere = (is_null($department) ? "IS NULL" : "= :department_id");
         $query = $this->db->prepare("
             SELECT COUNT(*)
             FROM `tickets`
             WHERE `email` = :email 
                 AND `subject` = :subject 
                 AND `message` = :message 
-                AND `department_id` " . (is_null($department) ? "IS NULL" : "= :department_id") . "
+                AND `department_id` {$departmentWhere}
                 AND `created_at` > :duplicate_before
                 AND `created_at` < :duplicate_after
         ");

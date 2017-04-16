@@ -80,8 +80,7 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['requestValidator.errorHandler'] = $container->protect(function (
             ServerRequestInterface $request,
             ValidationFailedException $validationFailedException
-        ): ResponseInterface
-        {
+        ): ResponseInterface {
             return new JsonResponse([
                 'errors' => $validationFailedException->getValidationErrors(),
             ], 400);

@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -76,7 +76,7 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
             MailTransportSecurityValue::get($body['imap_security']),
             $body['imap_user'],
             $body['imap_pass']
-            // @todo add last_check?
+        // @todo add last_check?
         );
 
         return new JsonResponse(['mailbox_id' => $mailbox->getId()->toString()], 201);

@@ -1,6 +1,7 @@
-/.idea
-/bin
-/datamodel
+/.idea/
+/bin/
+/datamodel/
 /etc/env.php
 /etc/dev.php
-/vendor
+/logs/
+/vendor/

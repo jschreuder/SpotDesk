@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'logger' => function () {
+        $logger = new \Monolog\Logger('spotdesk');
+        $logger->pushHandler((new \Monolog\Handler\StreamHandler(
+            __DIR__ . '/../var/logs/' . (php_sapi_name() === 'cli' ? 'cli' : 'web') . '-' . date('Ymd') . '.log',
+            \Monolog\Logger::NOTICE
+        ))->setFormatter(new \Monolog\Formatter\LineFormatter()));
+        return $logger;
+    },
+
+    'site.url' => 'http://localhost:8080',
+
+    'db.dsn'    => 'mysql:host=localhost;charset=utf8',
+    'db.dbname' => 'spotdesk_dev',
+    'db.user'   => 'root',
+    'db.pass'   => '',
+
+    'password.algo' => PASSWORD_BCRYPT,
+    'password.options' => [],
+
+    'session.secret_key' => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
+    'session.duration' => 3600,
+    'session.refresh_after' => 1800,
+];

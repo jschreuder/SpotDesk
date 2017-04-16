@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
 /** @var  \Pimple\Container $container */
-$container = require __DIR__ . '/../app_init.php';
+$container = require __DIR__ . '/../etc/app_init.php';
 
 /** @var  jschreuder\Middle\ApplicationStackInterface $app */
 $app = $container['app'];

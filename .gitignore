@@ -3,5 +3,5 @@
 /datamodel/
 /etc/env.php
 /etc/dev.php
-/logs/
+/var/logs/*.log
 /vendor/

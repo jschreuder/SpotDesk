@@ -132,6 +132,38 @@ class TicketRepository
         return $ticketCollection;
     }
 
+    public function createTicketUpdate(
+        Ticket $ticket,
+        EmailAddressValue $email,
+        string $message,
+        bool $internal
+    ): TicketUpdate
+    {
+        $ticketUpdate = new TicketUpdate(
+            Uuid::uuid4(),
+            $ticket,
+            $email,
+            $message,
+            new \DateTimeImmutable(),
+            $internal
+        );
+
+        $query = $this->db->prepare("
+            INSERT INTO `ticket_updates` (`ticket_update_id`, `ticket_id`, `email`, `message`, `created_at`, `internal`)
+            VALUES (:ticket_update_id, :ticket_id, :email, :message, :created_at, :internal)
+        ");
+        $query->execute([
+            'ticket_update_id' => $ticketUpdate->getId()->getBytes(),
+            'ticket_id' => $ticketUpdate->getTicket()->getId()->getBytes(),
+            'email' => $ticketUpdate->getEmail()->toString(),
+            'message' => $ticketUpdate->getMessage(),
+            'created_at' => $ticketUpdate->getCreatedAt()->format('Y-m-d H:i:s'),
+            'internal' => $ticketUpdate->isInternal(),
+        ]);
+
+        return $ticketUpdate;
+    }
+
     private function arrayToTicketUpdate(array $row, Ticket $ticket): TicketUpdate
     {
         return new TicketUpdate(

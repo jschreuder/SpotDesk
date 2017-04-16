@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use jschreuder\SpotDesk\Collection\TicketCollection;
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
 use jschreuder\SpotDesk\Entity\Ticket;
@@ -61,6 +62,27 @@ class TicketRepository
         }
 
         return $this->arrayToTicket($query->fetch(\PDO::FETCH_ASSOC));
+    }
+
+    public function getOpenTicketsForUser(EmailAddressValue $email): TicketCollection
+    {
+        // Fetch all tickets that are either assigned to a department the given user is a part of
+        // or those that haven't been assigned to a specific department
+        $query = $this->db->prepare("
+            SELECT * 
+            FROM `tickets` t
+            LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
+            LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email) 
+            WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
+            ORDER BY t.`created_at`
+        ");
+        $query->execute(['email' => $email->toString()]);
+
+        $ticketCollection = new TicketCollection();
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+            $ticketCollection->push($this->arrayToTicket($row));
+        }
+        return $ticketCollection;
     }
 
     private function arrayToTicketUpdate(array $row, Ticket $ticket): TicketUpdate

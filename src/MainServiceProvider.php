@@ -11,6 +11,9 @@ use jschreuder\Middle\ServerMiddleware\ErrorHandlerMiddleware;
 use jschreuder\Middle\ServerMiddleware\JsonRequestParserMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
+use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Repository\StatusRepository;
+use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\JwtAuthenticationService;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
@@ -82,7 +85,7 @@ class MainServiceProvider implements ServiceProviderInterface
 
         $container['service.authentication'] = function () use ($container) {
             return new JwtAuthenticationService(
-                $container['repository.user'],
+                $container['repository.users'],
                 $container['password.algo'],
                 $container['password.options'],
                 $container['site.url'],
@@ -93,8 +96,24 @@ class MainServiceProvider implements ServiceProviderInterface
             );
         };
 
-        $container['repository.user'] = function () use ($container) {
+        $container['repository.users'] = function () use ($container) {
             return new UserRepository($container['db']);
+        };
+
+        $container['repository.tickets'] = function () use ($container) {
+            return new TicketRepository(
+                $container['db'],
+                $container['repository.statuses'],
+                $container['repository.departments']
+            );
+        };
+
+        $container['repository.statuses'] = function () use ($container) {
+            return new StatusRepository($container['db']);
+        };
+
+        $container['repository.departments'] = function () use ($container) {
+            return new DepartmentRepository($container['db']);
         };
     }
 }

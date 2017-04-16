@@ -30,17 +30,18 @@ class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         // Check login status
-        $sessionId = $request->getHeader(self::AUTHORIZATION_HEADER);
-        if (!$this->authenticationService->checkLogin($sessionId)) {
+        $session = $this->authenticationService->checkLogin($request, self::AUTHORIZATION_HEADER);
+        if (is_null($session)) {
             return new JsonResponse(['message' => 'Unauthorized'], 401);
         }
 
         // Check if session needs refresh, will add new session ID to response when it does
-        $response = $delegate->process($request);
-        if ($newSessionId = $this->authenticationService->refreshSession($sessionId)) {
-            $response = $response->withHeader(self::AUTHORIZATION_HEADER, $newSessionId);
-        }
-        return $response;
+        $response = $delegate->process($request->withAttribute('session', $session));
+        return $this->authenticationService->refreshSession(
+            $response,
+            self::AUTHORIZATION_HEADER,
+            $session
+        );
     }
 
     private function login(ServerRequestInterface $request): ResponseInterface

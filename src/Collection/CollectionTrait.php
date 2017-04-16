@@ -45,4 +45,9 @@ trait CollectionTrait
     {
         return count($this->collection);
     }
+
+    public function toArray(): array
+    {
+        return $this->collection;
+    }
 }

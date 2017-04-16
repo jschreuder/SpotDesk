@@ -4,6 +4,7 @@ namespace jschreuder\SpotDesk;
 
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
+use jschreuder\SpotDesk\Controller\GetOpenTicketsController;
 use Pimple\Container;
 
 class MainRoutingProvider implements RoutingProviderInterface
@@ -18,8 +19,8 @@ class MainRoutingProvider implements RoutingProviderInterface
 
     public function registerRoutes(RouterInterface $router): void
     {
-        $router->get('home', '/', function () {
-            return new ExampleController($this->container['service.example']);
+        $router->get('tickets.open', '/tickets', function () {
+            return new GetOpenTicketsController($this->container['repository.tickets']);
         });
     }
 }

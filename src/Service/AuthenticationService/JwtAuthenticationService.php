@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
+use jschreuder\Middle\Session\Session;
+use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationServiceInterface;
@@ -11,6 +13,8 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class JwtAuthenticationService implements AuthenticationServiceInterface
 {
@@ -105,13 +109,19 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
             ->getToken();
     }
 
-    public function checkLogin(string $sessionId): bool
+    public function checkLogin(ServerRequestInterface $request, string $authorizationHeader): ?SessionInterface
     {
-        $jwt = (new Parser())->parse($sessionId);
+        // Attempt to parse the Token, fail when it won't parse
+        try {
+            $sessionId = $request->getHeaderLine($authorizationHeader);
+            $jwt = (new Parser())->parse($sessionId);
+        } catch (\Throwable $exception) {
+            return null;
+        }
 
         // Check signature
         if (!$jwt->verify($this->jwtSigner, $this->jwtKey)) {
-            return false;
+            return null;
         }
 
         // Check claims
@@ -119,23 +129,35 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         $validation->setIssuer($this->siteUrl);
         $validation->setAudience($this->siteUrl);
         if (!$jwt->validate($validation)) {
-            return false;
+            return null;
         }
 
-        return true;
+        $session = new Session([
+            'user' => $jwt->getClaim('user'),
+            'jwt' => $jwt,
+        ]);
+
+        return $session;
     }
 
-    public function refreshSession(string $sessionId): ?string
+    public function refreshSession(
+        ResponseInterface $response,
+        string $authorizationHeader,
+        SessionInterface $session
+    ): ResponseInterface
     {
-        $jwt = (new Parser())->parse($sessionId);
+        $jwt = $session->get('jwt');
         $issuedAt = $jwt->getClaim('iat');
 
         // Check if refresh is need, return null otherwise
         if ($issuedAt + $this->sessionRefreshAfter > time()) {
-            return null;
+            return $response;
         }
 
         // Return fresh token
-        return strval($this->createSessionJwt($jwt->getClaim('user')));
+        return $response->withHeader(
+            $authorizationHeader,
+            strval($this->createSessionJwt($jwt->getClaim('user')))
+        );
     }
 }

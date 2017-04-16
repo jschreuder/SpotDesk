@@ -21,7 +21,8 @@
         "zendframework/zend-diactoros": "^1.4",
         "monolog/monolog": "^1.22",
         "symfony/routing": "^3.2",
-        "symfony/console": "^3.2"
+        "symfony/console": "^3.2",
+        "ramsey/uuid": "^3.6"
     },
     "autoload": {
         "psr-4": {

@@ -6,6 +6,7 @@ use jschreuder\SpotDesk\Collection\TicketCollection;
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
 use jschreuder\SpotDesk\Entity\Department;
+use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
@@ -130,6 +131,24 @@ class TicketRepository
             $ticketCollection->push($this->arrayToTicket($row));
         }
         return $ticketCollection;
+    }
+
+    public function updateTicketStatus(Ticket $ticket, Status $status): void
+    {
+        $query = $this->db->prepare("
+            UPDATE `tickets`
+            SET `status` = :status
+            WHERE `ticket_id` = :ticket_id
+        ");
+        $query->execute([
+            'status' => $status->getStatus(),
+            'ticket_id' => $ticket->getId()->getBytes(),
+        ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to update status for ticket: ' . $ticket->getId()->toString());
+        }
+        $ticket->setStatus($status);
     }
 
     public function createTicketUpdate(

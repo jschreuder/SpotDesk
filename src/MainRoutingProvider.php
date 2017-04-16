@@ -35,7 +35,10 @@ class MainRoutingProvider implements RoutingProviderInterface
             return new GetOpenTicketsController($this->container['repository.tickets']);
         });
         $router->post('tickets.add_update', '/tickets/{ticket_id}', function () {
-            return new AddTicketUpdateController($this->container['repository.tickets']);
+            return new AddTicketUpdateController(
+                $this->container['repository.tickets'],
+                $this->container['repository.statuses']
+            );
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
 
         // Departments

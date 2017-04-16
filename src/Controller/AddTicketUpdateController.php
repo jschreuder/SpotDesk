@@ -6,6 +6,7 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
@@ -20,9 +21,13 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
     /** @var  TicketRepository */
     private $ticketRepository;
 
-    public function __construct(TicketRepository $ticketRepository)
+    /** @var  StatusRepository */
+    private $statusRepository;
+
+    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
     {
         $this->ticketRepository = $ticketRepository;
+        $this->statusRepository = $statusRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
@@ -35,6 +40,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         $filter->value('email')->string();
         $filter->value('message')->string();
         $filter->value('internal')->bool();
+        $filter->value('status_update')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -46,6 +52,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         $validator->required('email')->email();
         $validator->required('message')->string();
         $validator->required('internal')->bool();
+        $validator->optional('status_update')->string();
 
         $validationResult = $validator->validate($request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -57,12 +64,18 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
     {
         $body = $request->getParsedBody();
 
+        $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
         $ticketUpdate = $this->ticketRepository->createTicketUpdate(
-            $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id'])),
+            $ticket,
             EmailAddressValue::get($body['email']),
             $body['message'],
             $body['internal']
         );
+
+        if (!empty($body['status_update'])) {
+            $status = $this->statusRepository->getStatus($body['status_update']);
+            $this->ticketRepository->updateTicketStatus($ticket, $status);
+        }
 
         return new JsonResponse([
             'ticket_update_id' => $ticketUpdate->getId()->toString(),

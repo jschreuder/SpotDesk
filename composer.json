@@ -1,0 +1,34 @@
+{
+    "name": "jschreuder/spot-desk",
+    "description": "Email based helpdesk ticket software",
+    "type": "application",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jelmer Schreuder",
+            "email": "j.schreuder@mijnpraktijk.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "bin-dir": "bin"
+    },
+    "require": {
+        "php": ">=7.1",
+        "jschreuder/middle": "^0.8.0",
+        "robmorgan/phinx": "^0.8.0",
+        "pimple/pimple": "^3.0",
+        "zendframework/zend-diactoros": "^1.4",
+        "monolog/monolog": "^1.22",
+        "symfony/routing": "^3.2",
+        "symfony/console": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "jschreuder\\SpotDesk\\": "src"
+        }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^3.2"
+    }
+}

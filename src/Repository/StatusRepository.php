@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\StatusCollection;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Value\StatusTypeValue;
 
-class StatusService
+class StatusRepository
 {
     /** @var  \PDO */
     private $db;

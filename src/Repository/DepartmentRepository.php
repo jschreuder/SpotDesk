@@ -1,12 +1,12 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use Ramsey\Uuid\Uuid;
 
-class DepartmentService
+class DepartmentRepository
 {
     /** @var  \PDO */
     private $db;

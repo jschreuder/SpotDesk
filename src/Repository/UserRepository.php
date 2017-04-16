@@ -1,11 +1,11 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
-class UserService
+class UserRepository
 {
     /** @var  \PDO */
     private $db;

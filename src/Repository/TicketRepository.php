@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
@@ -11,26 +11,26 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
-class TicketService
+class TicketRepository
 {
     /** @var  \PDO */
     private $db;
 
-    /** @var  StatusService */
-    private $statusService;
+    /** @var  StatusRepository */
+    private $statusRepository;
 
-    /** @var  DepartmentService */
-    private $departmentService;
+    /** @var  DepartmentRepository */
+    private $departmentRepository;
 
     public function __construct(
         \PDO $db,
-        StatusService $statusService,
-        DepartmentService $departmentService
+        StatusRepository $statusRepository,
+        DepartmentRepository $departmentRepository
     )
     {
         $this->db = $db;
-        $this->statusService = $statusService;
-        $this->departmentService = $departmentService;
+        $this->statusRepository = $statusRepository;
+        $this->departmentRepository = $departmentRepository;
     }
 
     private function arrayToTicket(array $row): Ticket
@@ -44,8 +44,8 @@ class TicketService
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['created_at']),
             intval($row['updates']),
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
-            $this->statusService->getStatus($row['status']),
-            $this->departmentService->getDepartment(Uuid::fromBytes($row['department'])->toString())
+            $this->statusRepository->getStatus($row['status']),
+            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department'])->toString())
         );
     }
 

@@ -1,30 +1,30 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\MailboxCollection;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use Ramsey\Uuid\Uuid;
 
-class MailboxService
+class MailboxRepository
 {
     /** @var  \PDO */
     private $db;
 
-    /** @var  DepartmentService */
-    private $departmentService;
+    /** @var  DepartmentRepository */
+    private $departmentRepository;
 
-    public function __construct(\PDO $db, DepartmentService $departmentService)
+    public function __construct(\PDO $db, DepartmentRepository $departmentRepository)
     {
         $this->db = $db;
-        $this->departmentService = $departmentService;
+        $this->departmentRepository = $departmentRepository;
     }
 
     private function arrayToMailbox(array $row): Mailbox
     {
         $department = is_null($row['department_id'])
             ? null
-            : $this->departmentService->getDepartment(Uuid::fromBytes($row['department_id'])->toString());
+            : $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id'])->toString());
 
         return new Mailbox(
             Uuid::fromBytes($row['mailbox_id']),

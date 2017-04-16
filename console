@@ -8,6 +8,9 @@ $application = new \Symfony\Component\Console\Application();
 
 // user: namespace
 $application->add(new jschreuder\SpotDesk\Command\CreateUserCommand($container['service.authentication']));
+$application->add(new \jschreuder\SpotDesk\Command\AssignUserToDepartmentCommand(
+    $container['repository.users'], $container['repository.departments']
+));
 
 // mailbox: namespace
 $application->add(new \jschreuder\SpotDesk\Command\CheckMailboxesCommand(

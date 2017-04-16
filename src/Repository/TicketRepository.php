@@ -66,7 +66,7 @@ class TicketRepository
             )
         ");
         $query->execute([
-            'ticket_id' => $ticket->getId()->toString(),
+            'ticket_id' => $ticket->getId()->getBytes(),
             'secret_key' => $ticket->getSecretKey(),
             'email' => $ticket->getEmail()->toString(),
             'subject' => $ticket->getSubject(),
@@ -75,7 +75,7 @@ class TicketRepository
             'updates' => $ticket->getUpdates(),
             'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
             'status' => $ticket->getStatus()->getStatus(),
-            'department_id' => is_null($ticket->getDepartment()) ? null : $ticket->getDepartment()->getId()->toString(),
+            'department_id' => is_null($ticket->getDepartment()) ? null : $ticket->getDepartment()->getId()->getBytes(),
         ]);
 
         return $ticket;
@@ -93,7 +93,7 @@ class TicketRepository
             intval($row['updates']),
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
             $this->statusRepository->getStatus($row['status']),
-            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department']))
+            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id']))
         );
     }
 
@@ -116,7 +116,7 @@ class TicketRepository
         // Fetch all tickets that are either assigned to a department the given user is a part of
         // or those that haven't been assigned to a specific department
         $query = $this->db->prepare("
-            SELECT * 
+            SELECT t.*
             FROM `tickets` t
             LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
             LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email) 

@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
@@ -34,7 +35,7 @@ class UserRepository
             EmailAddressValue::get($row['email']),
             $row['display_name'],
             $row['password'],
-            $row['totpSecret']
+            $row['totp_secret']
         );
     }
 
@@ -63,5 +64,17 @@ class UserRepository
             throw new \RuntimeException('Failed to update password for user: ' . $user->getEmail()->toString());
         }
         $user->setPassword($newPassword);
+    }
+
+    public function assignUserToDepartment(User $user, Department $department): void
+    {
+        $query = $this->db->prepare("
+            INSERT INTO `users_departments` (`email`, `department_id`)
+            VALUES (:email, :department_id)
+        ");
+        $query->execute([
+            'email' => $user->getEmail()->toString(),
+            'department_id' => $department->getId()->getBytes(),
+        ]);
     }
 }

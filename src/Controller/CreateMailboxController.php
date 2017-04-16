@@ -13,6 +13,7 @@ use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
 class CreateMailboxController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
@@ -47,13 +48,13 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
     public function validateRequest(ServerRequestInterface $request): void
     {
         $validator = new Validator();
-        $validator->required('name');
+        $validator->required('name')->string();
         $validator->optional('department_id')->uuid();
-        $validator->required('imap_server');
+        $validator->required('imap_server')->string();
         $validator->required('imap_port')->integer(true);
         $validator->required('imap_security')->inArray(MailTransportSecurityValue::getValues());
-        $validator->required('imap_user');
-        $validator->required('imap_pass');
+        $validator->required('imap_user')->string();
+        $validator->required('imap_pass')->string();
 
         $validationResult = $validator->validate($request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -67,7 +68,7 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
 
         $department = empty($body['department_id'])
             ? null
-            : $this->departmentRepository->getDepartment($body['department_id']);
+            : $this->departmentRepository->getDepartment(Uuid::fromString($body['department_id']));
         $mailbox = $this->mailboxRepository->createMailbox(
             $body['name'],
             $department,

@@ -20,6 +20,23 @@ class DepartmentRepository
         $this->db = $db;
     }
 
+    public function createDepartment(string $name, ?Department $parent): Department
+    {
+        $department = new Department(Uuid::uuid4(), $name, $parent);
+
+        $query = $this->db->prepare("
+            INSERT INTO `departments` (`department_id`, `name`, `parent_id`)
+            VALUES (:department_id, :name, :parent_id)
+        ");
+        $query->execute([
+            'department_id' => $department->getId()->getBytes(),
+            'name' => $department->getName(),
+            'parent_id' => is_null($department->getParent()) ? null : $department->getParent()->getId()->getBytes(),
+        ]);
+
+        return $department;
+    }
+
     private function arrayToDepartment(array $row, ?Department $parent): Department
     {
         return new Department(
@@ -58,6 +75,7 @@ class DepartmentRepository
                     $department->setParent($departmentCollection[$id]);
                 }
             }
+            $this->_departments = $departmentCollection;
         }
         return $this->_departments;
     }

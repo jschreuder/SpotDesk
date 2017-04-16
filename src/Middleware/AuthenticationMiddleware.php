@@ -25,7 +25,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         // Respond to login attempt
-        if (trim($request->getUri()->getPath(), '/') === 'login') {
+        if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {
             return $this->login($request);
         }
 

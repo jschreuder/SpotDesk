@@ -15,6 +15,19 @@ class UserRepository
         $this->db = $db;
     }
 
+    public function createUser(User $user): void
+    {
+        $query = $this->db->prepare("
+            INSERT INTO `users` (`email`, `display_name`, `password`)
+            VALUES (:email, :display_name, :password)
+        ");
+        $query->execute([
+            'email' => $user->getEmail()->toString(),
+            'display_name' => $user->getDisplayName(),
+            'password' => $user->getPassword(),
+        ]);
+    }
+
     private function arrayToUser(array $row): User
     {
         return new User(

@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Service\AuthenticationService;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
@@ -58,11 +59,23 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         $this->sessionRefreshAfter = $sessionRefreshAfter;
     }
 
-    public function login($email, $password): string
+    public function createUser(string $email, string $password, string $displayName): User
+    {
+        $user = new User(
+            EmailAddressValue::get($email),
+            $displayName,
+            password_hash($password, $this->passwordAlgorithm, $this->passwordOptions),
+            null
+        );
+        $this->userRepository->createUser($user);
+        return $user;
+    }
+
+    public function login(string $email, string $password): string
     {
         try {
-            $user = $this->userRepository->getUserByEmail($email);
-        } catch (\OutOfBoundsException $exception) {
+            $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
+        } catch (\OutOfBoundsException|\DomainException $exception) {
             throw new AuthenticationFailedException('Unknown user');
         }
 
@@ -112,7 +125,7 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         return true;
     }
 
-    public function refreshSession($sessionId): ?string
+    public function refreshSession(string $sessionId): ?string
     {
         $jwt = (new Parser())->parse($sessionId);
         $issuedAt = $jwt->getClaim('iat');

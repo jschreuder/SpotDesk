@@ -15,14 +15,14 @@ class User
     /** @var  string */
     private $password;
 
-    /** @var  string */
+    /** @var  ?string */
     private $totpSecret;
 
     public function __construct(
         EmailAddressValue $email,
         string $displayName,
         string $password,
-        string $totpSecret
+        ?string $totpSecret
     )
     {
         $this->email = $email;

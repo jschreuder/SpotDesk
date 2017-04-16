@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Entity;
 
+use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
 use Ramsey\Uuid\UuidInterface;
 
 class Mailbox
@@ -16,39 +17,44 @@ class Mailbox
     private $department;
 
     /** @var  string */
-    private $smtpServer;
+    private $imapServer;
 
     /** @var  int */
-    private $smtpPort;
+    private $imapPort;
 
     /** @var  string */
-    private $smtpSecurity;
+    private $imapSecurity;
 
     /** @var  string */
-    private $smtpUser;
+    private $imapUser;
 
     /** @var  string */
-    private $smtpPass;
+    private $imapPass;
+
+    /** @var  \DateTimeInterface */
+    private $lastCheck;
 
     public function __construct(
         UuidInterface $id,
         string $name,
         ?Department $department,
-        string $smtpServer,
-        int $smtpPort,
-        string $smtpSecurity,
-        string $smtpUser,
-        string $smtpPass
+        string $imapServer,
+        int $imapPort,
+        MailTransportSecurityValue $imapSecurity,
+        string $imapUser,
+        string $imapPass,
+        \DateTimeInterface $lastCheck
     )
     {
         $this->id = $id;
         $this->name = $name;
         $this->department = $department;
-        $this->smtpServer = $smtpServer;
-        $this->smtpPort = $smtpPort;
-        $this->smtpSecurity = $smtpSecurity;
-        $this->smtpUser = $smtpUser;
-        $this->smtpPass = $smtpPass;
+        $this->imapServer = $imapServer;
+        $this->imapPort = $imapPort;
+        $this->imapSecurity = $imapSecurity;
+        $this->imapUser = $imapUser;
+        $this->imapPass = $imapPass;
+        $this->lastCheck = $lastCheck;
     }
 
     public function getId(): UuidInterface
@@ -76,53 +82,63 @@ class Mailbox
         $this->department = $department;
     }
 
-    public function getSmtpServer(): string
+    public function getImapServer(): string
     {
-        return $this->smtpServer;
+        return $this->imapServer;
     }
 
-    public function setSmtpServer(string $smtpServer): void
+    public function setImapServer(string $imapServer): void
     {
-        $this->smtpServer = $smtpServer;
+        $this->imapServer = $imapServer;
     }
 
-    public function getSmtpPort(): int
+    public function getImapPort(): int
     {
-        return $this->smtpPort;
+        return $this->imapPort;
     }
 
-    public function setSmtpPort(int $smtpPort): void
+    public function setImapPort(int $imapPort): void
     {
-        $this->smtpPort = $smtpPort;
+        $this->imapPort = $imapPort;
     }
 
-    public function getSmtpSecurity(): string
+    public function getImapSecurity(): MailTransportSecurityValue
     {
-        return $this->smtpSecurity;
+        return $this->imapSecurity;
     }
 
-    public function setSmtpSecurity(string $smtpSecurity): void
+    public function setImapSecurity(MailTransportSecurityValue $imapSecurity): void
     {
-        $this->smtpSecurity = $smtpSecurity;
+        $this->imapSecurity = $imapSecurity;
     }
 
-    public function getSmtpUser(): string
+    public function getImapUser(): string
     {
-        return $this->smtpUser;
+        return $this->imapUser;
     }
 
-    public function setSmtpUser(string $smtpUser): void
+    public function setImapUser(string $imapUser): void
     {
-        $this->smtpUser = $smtpUser;
+        $this->imapUser = $imapUser;
     }
 
-    public function getSmtpPass(): string
+    public function getImapPass(): string
     {
-        return $this->smtpPass;
+        return $this->imapPass;
     }
 
-    public function setSmtpPass(string $smtpPass): void
+    public function setImapPass(string $imapPass): void
     {
-        $this->smtpPass = $smtpPass;
+        $this->imapPass = $imapPass;
+    }
+
+    public function getLastCheck(): \DateTimeInterface
+    {
+        return $this->lastCheck;
+    }
+
+    public function setLastCheck(\DateTimeInterface $lastCheck): void
+    {
+        $this->lastCheck = $lastCheck;
     }
 }

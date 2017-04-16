@@ -23,7 +23,11 @@
         "symfony/routing": "^3.2",
         "symfony/console": "^3.2",
         "ramsey/uuid": "^3.6",
-        "lcobucci/jwt": "^3.2"
+        "lcobucci/jwt": "^3.2",
+        "php-imap/php-imap": "^2.0",
+        "swiftmailer/swiftmailer": "^5.4",
+        "particle/filter": "^1.4",
+        "particle/validator": "^2.2"
     },
     "autoload": {
         "psr-4": {

@@ -3,8 +3,11 @@
 namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\MailboxCollection;
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
+use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class MailboxRepository
 {
@@ -20,22 +23,84 @@ class MailboxRepository
         $this->departmentRepository = $departmentRepository;
     }
 
+    public function createMailbox(
+        string $name,
+        ?Department $department,
+        string $imapServer,
+        int $imapPort,
+        MailTransportSecurityValue $imapSecurity,
+        string $imapUser,
+        string $imapPass,
+        ?\DateTimeInterface $lastCheck = null
+    ): Mailbox
+    {
+        $mailbox = new Mailbox(
+            Uuid::uuid4(),
+            $name,
+            $department,
+            $imapServer,
+            $imapPort,
+            $imapSecurity,
+            $imapUser,
+            $imapPass,
+            $lastCheck ?? new \DateTimeImmutable()
+        );
+
+        $query = $this->db->prepare("
+            INSERT INTO `mailboxes` (
+                `mailbox_id`, `name`, `department_id`, `imap_server`, `imap_port`, `imap_security`, `imap_user`, 
+                `imap_pass`, `last_check`
+            ) VALUES (
+                :mailbox_id, :name, :department_id, :imap_server, :imap_port, :imap_security, :imap_user, 
+                :imap_pass, :last_check
+            )
+        ");
+        $query->execute([
+            'mailbox_id' => $mailbox->getId()->getBytes(),
+            'name' => $mailbox->getName(),
+            'department_id' => is_null($mailbox->getDepartment())
+                ? null
+                : $mailbox->getDepartment()->getId()->getBytes(),
+            'imap_server' => $mailbox->getImapServer(),
+            'imap_port' => $mailbox->getImapPort(),
+            'imap_security' => $mailbox->getImapSecurity()->toString(),
+            'imap_user' => $mailbox->getImapUser(),
+            'imap_pass' => $mailbox->getImapPass(),
+            'last_check' => $mailbox->getLastCheck()->format('Y-m-d H:i:s'),
+        ]);
+
+        return $mailbox;
+    }
+
     private function arrayToMailbox(array $row): Mailbox
     {
         $department = is_null($row['department_id'])
             ? null
-            : $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id'])->toString());
+            : $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id']));
 
         return new Mailbox(
             Uuid::fromBytes($row['mailbox_id']),
             $row['name'],
             $department,
-            $row['smtp_server'],
-            $row['smtp_port'],
-            $row['smtp_security'],
-            $row['smtp_user'],
-            $row['smtp_pass']
+            $row['imap_server'],
+            intval($row['imap_port']),
+            MailTransportSecurityValue::get($row['imap_security']),
+            $row['imap_user'],
+            $row['imap_pass'],
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_check'])
         );
+    }
+
+    public function getMailbox(UuidInterface $mailboxId): Mailbox
+    {
+        $query = $this->db->prepare("SELECT * FROM `mailboxes` WHERE `mailbox_id` = :mailbox_id");
+        $query->execute(['mailbox_id' => $mailboxId->getBytes()]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \OutOfBoundsException('No mailbox found for ID: ' . $mailboxId->toString());
+        }
+
+        return $this->arrayToMailbox($query->fetch(\PDO::FETCH_ASSOC));
     }
 
     public function getMailboxes(): MailboxCollection
@@ -48,5 +113,24 @@ class MailboxRepository
             $mailboxCollection->push($this->arrayToMailbox($row));
         }
         return $mailboxCollection;
+    }
+
+    public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null)
+    {
+        $checkTime = $checkTime ?? new \DateTimeImmutable('now');
+        $query = $this->db->prepare("
+            UPDATE `mailboxes`
+            SET `last_check` = :last_check
+            WHERE `mailbox_id` = :mailbox_id
+        ");
+        $query->execute([
+            'last_check' => $checkTime->format('Y-m-d H:i:s'),
+            'mailbox_id' => $mailbox->getId()->getBytes(),
+        ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to update last check for mailbox: ' . $mailbox->getName());
+        }
+        $mailbox->setLastCheck($checkTime);
     }
 }

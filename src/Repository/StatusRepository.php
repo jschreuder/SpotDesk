@@ -26,7 +26,12 @@ class StatusRepository
 
     public function getStatus(string $status): Status
     {
-        return $this->getStatuses()[$status];
+        $statuses = $this->getStatuses();
+        if (!isset($statuses[$status])) {
+            throw new \OutOfBoundsException('Status not found: ' . $status);
+        }
+
+        return $statuses[$status];
     }
 
     public function getStatuses(): StatusCollection

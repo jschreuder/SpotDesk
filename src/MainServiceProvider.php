@@ -5,13 +5,17 @@ namespace jschreuder\SpotDesk;
 use jschreuder\Middle\ApplicationStack;
 use jschreuder\Middle\Controller\CallableController;
 use jschreuder\Middle\Controller\ControllerRunner;
+use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\Middle\ServerMiddleware\ErrorHandlerMiddleware;
 use jschreuder\Middle\ServerMiddleware\JsonRequestParserMiddleware;
+use jschreuder\Middle\ServerMiddleware\RequestFilterMiddleware;
+use jschreuder\Middle\ServerMiddleware\RequestValidatorMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
@@ -30,6 +34,8 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['app'] = function (Container $container) {
             return new ApplicationStack(
                 new ControllerRunner(),
+                new RequestValidatorMiddleware($container['requestValidator.errorHandler']),
+                new RequestFilterMiddleware(),
                 new AuthenticationMiddleware($container['service.authentication']),
                 new JsonRequestParserMiddleware(),
                 new RoutingMiddleware(
@@ -70,6 +76,16 @@ class MainServiceProvider implements ServiceProviderInterface
                 return new JsonResponse(['message' => 'System Error'], 500);
             }
         );
+
+        $container['requestValidator.errorHandler'] = $container->protect(function (
+            ServerRequestInterface $request,
+            ValidationFailedException $validationFailedException
+        ): ResponseInterface
+        {
+            return new JsonResponse([
+                'errors' => $validationFailedException->getValidationErrors(),
+            ], 400);
+        });
 
         $container['db'] = function (Container $container) {
             return new \PDO(
@@ -114,6 +130,10 @@ class MainServiceProvider implements ServiceProviderInterface
 
         $container['repository.departments'] = function () use ($container) {
             return new DepartmentRepository($container['db']);
+        };
+
+        $container['repository.mailboxes'] = function () use ($container) {
+            return new MailboxRepository($container['db'], $container['repository.departments']);
         };
     }
 }

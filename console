@@ -6,6 +6,12 @@ $container = require __DIR__ . '/etc/app_init.php';
 
 $application = new \Symfony\Component\Console\Application();
 
+// user: namespace
 $application->add(new jschreuder\SpotDesk\Command\CreateUserCommand($container['service.authentication']));
+
+// mailbox: namespace
+$application->add(new \jschreuder\SpotDesk\Command\CheckMailboxesCommand(
+    $container['repository.mailboxes'], $container['repository.tickets']
+));
 
 $application->run();

@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\TicketCollection;
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
@@ -34,6 +35,52 @@ class TicketRepository
         $this->departmentRepository = $departmentRepository;
     }
 
+    public function createTicket(
+        EmailAddressValue $email,
+        string $subject,
+        string $message,
+        \DateTimeInterface $createdAt,
+        ?Department $department
+    ): Ticket
+    {
+        $ticket = new Ticket(
+            Uuid::uuid4(),
+            random_bytes(127),
+            $email,
+            $subject,
+            $message,
+            $createdAt,
+            0,
+            $createdAt,
+            $this->statusRepository->getStatus('new'),
+            $department
+        );
+
+        $query = $this->db->prepare("
+            INSERT INTO `tickets` (
+                `ticket_id`, `secret_key`, `email`, `subject`, `message`, `created_at`, `updates`, `last_update`, 
+                `status`, `department_id`
+            ) VALUES (
+                :ticket_id, :secret_key, :email, :subject, :message, :created_at, :updates, :last_update, 
+                :status, :department_id
+            )
+        ");
+        $query->execute([
+            'ticket_id' => $ticket->getId()->toString(),
+            'secret_key' => $ticket->getSecretKey(),
+            'email' => $ticket->getEmail()->toString(),
+            'subject' => $ticket->getSubject(),
+            'message' => $ticket->getMessage(),
+            'created_at' => $ticket->getCreatedAt()->format('Y-m-d H:i:s'),
+            'updates' => $ticket->getUpdates(),
+            'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
+            'status' => $ticket->getStatus()->getStatus(),
+            'department_id' => is_null($ticket->getDepartment()) ? null : $ticket->getDepartment()->getId()->toString(),
+        ]);
+
+        return $ticket;
+    }
+
     private function arrayToTicket(array $row): Ticket
     {
         return new Ticket(
@@ -46,7 +93,7 @@ class TicketRepository
             intval($row['updates']),
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
             $this->statusRepository->getStatus($row['status']),
-            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department'])->toString())
+            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department']))
         );
     }
 
@@ -132,5 +179,37 @@ class TicketRepository
             $subscriptionCollection->push($this->arrayToTicketSubscription($row, $ticket));
         }
         return $subscriptionCollection;
+    }
+
+    public function isDuplicate(
+        EmailAddressValue $email,
+        string $subject,
+        string $message,
+        \DateTimeInterface $createdAt,
+        ?Department $department
+    ): bool
+    {
+        $query = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM `tickets`
+            WHERE `email` = :email 
+                AND `subject` = :subject 
+                AND `message` = :message 
+                AND `department_id` " . (is_null($department) ? "IS NULL" : "= :department_id") . "
+                AND `created_at` > :duplicate_before
+                AND `created_at` < :duplicate_after
+        ");
+        $args = [
+            'email' => $email->toString(),
+            'subject' => $subject,
+            'message' => $message,
+            'duplicate_before' => date('Y-m-d H:i:s', strtotime('-1 day', $createdAt->getTimestamp())),
+            'duplicate_after' => date('Y-m-d H:i:s', strtotime('+1 day', $createdAt->getTimestamp())),
+        ];
+        if (!is_null($department)) {
+            $args['department_id'] = $department->getId()->toString();
+        }
+        $query->execute($args);
+        return $query->fetchColumn() > 0;
     }
 }

@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 class DepartmentRepository
 {
@@ -28,9 +29,14 @@ class DepartmentRepository
         );
     }
 
-    public function getDepartment(string $departmentId): Department
+    public function getDepartment(UuidInterface $departmentId): Department
     {
-        return $this->getDepartments()[$departmentId];
+        $departments = $this->getDepartments();
+        if (!isset($departments[$departmentId->toString()])) {
+            throw new \OutOfBoundsException('No department found for ID: ' . $departmentId->toString());
+        }
+
+        return $departments[$departmentId->toString()];
     }
 
     public function getDepartments(): DepartmentCollection

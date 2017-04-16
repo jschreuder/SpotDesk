@@ -12,15 +12,25 @@ return [
 
     'site.url' => 'http://localhost:8080',
 
+    // Database settings
     'db.dsn'    => 'mysql:host=localhost;charset=utf8',
     'db.dbname' => 'spotdesk_dev',
     'db.user'   => 'root',
     'db.pass'   => '',
 
+    // User password hashing configuration
     'password.algo' => PASSWORD_BCRYPT,
     'password.options' => [],
 
+    // User session configuration
     'session.secret_key' => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
     'session.duration' => 3600,
     'session.refresh_after' => 1800,
+
+    // SMTP configuration
+    'smtp.server' => 'localhost',
+    'smtp.port' => 587,
+    'smtp.security' => 'none', // 'none', 'ssl', or 'tls'
+    'smtp.user' => '',
+    'smtp.pass' => '',
 ];

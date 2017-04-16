@@ -62,5 +62,6 @@ class UserRepository
         if ($query->rowCount() !== 1) {
             throw new \RuntimeException('Failed to update password for user: ' . $user->getEmail()->toString());
         }
+        $user->setPassword($newPassword);
     }
 }

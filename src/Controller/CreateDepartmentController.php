@@ -7,6 +7,7 @@ use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
@@ -30,6 +31,7 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
         $filter = new Filter();
         $filter->value('name')->string()->stripHtml()->trim();
         $filter->value('parent_id')->string()->trim();
+        $filter->value('email')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -39,6 +41,7 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
         $validator = new Validator();
         $validator->required('name')->string();
         $validator->optional('parent_id')->uuid();
+        $validator->required('email')->email();
 
         $validationResult = $validator->validate($request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -54,7 +57,8 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
             $body['name'],
             empty($body['parent_id'])
                 ? null
-                : $this->departmentRepository->getDepartment(Uuid::fromString($body['parent_id']))
+                : $this->departmentRepository->getDepartment(Uuid::fromString($body['parent_id'])),
+            EmailAddressValue::get($body['email'])
         );
 
         return new JsonResponse(['department_id' => $department->getId()->toString()], 201);

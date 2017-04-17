@@ -78,7 +78,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         }
 
         return new JsonResponse([
-            'ticket_udate' => [
+            'ticket_update' => [
                 'ticket_update_id' => $ticketUpdate->getId()->toString(),
                 'message' => $ticketUpdate->getMessage(),
                 'created_at' => $ticketUpdate->getCreatedAt()->format('Y-m-d H:i:s'),

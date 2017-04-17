@@ -170,7 +170,7 @@ class MainServiceProvider implements ServiceProviderInterface
         };
 
         $container['repository.ticket_mailings'] = function () use ($container) {
-            return new TicketMailingRepository($container['db']);
+            return new TicketMailingRepository($container['db'], $container['repository.tickets']);
         };
     }
 }

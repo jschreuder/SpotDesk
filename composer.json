@@ -36,6 +36,8 @@
         }
     },
     "require-dev": {
-        "phpspec/phpspec": "^3.2"
+        "phpspec/phpspec": "^3.2",
+        "phploc/phploc": "^3.0",
+        "phpmd/phpmd": "^2.6"
     }
 }

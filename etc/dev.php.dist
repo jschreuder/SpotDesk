@@ -30,7 +30,7 @@ return [
     // SMTP configuration
     'smtp.server' => 'localhost',
     'smtp.port' => 587,
-    'smtp.security' => 'none', // 'none', 'ssl', or 'tls'
+    'smtp.security' => null, // null, 'ssl' or 'tls'
     'smtp.user' => '',
     'smtp.pass' => '',
 ];

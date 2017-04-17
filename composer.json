@@ -27,7 +27,8 @@
         "php-imap/php-imap": "^2.0",
         "swiftmailer/swiftmailer": "^5.4",
         "particle/filter": "^1.4",
-        "particle/validator": "^2.2"
+        "particle/validator": "^2.2",
+        "twig/twig": "^2.3"
     },
     "autoload": {
         "psr-4": {

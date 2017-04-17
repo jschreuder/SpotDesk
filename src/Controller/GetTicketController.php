@@ -34,7 +34,9 @@ class GetTicketController implements ControllerInterface
                 'created_at' => $ticket->getCreatedAt()->format('Y-m-d H:i:s'),
                 'created_by' => $ticket->getEmail()->toString(),
                 'status' => $ticket->getStatus()->getStatus(),
-                'department' => $ticket->getDepartment(),
+                'department_id' => is_null($ticket->getDepartment())
+                    ? null
+                    : $ticket->getDepartment()->getId()->toString(),
                 'updates' => $ticket->getUpdates(),
                 'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
             ],

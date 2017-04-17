@@ -129,7 +129,7 @@ class MailboxRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update last check for mailbox: ' . $mailbox->getName());
+            throw new \RuntimeException('Failed to update last check for mailbox: ' . $mailbox->getId()->toString());
         }
         $mailbox->setLastCheck($checkTime);
     }

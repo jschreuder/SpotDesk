@@ -78,7 +78,7 @@ class TicketMailingRepository
         ");
         $query->execute([
             'sent_at' => $sentAt->format('Y-m-d H:i:s'),
-            'ticket_mailing_id' => $ticketMailing->getId()->getHex(),
+            'ticket_mailing_id' => $ticketMailing->getId()->getBytes(),
         ]);
 
         if ($query->rowCount() !== 1) {

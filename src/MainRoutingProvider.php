@@ -39,7 +39,8 @@ class MainRoutingProvider implements RoutingProviderInterface
         $router->post('tickets.add_update', '/tickets/{ticket_id}', function () {
             return new AddTicketUpdateController(
                 $this->container['repository.tickets'],
-                $this->container['repository.statuses']
+                $this->container['repository.statuses'],
+                $this->container['service.mail']
             );
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
         $router->put('tickets.status_update', '/tickets/{ticket_id}/status', function () {

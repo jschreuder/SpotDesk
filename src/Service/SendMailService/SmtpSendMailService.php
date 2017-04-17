@@ -40,9 +40,9 @@ class SmtpSendMailService implements MailServiceInterface
         $mail = $this->mailTemplateFactory->getMail($ticket, $ticketMailing->getType());
 
         $message = \Swift_Message::newInstance($mail->getSubject())
-            ->setFrom([$ticket->getDepartment()->getName() => $ticket->getDepartment()->getEmail()->toString()])
-            ->setTo([$ticket->getEmail()->toString()])
-            ->setBody($mail->render());
+            ->setFrom($ticket->getDepartment()->getEmail()->toString(), $ticket->getDepartment()->getName())
+            ->setTo($ticket->getEmail()->toString())
+            ->setBody($mail->render(), 'text/html');
 
         $sent = $this->swiftMailer->send($message);
         if ($sent === 0) {

@@ -105,7 +105,7 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['mail.swiftmailer'] = function () use ($container) {
             $transport = \Swift_SmtpTransport::newInstance(
                     $container['smtp.server'],
-                    $container['smtp.host'],
+                    $container['smtp.port'],
                     $container['smtp.security']
                 )
                 ->setUsername($container['smtp.user'])

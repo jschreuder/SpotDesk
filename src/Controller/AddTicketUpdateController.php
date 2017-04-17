@@ -8,6 +8,7 @@ use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Service\MailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
@@ -24,10 +25,18 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
     /** @var  StatusRepository */
     private $statusRepository;
 
-    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
+    /** @var  MailServiceInterface */
+    private $mailService;
+
+    public function __construct(
+        TicketRepository $ticketRepository,
+        StatusRepository $statusRepository,
+        MailServiceInterface $mailService
+    )
     {
         $this->ticketRepository = $ticketRepository;
         $this->statusRepository = $statusRepository;
+        $this->mailService = $mailService;
     }
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
@@ -76,6 +85,8 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
             $status = $this->statusRepository->getStatus($body['status_update']);
             $this->ticketRepository->updateTicketStatus($ticket, $status);
         }
+
+        $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_UPDATE_TICKET);
 
         return new JsonResponse([
             'ticket_update' => [

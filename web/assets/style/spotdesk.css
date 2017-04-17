@@ -15,7 +15,13 @@ html, body {
     width: 36px;
 }
 
+md-toolbar .fa {
+    font-size: 24px;
+    vertical-align: middle;
+}
+
 md-toolbar h1 {
+    font-size: 1.250em;
     margin: auto 16px;
     font-weight: 500;
 }
@@ -95,11 +101,6 @@ md-button.menuBtn > md-icon {
 
 /* Typography support coming in 0.8.0 */
 
-md-toolbar h1 {
-    font-size: 1.250em;
-    font-weight: 400;
-}
-
 .avatar {
     position: relative;
     width: 128px;
@@ -108,8 +109,11 @@ md-toolbar h1 {
     border-radius: 50%;
     display: inline-block;
     overflow: hidden;
-    margin: 0px;
+    margin: 0;
     vertical-align: middle;
+    font-size: 90px;
+    line-height: 1.4em;
+    text-align: center;
     zoom:0.70;
     transform: translateZ(0);
     -webkit-transform: scale(0.70);

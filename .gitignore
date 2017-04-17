@@ -5,3 +5,4 @@
 /etc/dev.php
 /var/logs/*.log
 /vendor/
+/web/node_modules/

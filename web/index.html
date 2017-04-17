@@ -1,0 +1,70 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+    <title>SpotDesk</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="stylesheet" href="./node_modules/angular-material/angular-material.css"/>
+    <link rel="stylesheet" href="assets/style/spotdesk.css"/>
+
+    <style type="text/css">
+        /**
+         * Hide when Angular is not yet loaded and initialized
+         */
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body ng-app="spotdesk" ng-controller="mainController as main" layout="column" ng-cloak>
+
+<md-toolbar layout="row">
+    <md-button ng-click="main.toggleSideNav()" class="menu" hide-gt-sm aria-label="Show User List">
+        <md-icon md-svg-icon="menu" ></md-icon>
+    </md-button>
+    <h1>SpotDesk</h1>
+</md-toolbar>
+
+<div flex layout="row">
+    <md-sidenav ng-click="main.toggleSideNav()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
+        <md-list>
+            <md-list-item>
+                <md-button ui-sref="tickets" ui-sref-active="active">
+                    <md-icon md-svg-icon="mail" class="avatar"></md-icon>
+                    Open tickets
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="config" ui-sref-active="active">
+                    <md-icon md-svg-icon="menu" class="avatar"></md-icon>
+                    Configuration
+                </md-button>
+            </md-list-item>
+        </md-list>
+    </md-sidenav>
+
+    <ui-view flex id="content">
+        <h3>Loading</h3>
+    </ui-view>
+</div>
+
+<script src="./node_modules/angular/angular.js"></script>
+<script src="./node_modules/angular-animate/angular-animate.js"></script>
+<script src="./node_modules/angular-aria/angular-aria.js"></script>
+<script src="./node_modules/angular-material/angular-material.js"></script>
+<script src="./node_modules/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="./src/spotdesk.js"></script>
+<script src="./src/routing.js"></script>
+
+</body>
+
+</html>

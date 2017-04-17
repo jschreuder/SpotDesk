@@ -1,0 +1,18 @@
+{
+  "short_name": "SpotDesk",
+  "name": "SpotDesk Helpdesk",
+  "icons": [
+    {
+      "src": "assets/img/spotdesk.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "assets/img/spotdesk-144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    }
+  ],
+  "start_url": "index.html#/",
+  "display": "standalone"
+}

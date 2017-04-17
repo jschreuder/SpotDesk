@@ -11,6 +11,7 @@ use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\GetOpenTicketsController;
 use jschreuder\SpotDesk\Controller\GetTicketController;
+use jschreuder\SpotDesk\Controller\UpdateDepartmentController;
 use Pimple\Container;
 use Ramsey\Uuid\Uuid;
 
@@ -52,6 +53,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         $router->post('departments.create', '/departments', function () {
             return new CreateDepartmentController($this->container['repository.departments']);
         });
+        $router->put('departments.update', '/departments/{department_id}', function () {
+            return new UpdateDepartmentController($this->container['repository.departments']);
+        })->setRequirement('department_id', Uuid::VALID_PATTERN);
 
         // Mailboxes
         $router->post('mailboxes.create', '/mailboxes', function () {

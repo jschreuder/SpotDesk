@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Entity;
 
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\UuidInterface;
 
 class Department
@@ -15,11 +16,15 @@ class Department
     /** @var  ?Department */
     private $parent;
 
-    public function __construct(UuidInterface $id, string $name, ?Department $parent)
+    /** @var  EmailAddressValue */
+    private $email;
+
+    public function __construct(UuidInterface $id, string $name, ?Department $parent, EmailAddressValue $email)
     {
         $this->id = $id;
         $this->name = $name;
         $this->parent = $parent;
+        $this->email = $email;
     }
 
     public function getId(): UuidInterface
@@ -45,5 +50,15 @@ class Department
     public function setParent(?Department $parent): void
     {
         $this->parent = $parent;
+    }
+
+    public function getEmail(): EmailAddressValue
+    {
+        return $this->email;
+    }
+
+    public function setEmail(EmailAddressValue $email): void
+    {
+        $this->email = $email;
     }
 }

@@ -94,7 +94,9 @@ class TicketRepository
             intval($row['updates']),
             \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
             $this->statusRepository->getStatus($row['status']),
-            $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id']))
+            $row['department_id']
+                ? $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id']))
+                : null
         );
     }
 

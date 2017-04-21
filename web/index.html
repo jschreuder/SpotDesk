@@ -36,7 +36,7 @@
     <h1>SpotDesk</h1>
 </md-toolbar>
 
-<div flex layout="row">
+<div flex layout="row" ng-show="main.loggedIn()">
     <md-sidenav ng-click="main.toggleSideNav()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
         <md-list>
             <md-list-item>
@@ -59,6 +59,26 @@
     </ui-view>
 </div>
 
+<div id="login" flex layout="row" ng-hide="main.loggedIn()">
+    <md-content layout-gt-sm="row" layout-padding>
+        <div>
+            <h1>Login</h1>
+
+            <md-input-container>
+                <label for="user_name">Username</label>
+                <input id="user_name" ng-model="main.user.name" type="email">
+            </md-input-container>
+
+            <md-input-container>
+                <label for="user_pass">Password</label>
+                <input id="user_pass" ng-model="main.user.pass" type="password">
+            </md-input-container>
+
+            <md-button md-no-ink class="md-primary" ng-click="main.login()">Login</md-button>
+        </div>
+    </md-content>
+</div>
+
 <script src="./node_modules/angular/angular.js"></script>
 <script src="./node_modules/angular-animate/angular-animate.js"></script>
 <script src="./node_modules/angular-aria/angular-aria.js"></script>
@@ -66,6 +86,8 @@
 <script src="./node_modules/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="./src/spotdesk.js"></script>
 <script src="./src/routing.js"></script>
+<script src="./src/services.js"></script>
+<script src="./src/controllers.js"></script>
 
 <script>
     if ('serviceWorker' in navigator) {

@@ -1,20 +1,32 @@
 "use strict";
 
 var CACHE_NAME = 'spotdesk';
+
 var urlsToCache = [
+    // main file
     "./index.html",
-    "./assets/img/mail.svg",
-    "./assets/img/menu.svg",
+
+    // stylesheets
     "./assets/style/spotdesk.css",
-    "./assets/templates/config.html",
-    "./assets/templates/tickets.html",
+
+    // 3rd party dependencies
     "./node_modules/angular/angular.js",
     "./node_modules/angular-animate/angular-animate.js",
     "./node_modules/angular-aria/angular-aria.js",
+    "./node_modules/angular-material/angular-material.css",
     "./node_modules/angular-material/angular-material.js",
     "./node_modules/angular-ui-router/release/angular-ui-router.js",
-    "./src/spotdesk.js",
-    "./src/routing.js"
+    "./node_modules/font-awesome/css/font-awesome.css",
+
+    // views
+    "./assets/templates/config.html",
+    "./assets/templates/tickets.html",
+
+    // js sources
+    "./src/controllers.js",
+    "./src/routing.js",
+    "./src/services.js",
+    "./src/spotdesk.js"
 ];
 
 self.addEventListener('install', function(event) {

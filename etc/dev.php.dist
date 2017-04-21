@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 return [
     'logger' => function () {
@@ -19,18 +19,18 @@ return [
     'db.pass'   => '',
 
     // User password hashing configuration
-    'password.algo' => PASSWORD_BCRYPT,
+    'password.algo'    => PASSWORD_BCRYPT,
     'password.options' => [],
 
     // User session configuration
-    'session.secret_key' => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
-    'session.duration' => 3600,
+    'session.secret_key'    => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
+    'session.duration'      => 3600,
     'session.refresh_after' => 1800,
 
     // SMTP configuration
-    'smtp.server' => 'localhost',
-    'smtp.port' => 587,
+    'smtp.server'   => 'localhost',
+    'smtp.port'     => 587,
     'smtp.security' => null, // null, 'ssl' or 'tls'
-    'smtp.user' => '',
-    'smtp.pass' => '',
+    'smtp.user'     => '',
+    'smtp.pass'     => '',
 ];

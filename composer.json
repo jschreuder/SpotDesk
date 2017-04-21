@@ -15,7 +15,7 @@
     },
     "require": {
         "php": ">=7.1",
-        "jschreuder/middle": "^0.8.0",
+        "jschreuder/middle": "^0.9.0",
         "robmorgan/phinx": "^0.8.0",
         "pimple/pimple": "^3.0",
         "zendframework/zend-diactoros": "^1.4",

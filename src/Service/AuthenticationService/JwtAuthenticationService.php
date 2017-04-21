@@ -111,9 +111,13 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
 
     public function checkLogin(ServerRequestInterface $request, string $authorizationHeader): ?SessionInterface
     {
+        $sessionId = $request->getHeaderLine($authorizationHeader);
+        if (!$sessionId) {
+            return null;
+        }
+
         // Attempt to parse the Token, fail when it won't parse
         try {
-            $sessionId = $request->getHeaderLine($authorizationHeader);
             $jwt = (new Parser())->parse($sessionId);
         } catch (\Throwable $exception) {
             return null;

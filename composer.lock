@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "06e757a2d6414a8c29dd90da87ee5556",
+    "content-hash": "dbddd55258550d49179bd91fc17b9b88",
     "packages": [
         {
             "name": "http-interop/http-factory",
@@ -112,16 +112,16 @@
         },
         {
             "name": "jschreuder/middle",
-            "version": "0.8",
+            "version": "0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jschreuder/Middle.git",
-                "reference": "cc96514be0bc6c9ee0b8fc5e2d8c8d4b354d5c73"
+                "reference": "b913e4010f9682220ca910cbc6d39637944cc06a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jschreuder/Middle/zipball/cc96514be0bc6c9ee0b8fc5e2d8c8d4b354d5c73",
-                "reference": "cc96514be0bc6c9ee0b8fc5e2d8c8d4b354d5c73",
+                "url": "https://api.github.com/repos/jschreuder/Middle/zipball/b913e4010f9682220ca910cbc6d39637944cc06a",
+                "reference": "b913e4010f9682220ca910cbc6d39637944cc06a",
                 "shasum": ""
             },
             "require": {
@@ -157,7 +157,7 @@
                 }
             ],
             "description": "Middleware based micro-framework build on components by everyone else",
-            "time": "2017-04-03T18:41:20+00:00"
+            "time": "2017-04-21T21:44:02+00:00"
         },
         {
             "name": "lcobucci/jwt",
@@ -458,25 +458,26 @@
         },
         {
             "name": "php-imap/php-imap",
-            "version": "2.0.3",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barbushin/php-imap.git",
-                "reference": "cc1a49a3f68090db182183c59ffbc09055d59f5b"
+                "reference": "949826c9b109113ec93a5214e85afce31cba000c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/cc1a49a3f68090db182183c59ffbc09055d59f5b",
-                "reference": "cc1a49a3f68090db182183c59ffbc09055d59f5b",
+                "url": "https://api.github.com/repos/barbushin/php-imap/zipball/949826c9b109113ec93a5214e85afce31cba000c",
+                "reference": "949826c9b109113ec93a5214e85afce31cba000c",
                 "shasum": ""
             },
             "require": {
+                "ext-imap": "*",
                 "php": ">=5.3.0"
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "PhpImap": "src/"
+                "psr-4": {
+                    "PhpImap\\": "src/PhpImap/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -497,7 +498,7 @@
                 "mail",
                 "php"
             ],
-            "time": "2015-09-16T07:40:39+00:00"
+            "time": "2016-08-13T15:39:00+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -792,16 +793,16 @@
         },
         {
             "name": "swiftmailer/swiftmailer",
-            "version": "v5.4.6",
+            "version": "v5.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swiftmailer/swiftmailer.git",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e"
+                "reference": "56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
-                "reference": "81fdccfaf8bdc5d5d7a1ef6bb3a61bbb1a6c4a3e",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4",
+                "reference": "56db4ed32a6d5c9824c3ecc1d2e538f663f47eb4",
                 "shasum": ""
             },
             "require": {
@@ -842,7 +843,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2017-02-13T07:52:53+00:00"
+            "time": "2017-04-20T17:32:18+00:00"
         },
         {
             "name": "symfony/config",
@@ -1260,16 +1261,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v2.3.0",
+            "version": "v2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "9718186a5df85a4f7917e78d3ffcabc204c75d25"
+                "reference": "85e8372c451510165c04bf781295f9d922fa524b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/9718186a5df85a4f7917e78d3ffcabc204c75d25",
-                "reference": "9718186a5df85a4f7917e78d3ffcabc204c75d25",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/85e8372c451510165c04bf781295f9d922fa524b",
+                "reference": "85e8372c451510165c04bf781295f9d922fa524b",
                 "shasum": ""
             },
             "require": {
@@ -1319,7 +1320,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-03-22T15:41:51+00:00"
+            "time": "2017-04-21T00:13:02+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",
@@ -2551,16 +2552,16 @@
         },
         {
             "name": "theseer/fdomdocument",
-            "version": "1.6.2",
+            "version": "1.6.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/fDOMDocument.git",
-                "reference": "1dbe93a2c98fe57d0dd9792c373ec75c21f70750"
+                "reference": "8dcfd392135a5bd938c3c83ea71419501ad9855d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/1dbe93a2c98fe57d0dd9792c373ec75c21f70750",
-                "reference": "1dbe93a2c98fe57d0dd9792c373ec75c21f70750",
+                "url": "https://api.github.com/repos/theseer/fDOMDocument/zipball/8dcfd392135a5bd938c3c83ea71419501ad9855d",
+                "reference": "8dcfd392135a5bd938c3c83ea71419501ad9855d",
                 "shasum": ""
             },
             "require": {
@@ -2587,7 +2588,7 @@
             ],
             "description": "The classes contained within this repository extend the standard DOM to use exceptions at all occasions of errors instead of PHP warnings or notices. They also add various custom methods and shortcuts for convenience and to simplify the usage of DOM.",
             "homepage": "https://github.com/theseer/fDOMDocument",
-            "time": "2017-04-13T19:48:56+00:00"
+            "time": "2017-04-21T14:50:31+00:00"
         },
         {
             "name": "webmozart/assert",

@@ -48,7 +48,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
     {
         try {
             $body = $request->getParsedBody();
-            $sessionId = $this->authenticationService->login($body['user'], $body['pass']);
+            $sessionId = $this->authenticationService->login($body['user'] ?? '', $body['pass'] ?? '');
         } catch (AuthenticationFailedException $exception) {
             return new JsonResponse(['message' => 'Login failed'], 401);
         }

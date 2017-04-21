@@ -97,7 +97,7 @@ class CheckMailboxesCommand extends Command
                 } else {
                     // Create new ticket
                     $ticket = $this->ticketRepository->createTicket(
-                        $email, $subject, $message, $createdAt, $department
+                        $email, $subject, $message, $department, $createdAt
                     );
                     $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_NEW_TICKET);
                 }

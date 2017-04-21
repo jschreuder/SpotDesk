@@ -20,4 +20,9 @@ $application->add(new \jschreuder\SpotDesk\Command\SendMailingsCommand(
     $container['repository.ticket_mailings'], $container['service.mail']
 ));
 
+// dev: namespace
+$application->add(new \jschreuder\SpotDesk\Command\DevCreateFakerTickets(
+    $container['repository.tickets'], $container['repository.departments']
+));
+
 $application->run();

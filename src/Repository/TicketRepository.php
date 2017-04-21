@@ -40,8 +40,8 @@ class TicketRepository
         EmailAddressValue $email,
         string $subject,
         string $message,
-        \DateTimeInterface $createdAt,
-        ?Department $department
+        ?Department $department,
+        ?\DateTimeInterface $createdAt = null
     ): Ticket
     {
         $ticket = new Ticket(
@@ -52,7 +52,7 @@ class TicketRepository
             $message,
             $createdAt,
             0,
-            $createdAt,
+            $createdAt ?? new \DateTimeImmutable(),
             $this->statusRepository->getStatus('new'),
             $department
         );
@@ -156,7 +156,8 @@ class TicketRepository
         Ticket $ticket,
         EmailAddressValue $email,
         string $message,
-        bool $internal
+        bool $internal,
+        ?\DateTimeInterface $createdAt = null
     ): TicketUpdate
     {
         $ticketUpdate = new TicketUpdate(
@@ -164,7 +165,7 @@ class TicketRepository
             $ticket,
             $email,
             $message,
-            new \DateTimeImmutable(),
+            $createdAt ?? new \DateTimeImmutable(),
             $internal
         );
 

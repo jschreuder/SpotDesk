@@ -14,58 +14,78 @@
             }
         ])
 
-        // Authentication service
-        .factory("$auth", ["$http", "$cookies", "authInterceptor", function ($http, $cookies, authInterceptor) {
+        .factory("$adminMessage", ["$mdDialog", function ($mdDialog) {
             var srvc = this;
 
-            srvc.persistToken = false;
-            srvc.token = null;
-
-            srvc.loggedIn = function() {
-                // Check login status
-                var status = srvc.token !== null;
-                if (status) {
-                    return true;
-                }
-
-                // Check cookie for persisted login status
-                var cookieToken = $cookies.get("spotdesk-authorization");
-                if (cookieToken) {
-                    srvc.token = cookieToken;
-                    return true;
-                }
-
-                // No current login
-                return false;
+            srvc.error = function (errorMessage) {
+                $mdDialog.show(
+                    $mdDialog.alert()
+                        .parent(angular.element(document.getElementById("content")))
+                        .clickOutsideToClose(true)
+                        .title('error')
+                        .textContent(errorMessage)
+                        .ariaLabel('Error')
+                        .ok('OK')
+                );
             };
 
-            srvc.updateToken = function (token) {
-                srvc.token = token;
-                if (srvc.persistToken) {
-                    $cookies.put("spotdesk-authorization", token);
-                } else {
-                    $cookies.remove("spotdesk-authorization");
-                }
-            };
-
-            srvc.login = function (username, password, persist) {
-                srvc.persistToken = persist && true;
-                $http.post("/login", {
-                    user: username,
-                    pass: password
-                }).then(function successCallback() {
-                    if (!srvc.loggedIn()) {
-                        console.log("SpotDesk: successful return status, but no authorization token found.");
-                        alert("auth_login_failed");
-                    }
-                }, function errorCallback() {
-                    alert("auth_login_failed");
-                });
-            };
-
-            authInterceptor.$auth = srvc;
             return srvc;
         }])
+
+        // Authentication service
+        .factory("$auth", ["$http", "$cookies", "$adminMessage", "authInterceptor",
+            function ($http, $cookies, $adminMessage, authInterceptor) {
+                var srvc = this;
+
+                srvc.persistToken = false;
+                srvc.token = null;
+
+                srvc.loggedIn = function() {
+                    // Check login status
+                    var status = srvc.token !== null;
+                    if (status) {
+                        return true;
+                    }
+
+                    // Check cookie for persisted login status
+                    var cookieToken = $cookies.get("spotdesk-authorization");
+                    if (cookieToken) {
+                        srvc.token = cookieToken;
+                        return true;
+                    }
+
+                    // No current login
+                    return false;
+                };
+
+                srvc.updateToken = function (token) {
+                    srvc.token = token;
+                    if (srvc.persistToken) {
+                        $cookies.put("spotdesk-authorization", token);
+                    } else {
+                        $cookies.remove("spotdesk-authorization");
+                    }
+                };
+
+                srvc.login = function (username, password, persist) {
+                    srvc.persistToken = persist && true;
+                    $http.post("/login", {
+                        user: username,
+                        pass: password
+                    }).then(function successCallback() {
+                        if (!srvc.loggedIn()) {
+                            console.log("SpotDesk: successful return status, but no authorization token found.");
+                            $adminMessage.error("auth_login_failed");
+                        }
+                    }, function errorCallback() {
+                        $adminMessage.error("auth_login_failed");
+                    });
+                };
+
+                authInterceptor.$auth = srvc;
+                return srvc;
+            }
+        ])
 
         // Intercepts all requests to add session token and to capture refreshed session tokens
         .factory("authInterceptor", function () {
@@ -95,34 +115,36 @@
         })
 
         // Controller for the entire layout
-        .controller("mainController", ["$mdSidenav", "$auth", "$title", function ($mdSidenav, $auth, $title) {
-            var ctrl = this;
+        .controller("mainController", ["$mdSidenav", "$auth", "$title", "$adminMessage",
+            function ($mdSidenav, $auth, $title) {
+                var ctrl = this;
 
-            ctrl.loggedIn = $auth.loggedIn;
-            ctrl.user = {
-                name: null,
-                pass: null,
-                persist: false
-            };
+                ctrl.loggedIn = $auth.loggedIn;
+                ctrl.user = {
+                    name: null,
+                    pass: null,
+                    persist: false
+                };
 
-            ctrl.login = function () {
-                if (!ctrl.user.name || !ctrl.user.pass) {
-                    alert("auth_missing_field");
-                    return;
-                }
+                ctrl.login = function () {
+                    if (!ctrl.user.name || !ctrl.user.pass) {
+                        $adminMessage.error("auth_missing_field");
+                        return;
+                    }
 
-                $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist);
-            };
+                    $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist);
+                };
 
-            ctrl.showTitle = function () {
-                if ($auth.loggedIn()) {
-                    return $title.get();
-                }
-                return "Login";
-            };
+                ctrl.showTitle = function () {
+                    if ($auth.loggedIn()) {
+                        return $title.get();
+                    }
+                    return "Login";
+                };
 
-            ctrl.toggleSideNav = function() {
-                $mdSidenav("left").toggle();
-            };
-        }]);
+                ctrl.toggleSideNav = function() {
+                    $mdSidenav("left").toggle();
+                };
+            }
+        ]);
 })();

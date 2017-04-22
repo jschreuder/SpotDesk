@@ -37,8 +37,8 @@
             ctrl.getTickets();
         }])
 
-        .controller("viewTicketController", ["$tickets", "$statuses", "$stateParams", "$mdDialog",
-            function ($tickets, $statuses, $stateParams, $mdDialog) {
+        .controller("viewTicketController", ["$tickets", "$statuses", "$stateParams", "$mdDialog", "$adminMessage",
+            function ($tickets, $statuses, $stateParams, $mdDialog, $adminMessage) {
                 var ctrl = this;
                 ctrl.ticket = null;
                 ctrl.updates = [];
@@ -52,7 +52,7 @@
                         ctrl.ticket = response.data.ticket;
                         ctrl.updates = response.data.ticket_updates;
                     }, function () {
-                        alert("ticket_load_failed");
+                        errorDialog($mdDialog, "ticket_load_failed");
                     });
                 };
                 ctrl.fetchTicket();
@@ -61,7 +61,7 @@
                     angular.forEach(response.data.statuses, function (status) {
                         ctrl.statuses.push(status);
                     }, function () {
-                        alert("statuses_load_failed");
+                        errorDialog($mdDialog, "statuses_load_failed");
                     });
                 });
                 ctrl.getStatus = function (statusName) {
@@ -96,13 +96,14 @@
                         $mdDialog.hide();
                         ctrl.fetchTicket();
                     }, function () {
-                        alert("tickets_add_reply_failed");
+                        // @todo handle validation errors differently
+                        $adminMessage.error($mdDialog, "ticket_update_failed");
                     });
                 };
             }
         ])
 
-        .controller("usersController", ["$users", function ($users) {
+        .controller("usersController", ["$users", "$adminMessage", function ($users, $mdDialog) {
             var ctrl = this;
             ctrl.order = "email";
             ctrl.selected = [];
@@ -113,11 +114,11 @@
                     ctrl.users.push(user);
                 });
             }, function () {
-                alert("users_load_failed");
+                $adminMessage.error($mdDialog, "users_load_failed");
             });
         }])
 
-        .controller("departmentsController", ["$departments", function ($departments) {
+        .controller("departmentsController", ["$departments", "$adminMessage", function ($departments, $mdDialog) {
             var ctrl = this;
             ctrl.order = "name";
             ctrl.selected = [];
@@ -128,7 +129,7 @@
                     ctrl.departments.push(department);
                 });
             }, function () {
-                alert("departments_load_failed");
+                $adminMessage.error($mdDialog, "ticket_load_failed");
             });
 
             ctrl.getDepartment = function (departmentId) {
@@ -142,7 +143,7 @@
             };
         }])
 
-        .controller("mailboxesController", ["$mailboxes", function ($mailboxes) {
+        .controller("mailboxesController", ["$mailboxes", "$adminMessage", function ($mailboxes, $mdDialog) {
             var ctrl = this;
             ctrl.order = "department_name";
             ctrl.selected = [];
@@ -153,11 +154,11 @@
                     ctrl.mailboxes.push(mailbox);
                 });
             }, function () {
-                alert("mailboxes_load_failed");
+                $adminMessage.error($mdDialog, "mailboxes_load_failed");
             });
         }])
 
-        .controller("statusesController", ["$statuses", function ($statuses) {
+        .controller("statusesController", ["$statuses", "$adminMessage", function ($statuses, $mdDialog) {
             var ctrl = this;
             ctrl.order = "name";
             ctrl.selected = [];
@@ -167,7 +168,7 @@
                 angular.forEach(response.data.statuses, function (status) {
                     ctrl.statuses.push(status);
                 }, function () {
-                    alert("statuses_load_failed");
+                    $adminMessage.error($mdDialog, "statuses_load_failed");
                 });
             });
         }]);

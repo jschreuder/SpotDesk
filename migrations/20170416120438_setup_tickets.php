@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+use jschreuder\SpotDesk\Entity\Status;
+use jschreuder\SpotDesk\Value\StatusTypeValue;
 use Phinx\Migration\AbstractMigration;
 
 class SetupTickets extends AbstractMigration
@@ -15,8 +17,12 @@ class SetupTickets extends AbstractMigration
         ");
         $this->execute("
             INSERT INTO `statuses` (`status`, `type`)
-            VALUES ('new', 'open'), ('open', 'open'), ('awaiting-client', 'paused'), ('closed', 'closed')"
-        );
+            VALUES 
+                ('" . Status::STATUS_NEW . "', '" . StatusTypeValue::TYPE_OPEN . "'), 
+                ('" . Status::STATUS_OPEN . "', '" . StatusTypeValue::TYPE_OPEN . "'), 
+                ('" . Status::STATUS_AWAITING_CLIENT . "', '" . StatusTypeValue::TYPE_PAUSED . "'), 
+                ('" . Status::STATUS_CLOSED . "', '" . StatusTypeValue::TYPE_CLOSED . "')
+        ");
 
         $this->execute("
             CREATE TABLE `tickets` (

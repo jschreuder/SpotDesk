@@ -6,6 +6,11 @@ use jschreuder\SpotDesk\Value\StatusTypeValue;
 
 class Status
 {
+    const STATUS_NEW = 'new';
+    const STATUS_OPEN = 'open';
+    const STATUS_AWAITING_CLIENT = 'awaiting-client';
+    const STATUS_CLOSED = 'closed';
+
     /** @var  string */
     private $status;
 
@@ -31,5 +36,20 @@ class Status
     public function getType(): StatusTypeValue
     {
         return $this->type;
+    }
+
+    public function isOpen(): bool
+    {
+        return $this->type->toString() === StatusTypeValue::TYPE_OPEN;
+    }
+
+    public function isPaused(): bool
+    {
+        return $this->type->toString() === StatusTypeValue::TYPE_PAUSED;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this->type->toString() === StatusTypeValue::TYPE_CLOSED;
     }
 }

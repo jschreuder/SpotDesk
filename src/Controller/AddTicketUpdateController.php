@@ -6,6 +6,7 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Service\MailServiceInterface;
@@ -84,6 +85,10 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         if (!empty($body['status_update'])) {
             $status = $this->statusRepository->getStatus($body['status_update']);
             $this->ticketRepository->updateTicketStatus($ticket, $status);
+        } elseif ($ticket->getStatus()->getStatus() === Status::STATUS_NEW) {
+            // Automatically upgrade status from new to open after first update
+            $openStatus = $this->statusRepository->getStatus(Status::STATUS_OPEN);
+            $this->ticketRepository->updateTicketStatus($ticket, $openStatus);
         }
 
         $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_UPDATE_TICKET);

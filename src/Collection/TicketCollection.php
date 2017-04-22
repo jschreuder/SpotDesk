@@ -8,6 +8,9 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
 {
     use CollectionTrait;
 
+    /** @var  int */
+    private $totalCount;
+
     public function __construct(Ticket ...$tickets)
     {
         foreach ($tickets as $ticket) {
@@ -31,5 +34,21 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
             throw new \OutOfBoundsException('No ticket with ID: ' . $ticketId);
         }
         return $this->collection[$ticketId];
+    }
+
+    public function getTotalCount(): int
+    {
+        if (is_null($this->totalCount)) {
+            throw new \RuntimeException('Total count must be set before it is retrieved.');
+        }
+        return $this->totalCount;
+    }
+
+    public function setTotalCount(int $totalCount)
+    {
+        if ($totalCount < 0) {
+            throw new \InvalidArgumentException('Total count of tickets cannot be smaller then 0.');
+        }
+        $this->totalCount = $totalCount;
     }
 }

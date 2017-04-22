@@ -6,8 +6,35 @@
         .controller("ticketsController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
             var ctrl = this;
             ctrl.order = "-last_update";
+            ctrl.promise = null;
+            ctrl.query = {
+                status_type: $stateParams.status_type || "open",
+                limit: 15,
+                page: 1,
+                sort: "-last_update"
+            };
+            ctrl.tickets = [];
             ctrl.selected = [];
-            ctrl.tickets = $tickets.fetch($stateParams.status_type || "open");
+
+            ctrl.getTickets = function () {
+                var sort_by = ctrl.query.sort,
+                    sort_direction = "asc";
+                if (sort_by[0] === "-") {
+                    sort_by = sort_by.substring(1);
+                    sort_direction = "desc";
+                }
+
+                ctrl.promise = $tickets.fetch(
+                    ctrl.query.status_type, ctrl.query.limit, ctrl.query.page, sort_by, sort_direction
+                ).then(function (response) {
+                    ctrl.tickets = [];
+                    angular.forEach(response.data.tickets, function (ticket) {
+                        ctrl.tickets.push(ticket);
+                    });
+                    ctrl.tickets.total_count = response.data.total_count;
+                });
+            };
+            ctrl.getTickets();
         }])
 
         .controller("viewTicketController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {

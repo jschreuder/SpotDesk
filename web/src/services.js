@@ -19,16 +19,14 @@
 
         .factory("$tickets", ["$http", function ($http) {
             return {
-                fetch: function (status_type) {
-                    var result = [];
-                    $http.get("/tickets", { params: { status_type: status_type } }).then(function (response) {
-                        angular.forEach(response.data.tickets, function (ticket) {
-                            result.push(ticket);
-                        });
-                    }, function () {
-                        alert("tickets_load_failed");
-                    });
-                    return result;
+                fetch: function (status_type, limit, page, sort_by, sort_direction) {
+                    return $http.get("/tickets", { params: {
+                        status_type: status_type,
+                        limit: limit,
+                        page: page,
+                        sort_by: sort_by,
+                        sort_direction: sort_direction
+                    } });
                 },
 
                 fetchOne: function (ticket_id) {

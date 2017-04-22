@@ -17,6 +17,8 @@ use Ramsey\Uuid\UuidInterface;
 
 class TicketRepository
 {
+    const ALLOWED_SORT_COLUMNS = ['subject', 'updates', 'last_update', 'status'];
+
     /** @var  \PDO */
     private $db;
 
@@ -115,13 +117,25 @@ class TicketRepository
         return $this->arrayToTicket($query->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function getOpenTicketsForUser(
+    public function getTicketsForUser(
         EmailAddressValue $email,
-        ?StatusTypeValue $statusType = null
+        ?StatusTypeValue $statusType = null,
+        int $limit,
+        int $page,
+        string $sortBy,
+        string $sortDirection = 'ASC'
     ): TicketCollection
     {
+        if (!in_array($sortBy, self::ALLOWED_SORT_COLUMNS)) {
+            throw new \InvalidArgumentException('Invalid column for sorting: ' . $sortBy);
+        }
+        if (!in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
+            throw new \InvalidArgumentException('Invalid direction for sorting: ' . $sortDirection);
+        }
+
         // Fetch all tickets that are either assigned to a department the given user is a part of
         // or those that haven't been assigned to a specific department
+        $offset = $limit * ($page - 1);
         $query = $this->db->prepare("
             SELECT t.*
             FROM `tickets` t
@@ -129,7 +143,8 @@ class TicketRepository
             LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
             INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = :status_type
             WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
-            ORDER BY t.`last_update` DESC
+            ORDER BY t.`{$sortBy}` {$sortDirection}
+            LIMIT {$limit} OFFSET {$offset}
         ");
         $query->execute([
             'email' => $email->toString(),
@@ -140,6 +155,21 @@ class TicketRepository
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
             $ticketCollection->push($this->arrayToTicket($row));
         }
+
+        $countQuery = $this->db->prepare("
+            SELECT COUNT(t.`ticket_id`) as ticket_count
+            FROM `tickets` t
+            LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
+            LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
+            INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = :status_type
+            WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
+        ");
+        $countQuery->execute([
+            'email' => $email->toString(),
+            'status_type' => $statusType ? $statusType->toString() : StatusTypeValue::TYPE_OPEN,
+        ]);
+        $ticketCollection->setTotalCount(intval($countQuery->fetchColumn()));
+
         return $ticketCollection;
     }
 

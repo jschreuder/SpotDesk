@@ -9,8 +9,8 @@
     </md-toolbar>
 
     <md-table-container>
-        <table md-table md-row-select multiple ng-model="ctrl.selected">
-            <thead md-head md-order="ctrl.order">
+        <table md-table md-row-select multiple ng-model="ctrl.selected" md-progress="ctrl.promise">
+            <thead md-head md-order="ctrl.query.sort" md-on-reorder="ctrl.getTickets">
                 <tr md-row>
                     <th md-column md-order-by="subject"><span>Subject</span></th>
                     <th md-column md-order-by="updates"><span>Updates</span></th>
@@ -20,7 +20,7 @@
             </thead>
             <tbody md-body>
                 <tr md-row md-select="t" md-select-id="ticket_id" md-auto-select
-                    ng-repeat="t in ctrl.tickets | orderBy: ctrl.order">
+                    ng-repeat="t in ctrl.tickets | orderBy: ctrl.query.sort">
                     <td md-cell>
                         <a ui-sref="tickets_view({ ticket_id: t.ticket_id })">{{ t.subject }}</a><br />
                         By {{ t.created_by }} on {{ t.created_at }}
@@ -36,6 +36,7 @@
     </md-table-container>
 
 
-    <md-table-pagination md-limit="ctrl.query.limit" md-limit-options="[5, 10, 15]" md-page="ctrl.query.page"
-                         md-total="{{ ctrl.tickets.count }}" md-on-paginate="" md-page-select></md-table-pagination>
+    <md-table-pagination md-limit="ctrl.query.limit" md-limit-options="[5, 15, 25, 50]" md-page="ctrl.query.page"
+                         md-total="{{ ctrl.tickets.total_count }}" md-on-paginate="ctrl.getTickets" md-page-select>
+    </md-table-pagination>
 </md-card>

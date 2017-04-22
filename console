@@ -24,5 +24,6 @@ $application->add(new \jschreuder\SpotDesk\Command\SendMailingsCommand(
 $application->add(new \jschreuder\SpotDesk\Command\DevCreateFakerTickets(
     $container['repository.tickets'], $container['repository.departments']
 ));
+$application->add(new \jschreuder\SpotDesk\Command\DevCron());
 
 $application->run();

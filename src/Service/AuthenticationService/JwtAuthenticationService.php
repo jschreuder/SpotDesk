@@ -39,7 +39,7 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
     /** @var  int */
     private $sessionDuration;
 
-    /** @var  int */
+    /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
     private $sessionRefreshAfter;
 
     public function __construct(
@@ -50,7 +50,7 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         Signer $jwtSigner,
         $jwtKey,
         int $sessionDuration = 3600,
-        int $sessionRefreshAfter = 1800
+        float $sessionRefreshAfter = .5
     )
     {
         $this->userRepository = $userRepository;
@@ -154,7 +154,7 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         $issuedAt = $jwt->getClaim('iat');
 
         // Check if refresh is need, return null otherwise
-        if ($issuedAt + $this->sessionRefreshAfter > time()) {
+        if ($issuedAt + ($this->sessionDuration * $this->sessionRefreshAfter) > time()) {
             return $response;
         }
 

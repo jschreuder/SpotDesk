@@ -3,6 +3,7 @@
 
     angular.module("spotdesk", ["ngMaterial", "ngCookies", "ui.router", "md.data.table"])
 
+        // Main configuration
         .config(["$httpProvider", "$mdThemingProvider",
             function($httpProvider, $mdThemingProvider){
                 $httpProvider.interceptors.push("authInterceptor");
@@ -13,6 +14,7 @@
             }
         ])
 
+        // Authentication service
         .factory("$auth", ["$http", "$cookies", "authInterceptor", function ($http, $cookies, authInterceptor) {
             var srvc = this;
 
@@ -65,6 +67,7 @@
             return srvc;
         }])
 
+        // Intercepts all requests to add session token and to capture refreshed session tokens
         .factory("authInterceptor", function () {
             var interceptor = {
                 $auth: null,
@@ -91,6 +94,7 @@
             return interceptor;
         })
 
+        // Controller for the entire layout
         .controller("mainController", ["$mdSidenav", "$auth", "$title", function ($mdSidenav, $auth, $title) {
             var ctrl = this;
 

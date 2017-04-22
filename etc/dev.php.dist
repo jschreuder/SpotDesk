@@ -24,8 +24,8 @@ return [
 
     // User session configuration
     'session.secret_key'    => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
-    'session.duration'      => 3600,
-    'session.refresh_after' => 1800,
+    'session.duration'      => 7200, // session expires after 2 hours
+    'session.refresh_after' => .25,  // session is refreshed after .25 * 7200 = 1800 seconds (30 minutes)
 
     // SMTP configuration
     'smtp.server'   => 'localhost',

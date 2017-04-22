@@ -154,6 +154,14 @@ class TicketRepository
         $ticket->setStatus($status);
     }
 
+    public function updateUpdateStats(Ticket $ticket): void
+    {
+        $query = $this->db->query("
+            UPDATE `tickets`
+            LEFT JOIN (SELECT COUNT(
+        ");
+    }
+
     public function createTicketUpdate(
         Ticket $ticket,
         EmailAddressValue $email,

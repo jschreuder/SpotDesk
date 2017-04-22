@@ -41,6 +41,8 @@
                 srvc.token = token;
                 if (srvc.persistToken) {
                     $cookies.put("spotdesk-authorization", token);
+                } else {
+                    $cookies.remove("spotdesk-authorization");
                 }
             };
 
@@ -78,6 +80,10 @@
                 response: function (response) {
                     if (interceptor.$auth && response.headers("SpotDesk-Authorization")) {
                         interceptor.$auth.updateToken(response.headers("SpotDesk-Authorization"));
+                    }
+                    if (response.status === 401) {
+                        interceptor.$auth.persistToken = false;
+                        interceptor.$auth.updateToken(null);
                     }
                     return response;
                 }

@@ -85,7 +85,7 @@ class DevCreateFakerTickets extends Command
         return $this->ticketRepository->createTicket(
             EmailAddressValue::get($faker->email),
             $faker->sentence(random_int(2, 8)),
-            nl2br($faker->paragraph(random_int(1, 5))),
+            $faker->paragraph(random_int(1, 5)),
             $department,
             $faker->dateTimeThisMonth
         );
@@ -100,7 +100,7 @@ class DevCreateFakerTickets extends Command
             $this->ticketRepository->createTicketUpdate(
                 $ticket,
                 $from,
-                nl2br($faker->paragraph(random_int(1, 3))),
+                $faker->paragraph(random_int(1, 3)),
                 ($from === $admin && random_int(0, 2) === 2),
                 new \DateTimeImmutable('@' . ($ticket->getCreatedAt()->getTimestamp() + random_int(300, 259200)))
             );

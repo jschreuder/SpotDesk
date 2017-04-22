@@ -1,0 +1,31 @@
+<md-card id="{{ ctrl.ticket.ticket_id }}">
+    <md-card-title>
+        <md-card-title-media>
+            <div class="md-media-sm card-media" layout>
+                <i class="fa fa-envelope-open-o" aria-hidden="true" ng-hide="ctrl.ticket.status == 'closed'"></i>
+                <i class="fa fa-envelope-o" aria-hidden="true" ng-show="ctrl.ticket.status == 'closed'"></i>
+            </div>
+        </md-card-title-media>
+        <md-card-title-text>
+            <span class="md-headline">{{ ctrl.ticket.subject }}</span>
+            <span class="md-subhead description">
+                By {{ ctrl.ticket.created_by }} on {{ ctrl.ticket.created_at }} in {{ ctrl.ticket.department_name }}
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        {{ ctrl.ticket.message }}
+    </md-card-content>
+</md-card>
+
+<md-card ng-repeat="tu in ctrl.ticket.updates" ng-class="{ dark: tu.internal }" id="{{ tu.ticket_update_id }}">
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">{{ tu.created_by }} wrote on {{ tu.created_at }}</span>
+            <div class="tag-label" ng-show="tu.internal">internal</div>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        {{ tu.message }}
+    </md-card-content>
+</md-card>

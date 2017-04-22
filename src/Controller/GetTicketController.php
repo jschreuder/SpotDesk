@@ -37,6 +37,9 @@ class GetTicketController implements ControllerInterface
                 'department_id' => is_null($ticket->getDepartment())
                     ? null
                     : $ticket->getDepartment()->getId()->toString(),
+                'department_name' => is_null($ticket->getDepartment())
+                    ? null
+                    : $ticket->getDepartment()->getName(),
                 'updates' => $ticket->getUpdates(),
                 'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
             ],

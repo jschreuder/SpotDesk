@@ -12,7 +12,7 @@
             <tbody md-body>
                 <tr md-row ng-repeat="t in ctrl.tickets">
                     <td md-cell>
-                        <strong>{{ t.subject }}</strong><br />
+                        <a ui-sref="tickets_view({ ticket_id: t.ticket_id })">{{ t.subject }}</a><br />
                         By {{ t.created_by }} on {{ t.created_at }}
                     </td>
                     <td md-cell>{{ t.updates }}</td>

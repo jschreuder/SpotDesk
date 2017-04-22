@@ -26,9 +26,22 @@
                             result.push(ticket);
                         });
                     }, function () {
-                        alert("tickets_load_failed")
+                        alert("tickets_load_failed");
                     });
                     return result;
+                },
+
+                fetchOne: function (ticket_id) {
+                    var ticket = {};
+                    $http.get("/tickets/" + ticket_id).then(function (response) {
+                        angular.forEach(response.data.ticket, function (value, key) {
+                            ticket[key] = value;
+                        });
+                        ticket.updates = response.data.ticket_updates;
+                    }, function () {
+                        alert("ticket_load_failed");
+                    });
+                    return ticket;
                 }
             };
         }])
@@ -42,7 +55,7 @@
                             result.push(user);
                         });
                     }, function () {
-                        alert("users_load_failed")
+                        alert("users_load_failed");
                     });
                     return result;
                 }
@@ -58,7 +71,7 @@
                             result.push(department);
                         });
                     }, function () {
-                        alert("departments_load_failed")
+                        alert("departments_load_failed");
                     });
                     return result;
                 }
@@ -74,7 +87,7 @@
                             result.push(mailbox);
                         });
                     }, function () {
-                        alert("mailboxes_load_failed")
+                        alert("mailboxes_load_failed");
                     });
                     return result;
                 }

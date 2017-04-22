@@ -16,12 +16,23 @@
 
             $stateProvider.state({
                 name: "tickets_status_type",
-                url: "/type/{status_type}",
+                url: "/tickets/type/{status_type}",
                 templateUrl: "assets/templates/tickets.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", "$stateParams", function($title, $stateParams) {
                     $title.change($stateParams.status_type + " tickets")
+                }]
+            });
+
+            $stateProvider.state({
+                name: "tickets_view",
+                url: "/tickets/view/{ticket_id}",
+                templateUrl: "assets/templates/tickets/view.html",
+                controller: "viewTicketController",
+                controllerAs: "ctrl",
+                onEnter: ["$title", "$stateParams", function($title) {
+                    $title.change("View tickets")
                 }]
             });
 

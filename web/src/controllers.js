@@ -8,6 +8,11 @@
             ctrl.tickets = $tickets.fetch($stateParams.status_type || "open");
         }])
 
+        .controller("viewTicketController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
+            var ctrl = this;
+            ctrl.ticket = $tickets.fetchOne($stateParams.ticket_id);
+        }])
+
         .controller("usersController", ["$users", function ($users) {
             var ctrl = this;
             ctrl.users = $users.fetch();

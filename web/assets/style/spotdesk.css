@@ -87,8 +87,54 @@ md-sidenav md-list {
     margin: 2em;
 }
 
+#content a, #content a:visited {
+    color: #00af4f;
+    text-decoration: none;
+    font-weight: bold;
+}
+#content a:hover, #content a:active {
+    color: #ff00ff;
+}
+
 #content md-card {
+    position: relative;
     overflow: auto;
+}
+
+#content md-card-title-text {
+    position: relative;
+}
+
+
+#content md-card-title-text .tag-label {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #eee;
+    color: #333;
+    padding: .5em 1em;
+    border-radius: 1em;
+    font-weight: bold;
+    font-size: .8em;
+}
+
+#content md-card.dark {
+    background: #333;
+    color: white;
+}
+
+#content md-card md-card-title-media .fa {
+    position: relative;
+    width: 60px;
+    display: inline-block;
+    overflow: hidden;
+    margin: auto 0;
+    padding: 0 .25em .1em 0;
+    font-size: 48px;
+    line-height: 1em;
+    text-align: center;
+    vertical-align: middle;
 }
 
 #content .md-button.share {
@@ -112,10 +158,4 @@ md-sidenav md-list {
 
 .content-wrapper {
     position: relative;
-}
-
-/* Typography support coming in 0.8.0 */
-
-md-bottom-sheet  md-icon {
-    margin-right:20px;
 }

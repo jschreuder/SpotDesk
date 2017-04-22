@@ -85,7 +85,7 @@ class CheckMailboxesCommand extends Command
                 $mail = $connection->getMail($mailId, false);
                 $email = EmailAddressValue::get($mail->fromAddress);
                 $subject = $mail->subject;
-                $message = $mail->textHtml ?: $mail->textPlain;
+                $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
                 $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
                 $department = $mailbox->getDepartment();
 
@@ -115,5 +115,13 @@ class CheckMailboxesCommand extends Command
 
         // Update last check date-time
         $this->mailboxRepository->updateLastCheck($mailbox);
+    }
+
+    private function stripHtml(string $message): string
+    {
+        $message = preg_replace('#<br\s*\/?>#i', "\n", $message);
+        $message = preg_replace('#<p\s*[^>]*>#i', "\n\n", $message);
+        $message = filter_var($message, FILTER_SANITIZE_STRING);
+        return htmlentities($message, ENT_QUOTES, 'UTF-8');
     }
 }

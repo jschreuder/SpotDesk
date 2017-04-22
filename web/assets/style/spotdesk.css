@@ -177,7 +177,7 @@ md-sidenav md-list {
     max-width: 500px;
 }
 
-#addTicketReply md-dialog {
+#addTicketReply md-dialog, #createUser md-dialog {
     width: 100%;
 }
 

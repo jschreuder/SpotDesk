@@ -12,7 +12,7 @@ interface AuthenticationServiceInterface
     /**
      * Creates a new user, stores it in the database and returns it.
      */
-    public function createUser(string $email, string $password, string $displayName): User;
+    public function createUser(string $email, string $displayName, string $password): User;
 
     /**
      * Should return a string session ID or throw an AuthenticationFailedException when user

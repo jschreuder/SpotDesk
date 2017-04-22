@@ -63,7 +63,7 @@ class JwtAuthenticationService implements AuthenticationServiceInterface
         $this->sessionRefreshAfter = $sessionRefreshAfter;
     }
 
-    public function createUser(string $email, string $password, string $displayName): User
+    public function createUser(string $email, string $displayName, string $password): User
     {
         $user = new User(
             EmailAddressValue::get($email),

@@ -21,3 +21,54 @@
         </table>
     </md-table-container>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="createUser">
+        <md-dialog aria-label="Create user">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Create user</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelUser()">
+                            <i class="fa fa-close" aria-label="Cancel user"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="user_name">Username</label>
+                            <input id="user_name" ng-model="ctrl.user.email" type="email">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="display_name">Display name</label>
+                            <input id="display_name" ng-model="ctrl.user.display_name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="user_pass">Password</label>
+                            <input id="user_pass" ng-model="ctrl.user.password" type="password">
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelUser()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitUser()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" aria-label="Create user" ng-click="ctrl.createUser()">
+    <md-tooltip md-direction="top">Create user</md-tooltip>
+    <i class="fa fa-user" aria-hidden="true"></i>
+</md-button>

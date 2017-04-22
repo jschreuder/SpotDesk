@@ -42,8 +42,8 @@ class CreateUserCommand extends Command
     {
         $this->authenticationService->createUser(
             $input->getArgument('email'),
-            $input->getArgument('password'),
-            $input->getArgument('display_name')
+            $input->getArgument('display_name'),
+            $input->getArgument('password')
         );
     }
 }

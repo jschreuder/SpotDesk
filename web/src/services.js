@@ -47,6 +47,14 @@
             return {
                 fetch: function () {
                     return $http.get("/users");
+                },
+
+                create: function (email, display_name, password) {
+                    return $http.post("/users", {
+                        email: email,
+                        display_name: display_name,
+                        password: password
+                    });
                 }
             };
         }])

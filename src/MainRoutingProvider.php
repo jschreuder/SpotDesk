@@ -9,6 +9,7 @@ use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
 use jschreuder\SpotDesk\Controller\ChangeTicketStatusController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
+use jschreuder\SpotDesk\Controller\CreateUserController;
 use jschreuder\SpotDesk\Controller\GetDepartmentsController;
 use jschreuder\SpotDesk\Controller\GetMailboxesController;
 use jschreuder\SpotDesk\Controller\GetStatusesController;
@@ -79,6 +80,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         // Users
         $router->get('users.list', '/users', function () {
             return new GetUsersController($this->container['repository.users']);
+        });
+        $router->post('users.create', '/users', function () {
+            return new CreateUserController($this->container['service.authentication']);
         });
 
         // Statuses

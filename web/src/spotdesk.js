@@ -33,8 +33,8 @@
         }])
 
         // Authentication service
-        .factory("$auth", ["$http", "$cookies", "$adminMessage", "authInterceptor",
-            function ($http, $cookies, $adminMessage, authInterceptor) {
+        .factory("$auth", ["$http", "$cookies", "$state", "$adminMessage", "authInterceptor",
+            function ($http, $cookies, $state, $adminMessage, authInterceptor) {
                 var srvc = this;
 
                 srvc.persistToken = false;
@@ -77,6 +77,7 @@
                             console.log("SpotDesk: successful return status, but no authorization token found.");
                             $adminMessage.error("auth_login_failed");
                         }
+                        $state.reload();
                     }, function errorCallback() {
                         $adminMessage.error("auth_login_failed");
                     });

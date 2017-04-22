@@ -8,7 +8,6 @@
                 fetchOpen: function () {
                     var result = [];
                     $http.get("/tickets").then(function (response) {
-                        console.log(response);
                         angular.forEach(response.data.tickets, function (ticket) {
                             result.push(ticket);
                         });

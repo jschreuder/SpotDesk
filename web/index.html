@@ -16,15 +16,6 @@
     <link rel="stylesheet" href="./node_modules/angular-material/angular-material.css"/>
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="assets/style/spotdesk.css"/>
-
-    <style type="text/css">
-        /**
-         * Hide when Angular is not yet loaded and initialized
-         */
-        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-            display: none !important;
-        }
-    </style>
 </head>
 
 <body ng-app="spotdesk" ng-controller="mainController as main" layout="column" ng-cloak>
@@ -74,7 +65,15 @@
                 <input id="user_pass" ng-model="main.user.pass" type="password">
             </md-input-container>
 
-            <md-button md-no-ink class="md-primary" ng-click="main.login()">Login</md-button>
+            <md-input-container class="md-block">
+                <md-switch class="md-primary" ng-model="main.user.persist">
+                    Persist login in cookie
+                </md-switch>
+            </md-input-container>
+
+            <div>
+                <md-button type="submit" md-no-ink class="md-primary" ng-click="main.login()">Login</md-button>
+            </div>
         </div>
     </md-content>
 </div>
@@ -82,6 +81,7 @@
 <script src="./node_modules/angular/angular.js"></script>
 <script src="./node_modules/angular-animate/angular-animate.js"></script>
 <script src="./node_modules/angular-aria/angular-aria.js"></script>
+<script src="./node_modules/angular-cookies/angular-cookies.js"></script>
 <script src="./node_modules/angular-material/angular-material.js"></script>
 <script src="./node_modules/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="./src/spotdesk.js"></script>

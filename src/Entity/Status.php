@@ -23,7 +23,7 @@ class Status
         $this->type = $type;
     }
 
-    public function getStatus(): string
+    public function getName(): string
     {
         return $this->status;
     }

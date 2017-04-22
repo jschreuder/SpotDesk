@@ -32,7 +32,7 @@
                 controller: "viewTicketController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", "$stateParams", function($title) {
-                    $title.change("View tickets")
+                    $title.change("View ticket")
                 }]
             });
 
@@ -61,6 +61,15 @@
                 controller: "mailboxesController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Manage mailboxes") } ]
+            });
+
+            $stateProvider.state({
+                name: "statuses",
+                url: "/statuses",
+                templateUrl: "assets/templates/statuses/list.html",
+                controller: "statusesController",
+                controllerAs: "ctrl",
+                onEnter: ["$title", function($title) { $title.change("Manage statuses") } ]
             });
         }]);
 })();

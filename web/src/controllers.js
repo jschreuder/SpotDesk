@@ -43,5 +43,12 @@
             ctrl.order = "department_name";
             ctrl.selected = [];
             ctrl.mailboxes = $mailboxes.fetch();
+        }])
+
+        .controller("statusesController", ["$statuses", function ($statuses) {
+            var ctrl = this;
+            ctrl.order = "name";
+            ctrl.selected = [];
+            ctrl.statuses = $statuses.fetch();
         }]);
 })();

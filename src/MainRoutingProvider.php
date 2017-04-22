@@ -11,6 +11,7 @@ use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\GetDepartmentsController;
 use jschreuder\SpotDesk\Controller\GetMailboxesController;
+use jschreuder\SpotDesk\Controller\GetStatusesController;
 use jschreuder\SpotDesk\Controller\GetTicketsController;
 use jschreuder\SpotDesk\Controller\GetTicketController;
 use jschreuder\SpotDesk\Controller\GetUsersController;
@@ -78,6 +79,11 @@ class MainRoutingProvider implements RoutingProviderInterface
         // Users
         $router->get('users.list', '/users', function () {
             return new GetUsersController($this->container['repository.users']);
+        });
+
+        // Statuses
+        $router->get('statuses.list', '/statuses', function () {
+            return new GetStatusesController($this->container['repository.statuses']);
         });
     }
 }

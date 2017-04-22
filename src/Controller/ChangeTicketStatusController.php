@@ -63,7 +63,7 @@ class ChangeTicketStatusController implements ControllerInterface, RequestFilter
         return new JsonResponse([
             'ticket' => [
                 'ticket_id' => $ticket->getId()->toString(),
-                'status' => $ticket->getStatus()->getStatus(),
+                'status' => $ticket->getStatus()->getName(),
             ]
         ], 201);
     }

@@ -54,7 +54,7 @@ class GetTicketsController implements ControllerInterface, RequestValidatorInter
                     'subject' => $ticket->getSubject(),
                     'created_at' => $ticket->getCreatedAt()->format('Y-m-d H:i:s'),
                     'created_by' => $ticket->getEmail()->toString(),
-                    'status' => $ticket->getStatus()->getStatus(),
+                    'status' => $ticket->getStatus()->getName(),
                     'department_id' => is_null($ticket->getDepartment())
                         ? null
                         : $ticket->getDepartment()->getId()->toString(),

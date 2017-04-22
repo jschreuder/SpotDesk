@@ -24,6 +24,7 @@ var urlsToCache = [
     // views
     "./assets/templates/departments/list.html",
     "./assets/templates/mailboxes/list.html",
+    "./assets/templates/statuses/list.html",
     "./assets/templates/tickets/list.html",
     "./assets/templates/tickets/view.html",
     "./assets/templates/users/list.html",

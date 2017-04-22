@@ -92,5 +92,21 @@
                     return result;
                 }
             };
+        }])
+
+        .factory("$statuses", ["$http", function ($http) {
+            return {
+                fetch: function () {
+                    var result = [];
+                    $http.get("/statuses").then(function (response) {
+                        angular.forEach(response.data.statuses, function (status) {
+                            result.push(status);
+                        });
+                    }, function () {
+                        alert("statuses_load_failed");
+                    });
+                    return result;
+                }
+            };
         }]);
 })();

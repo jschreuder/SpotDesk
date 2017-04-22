@@ -17,7 +17,7 @@ class StatusCollection implements \ArrayAccess, \Countable, \Iterator
 
     public function push(Status $status): void
     {
-        $this->collection[$status->getStatus()] = $status;
+        $this->collection[$status->getName()] = $status;
     }
 
     public function current(): Status

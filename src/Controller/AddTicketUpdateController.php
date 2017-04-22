@@ -85,7 +85,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         if (!empty($body['status_update'])) {
             $status = $this->statusRepository->getStatus($body['status_update']);
             $this->ticketRepository->updateTicketStatus($ticket, $status);
-        } elseif ($ticket->getStatus()->getStatus() === Status::STATUS_NEW) {
+        } elseif ($ticket->getStatus()->getName() === Status::STATUS_NEW) {
             // Automatically upgrade status from new to open after first update
             $openStatus = $this->statusRepository->getStatus(Status::STATUS_OPEN);
             $this->ticketRepository->updateTicketStatus($ticket, $openStatus);

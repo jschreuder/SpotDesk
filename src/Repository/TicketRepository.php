@@ -76,7 +76,7 @@ class TicketRepository
             'created_at' => $ticket->getCreatedAt()->format('Y-m-d H:i:s'),
             'updates' => $ticket->getUpdates(),
             'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
-            'status' => $ticket->getStatus()->getStatus(),
+            'status' => $ticket->getStatus()->getName(),
             'department_id' => is_null($ticket->getDepartment()) ? null : $ticket->getDepartment()->getId()->getBytes(),
         ]);
 
@@ -151,7 +151,7 @@ class TicketRepository
             WHERE `ticket_id` = :ticket_id
         ");
         $query->execute([
-            'status' => $status->getStatus(),
+            'status' => $status->getName(),
             'ticket_id' => $ticket->getId()->getBytes(),
         ]);
 

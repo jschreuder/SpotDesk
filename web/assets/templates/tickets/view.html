@@ -21,7 +21,8 @@
                 closed
             </div>
             <span class="md-subhead description">
-                By {{ ctrl.ticket.created_by }} on {{ ctrl.ticket.created_at }} in {{ ctrl.ticket.department_name }}
+                By {{ ctrl.ticket.created_by }} on {{ ctrl.ticket.created_at }} in
+                {{ ctrl.ticket.department_name || "no_department" }}
             </span>
         </md-card-title-text>
     </md-card-title>

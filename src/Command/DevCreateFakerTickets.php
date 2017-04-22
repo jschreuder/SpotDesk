@@ -4,9 +4,11 @@ namespace jschreuder\SpotDesk\Command;
 
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
+use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
+use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
@@ -84,11 +86,21 @@ class DevCreateFakerTickets extends Command
             $ticket = $this->createTicket($department);
             $replies = random_int(0, 10);
             if ($replies > 0) {
-                $this->createReplies($ticket, $admin, $replies);
-                $this->ticketRepository->updateTicketStatus(
-                    $ticket,
-                    $this->statusRepository->getStatus(Status::STATUS_OPEN)
-                );
+                $ticketUpdates = $this->createReplies($ticket, $admin, $replies)->toArray();
+                /** @var  TicketUpdate $lastUpdate */
+                $lastUpdate = end($ticketUpdates);
+
+                if ($lastUpdate->getEmail() === $admin) {
+                    $this->ticketRepository->updateTicketStatus(
+                        $ticket,
+                        $this->statusRepository->getStatus(Status::STATUS_AWAITING_CLIENT)
+                    );
+                } else {
+                    $this->ticketRepository->updateTicketStatus(
+                        $ticket,
+                        $this->statusRepository->getStatus(Status::STATUS_OPEN)
+                    );
+                }
             }
         }
     }
@@ -105,19 +117,22 @@ class DevCreateFakerTickets extends Command
         );
     }
 
-    private function createReplies(Ticket $ticket, EmailAddressValue $admin, int $repeat): void
+    private function createReplies(Ticket $ticket, EmailAddressValue $admin, int $repeat): TicketUpdateCollection
     {
         $faker = $this->getFaker();
+        $ticketUpdates = new TicketUpdateCollection();
 
         for ($idx = 0; $idx < $repeat; $idx++) {
             $from = random_int(0, 1) === 1 ? $admin : $ticket->getEmail();
-            $this->ticketRepository->createTicketUpdate(
+            $update = $this->ticketRepository->createTicketUpdate(
                 $ticket,
                 $from,
                 $faker->paragraph(random_int(1, 3)),
                 ($from === $admin && random_int(0, 2) === 2),
                 new \DateTimeImmutable('@' . ($ticket->getCreatedAt()->getTimestamp() + random_int(300, 259200)))
             );
+            $ticketUpdates->push($update);
         }
+        return $ticketUpdates;
     }
 }

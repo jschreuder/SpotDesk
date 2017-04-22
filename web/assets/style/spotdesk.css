@@ -162,6 +162,10 @@ md-sidenav md-list {
     max-width: 500px;
 }
 
+#addTicketReply md-dialog {
+    width: 100%;
+}
+
 /* Utils */
 
 .content-wrapper {

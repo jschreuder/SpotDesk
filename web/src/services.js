@@ -30,16 +30,15 @@
                 },
 
                 fetchOne: function (ticket_id) {
-                    var ticket = {};
-                    $http.get("/tickets/" + ticket_id).then(function (response) {
-                        angular.forEach(response.data.ticket, function (value, key) {
-                            ticket[key] = value;
-                        });
-                        ticket.updates = response.data.ticket_updates;
-                    }, function () {
-                        alert("ticket_load_failed");
+                    return $http.get("/tickets/" + ticket_id);
+                },
+
+                addReply: function (ticket_id, message, internal, status_update) {
+                    return $http.post("/tickets/" + ticket_id, {
+                        message: message,
+                        internal: internal,
+                        status_update: status_update
                     });
-                    return ticket;
                 }
             };
         }])
@@ -47,15 +46,7 @@
         .factory("$users", ["$http", function ($http) {
             return {
                 fetch: function () {
-                    var result = [];
-                    $http.get("/users").then(function (response) {
-                        angular.forEach(response.data.users, function (user) {
-                            result.push(user);
-                        });
-                    }, function () {
-                        alert("users_load_failed");
-                    });
-                    return result;
+                    return $http.get("/users");
                 }
             };
         }])
@@ -63,15 +54,7 @@
         .factory("$departments", ["$http", function ($http) {
             return {
                 fetch: function () {
-                    var result = [];
-                    $http.get("/departments").then(function (response) {
-                        angular.forEach(response.data.departments, function (department) {
-                            result.push(department);
-                        });
-                    }, function () {
-                        alert("departments_load_failed");
-                    });
-                    return result;
+                    return $http.get("/departments");
                 }
             };
         }])
@@ -79,15 +62,7 @@
         .factory("$mailboxes", ["$http", function ($http) {
             return {
                 fetch: function () {
-                    var result = [];
-                    $http.get("/mailboxes").then(function (response) {
-                        angular.forEach(response.data.mailboxes, function (mailbox) {
-                            result.push(mailbox);
-                        });
-                    }, function () {
-                        alert("mailboxes_load_failed");
-                    });
-                    return result;
+                    return $http.get("/mailboxes");
                 }
             };
         }])
@@ -95,15 +70,7 @@
         .factory("$statuses", ["$http", function ($http) {
             return {
                 fetch: function () {
-                    var result = [];
-                    $http.get("/statuses").then(function (response) {
-                        angular.forEach(response.data.statuses, function (status) {
-                            result.push(status);
-                        });
-                    }, function () {
-                        alert("statuses_load_failed");
-                    });
-                    return result;
+                    return $http.get("/statuses");
                 }
             };
         }]);

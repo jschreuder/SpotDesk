@@ -37,26 +37,91 @@
             ctrl.getTickets();
         }])
 
-        .controller("viewTicketController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
-            var ctrl = this;
-            ctrl.ticket = $tickets.fetchOne($stateParams.ticket_id);
-            ctrl.addReply = function () {
-                alert("This should be a modal with fields to compose a reply");
-            };
-        }])
+        .controller("viewTicketController", ["$tickets", "$statuses", "$stateParams", "$mdDialog",
+            function ($tickets, $statuses, $stateParams, $mdDialog) {
+                var ctrl = this;
+                ctrl.ticket = null;
+                ctrl.updates = [];
+                ctrl.statuses = [{
+                    name: "",
+                    type: null
+                }];
+
+                ctrl.getTicket = function () {
+                    $tickets.fetchOne($stateParams.ticket_id).then(function (response) {
+                        ctrl.ticket = response.data.ticket;
+                        ctrl.updates = response.data.ticket_updates;
+                    }, function () {
+                        alert("ticket_load_failed");
+                    });
+                };
+                ctrl.getTicket();
+
+                $statuses.fetch().then(function (response) {
+                    angular.forEach(response.data.statuses, function (status) {
+                        ctrl.statuses.push(status);
+                    }, function () {
+                        alert("statuses_load_failed");
+                    });
+                });
+
+                ctrl.addReply = function(ev) {
+                    ctrl.reply = {
+                        message: "",
+                        internal: false,
+                        status_update: null
+                    };
+                    $mdDialog.show({
+                        contentElement: '#addTicketReply',
+                        parent: angular.element(document.body),
+                        targetEvent: ev
+                    });
+                };
+                ctrl.cancelReply = function () {
+                    $mdDialog.cancel();
+                };
+                ctrl.submitReply = function () {
+                    $tickets.addReply(
+                        ctrl.ticket.ticket_id, ctrl.reply.message, ctrl.reply.internal, ctrl.reply.status_update
+                    ).then(function () {
+                        $mdDialog.hide();
+                        ctrl.getTicket();
+                    }, function () {
+                        alert("tickets_add_reply_failed");
+                    });
+                };
+            }
+        ])
 
         .controller("usersController", ["$users", function ($users) {
             var ctrl = this;
             ctrl.order = "email";
             ctrl.selected = [];
-            ctrl.users = $users.fetch();
+            ctrl.users = [];
+
+            $users.fetch().then(function (response) {
+                angular.forEach(response.data.users, function (user) {
+                    ctrl.users.push(user);
+                });
+            }, function () {
+                alert("users_load_failed");
+            });
         }])
 
         .controller("departmentsController", ["$departments", function ($departments) {
             var ctrl = this;
             ctrl.order = "name";
             ctrl.selected = [];
-            ctrl.departments = $departments.fetch();
+            ctrl.departments = [];
+
+            $departments.fetch().then(function (response) {
+                angular.forEach(response.data.departments, function (department) {
+                    ctrl.departments.push(department);
+                });
+            }, function () {
+                alert("departments_load_failed");
+            });
+
             ctrl.getDepartment = function (departmentId) {
                 var found = null;
                 ctrl.departments.forEach(function (department) {
@@ -72,13 +137,29 @@
             var ctrl = this;
             ctrl.order = "department_name";
             ctrl.selected = [];
-            ctrl.mailboxes = $mailboxes.fetch();
+            ctrl.mailboxes = [];
+
+            $mailboxes.fetch().then(function (response) {
+                angular.forEach(response.data.mailboxes, function (mailbox) {
+                    ctrl.mailboxes.push(mailbox);
+                });
+            }, function () {
+                alert("mailboxes_load_failed");
+            });
         }])
 
         .controller("statusesController", ["$statuses", function ($statuses) {
             var ctrl = this;
             ctrl.order = "name";
             ctrl.selected = [];
-            ctrl.statuses = $statuses.fetch();
+            ctrl.statuses = [];
+
+            $statuses.fetch().then(function (response) {
+                angular.forEach(response.data.statuses, function (status) {
+                    ctrl.statuses.push(status);
+                }, function () {
+                    alert("statuses_load_failed");
+                });
+            });
         }]);
 })();

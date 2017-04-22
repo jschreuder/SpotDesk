@@ -18,7 +18,7 @@
     </md-card-content>
 </md-card>
 
-<md-card ng-repeat="tu in ctrl.ticket.updates" ng-class="{ dark: tu.internal }" id="{{ tu.ticket_update_id }}">
+<md-card ng-repeat="tu in ctrl.updates" ng-class="{ dark: tu.internal }" id="{{ tu.ticket_update_id }}">
     <md-card-title>
         <md-card-title-text>
             <span class="md-headline">{{ tu.created_by }} wrote on {{ tu.created_at }}</span>
@@ -29,6 +29,60 @@
         {{ tu.message }}
     </md-card-content>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="addTicketReply">
+        <md-dialog aria-label="Add reply">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Add reply</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelReply()">
+                            <i class="fa fa-close" aria-label="Cancel reply"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="replyMessage">Message</label>
+                            <textarea id="replyMessage" ng-model="ctrl.reply.message" rows="5" md-select-on-focus
+                                      ></textarea>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <md-switch class="md-primary" ng-model="ctrl.reply.internal">
+                                Internal reply (not visible to client)
+                            </md-switch>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Change status to...</label>
+                                <md-select ng-model="ctrl.reply.status_update">
+                                    <md-option ng-repeat="status in ctrl.statuses" value="{{ status.name }}">
+                                        {{ status.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelReply()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitReply()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
 
 <md-button class="md-fab md-fab-bottom-right" aria-label="Add reply" ng-click="ctrl.addReply()">
     <md-tooltip md-direction="top">Add reply</md-tooltip>

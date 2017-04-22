@@ -10,13 +10,15 @@
                 url: "/",
                 templateUrl: "assets/templates/tickets.html",
                 controller: "ticketsController",
-                controllerAs: "ctrl"
+                controllerAs: "ctrl",
+                onEnter: ["$title", function($title) { $title.change("Tickets") } ]
             });
 
             $stateProvider.state({
                 name: "config",
                 url: "/config",
-                templateUrl: "assets/templates/config.html"
+                templateUrl: "assets/templates/config.html",
+                onEnter: ["$title", function($title) { $title.change("Configuration") } ]
             });
         }]);
 })();

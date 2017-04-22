@@ -24,7 +24,7 @@
     <md-button ng-click="main.toggleSideNav()" class="menu" hide-gt-sm aria-label="Show User List">
         <i class="fa fa-bars" aria-hidden="true"></i>
     </md-button>
-    <h1>SpotDesk</h1>
+    <h1>SpotDesk{{ main.showTitle() }}</h1>
 </md-toolbar>
 
 <div flex layout="row" ng-show="main.loggedIn()">

@@ -85,7 +85,7 @@
             return interceptor;
         })
 
-        .controller("mainController", ["$mdSidenav", "$auth", function ($mdSidenav, $auth) {
+        .controller("mainController", ["$mdSidenav", "$auth", "$title", function ($mdSidenav, $auth, $title) {
             var ctrl = this;
 
             ctrl.loggedIn = $auth.loggedIn;
@@ -102,6 +102,13 @@
                 }
 
                 $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist);
+            };
+
+            ctrl.showTitle = function () {
+                if ($auth.loggedIn()) {
+                    return " - " + $title.get();
+                }
+                return " - Login";
             };
 
             ctrl.toggleSideNav = function() {

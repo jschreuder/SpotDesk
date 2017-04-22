@@ -5,6 +5,7 @@
 
         .controller("ticketsController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
             var ctrl = this;
+            ctrl.selected = [];
             ctrl.tickets = $tickets.fetch($stateParams.status_type || "open");
         }])
 
@@ -15,11 +16,13 @@
 
         .controller("usersController", ["$users", function ($users) {
             var ctrl = this;
+            ctrl.selected = [];
             ctrl.users = $users.fetch();
         }])
 
         .controller("departmentsController", ["$departments", function ($departments) {
             var ctrl = this;
+            ctrl.selected = [];
             ctrl.departments = $departments.fetch();
             ctrl.getDepartment = function (departmentId) {
                 var found = null;
@@ -34,6 +37,7 @@
 
         .controller("mailboxesController", ["$mailboxes", function ($mailboxes) {
             var ctrl = this;
+            ctrl.selected = [];
             ctrl.mailboxes = $mailboxes.fetch();
         }]);
 })();

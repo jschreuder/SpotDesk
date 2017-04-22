@@ -1,7 +1,7 @@
 <md-card>
     <md-table-container>
-        <table md-table>
-            <thead md-head>
+        <table md-table md-row-select multiple ng-model="ctrl.selected">
+            <thead md-head md-row-select multiple ng-model="ctrl.selected">
             <tr md-row>
                 <th md-column><span>Name</span></th>
                 <th md-column><span>Department</span></th>
@@ -9,7 +9,7 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row ng-repeat="m in ctrl.mailboxes">
+            <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select ng-repeat="m in ctrl.mailboxes">
                 <td md-cell>
                     <strong>{{ m.name }}</strong>
                 </td>

@@ -113,7 +113,6 @@ md-sidenav md-list {
     position: relative;
 }
 
-
 #content md-card-title-text .tag-label {
     display: block;
     position: absolute;
@@ -125,6 +124,22 @@ md-sidenav md-list {
     border-radius: 1em;
     font-weight: bold;
     font-size: .8em;
+}
+
+#content md-card-title-text .tag-label.status-open {
+    font-size: 1.25em;
+    background: #ff00ff;
+    color: white;
+}
+#content md-card-title-text .tag-label.status-paused {
+    font-size: 1.25em;
+    background: #00af4f;
+    color: white;
+}
+#content md-card-title-text .tag-label.status-closed {
+    font-size: 1.25em;
+    background: #666;
+    color: white;
 }
 
 #content md-card.dark {

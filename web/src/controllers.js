@@ -47,7 +47,7 @@
                     type: null
                 }];
 
-                ctrl.getTicket = function () {
+                ctrl.fetchTicket = function () {
                     $tickets.fetchOne($stateParams.ticket_id).then(function (response) {
                         ctrl.ticket = response.data.ticket;
                         ctrl.updates = response.data.ticket_updates;
@@ -55,7 +55,7 @@
                         alert("ticket_load_failed");
                     });
                 };
-                ctrl.getTicket();
+                ctrl.fetchTicket();
 
                 $statuses.fetch().then(function (response) {
                     angular.forEach(response.data.statuses, function (status) {
@@ -64,6 +64,15 @@
                         alert("statuses_load_failed");
                     });
                 });
+                ctrl.getStatus = function (statusName) {
+                    var found = null;
+                    ctrl.statuses.forEach(function (status) {
+                        if (status.name === statusName) {
+                            found = status;
+                        }
+                    });
+                    return found;
+                };
 
                 ctrl.addReply = function(ev) {
                     ctrl.reply = {
@@ -85,7 +94,7 @@
                         ctrl.ticket.ticket_id, ctrl.reply.message, ctrl.reply.internal, ctrl.reply.status_update
                     ).then(function () {
                         $mdDialog.hide();
-                        ctrl.getTicket();
+                        ctrl.fetchTicket();
                     }, function () {
                         alert("tickets_add_reply_failed");
                     });

@@ -112,9 +112,9 @@
 
             ctrl.showTitle = function () {
                 if ($auth.loggedIn()) {
-                    return " - " + $title.get();
+                    return $title.get();
                 }
-                return " - Login";
+                return "Login";
             };
 
             ctrl.toggleSideNav = function() {

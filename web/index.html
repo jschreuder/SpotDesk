@@ -21,32 +21,84 @@
 
 <body ng-app="spotdesk" ng-controller="mainController as main" layout="column" ng-cloak>
 
-<md-toolbar layout="row">
-    <md-button ng-click="main.toggleSideNav()" class="menu" hide-gt-sm aria-label="Show User List">
-        <i class="fa fa-bars" aria-hidden="true"></i>
-    </md-button>
-    <h1>SpotDesk{{ main.showTitle() }}</h1>
-</md-toolbar>
-
 <div flex layout="row" ng-show="main.loggedIn()">
     <md-sidenav ng-click="main.toggleSideNav()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
+        <md-toolbar layout="row">
+            <h1>SpotDesk</h1>
+        </md-toolbar>
+
         <md-list>
+            <md-list-item class="header">
+                Tickets
+            </md-list-item>
             <md-list-item>
                 <md-button ui-sref="tickets" ui-sref-active="active">
-                    <i class="fa fa-envelope avatar" aria-hidden="true"></i>
-                    Open tickets
+                    <i class="fa fa-envelope-open menu-icon" aria-hidden="true"></i>
+                    Open
                 </md-button>
             </md-list-item>
             <md-list-item>
-                <md-button ui-sref="config" ui-sref-active="active">
-                    <i class="fa fa-cog avatar" aria-hidden="true"></i>
-                    Configuration
+                <md-button ui-sref="tickets_overdue" ui-sref-active="active">
+                    <i class="fa fa-fire menu-icon" aria-hidden="true"></i>
+                    Overdue
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="tickets_paused" ui-sref-active="active">
+                    <i class="fa fa-pause-circle menu-icon" aria-hidden="true"></i>
+                    Paused
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="tickets_closed" ui-sref-active="active">
+                    <i class="fa fa-envelope menu-icon" aria-hidden="true"></i>
+                    Closed
+                </md-button>
+            </md-list-item>
+            <md-list-item class="header">
+                Configuration
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="users" ui-sref-active="active">
+                    <i class="fa fa-users menu-icon" aria-hidden="true"></i>
+                    Users
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="departments" ui-sref-active="active">
+                    <i class="fa fa-building menu-icon" aria-hidden="true"></i>
+                    Departments
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="mailboxes" ui-sref-active="active">
+                    <i class="fa fa-folder-open menu-icon" aria-hidden="true"></i>
+                    Mailboxes
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="statuses" ui-sref-active="active">
+                    <i class="fa fa-tags menu-icon" aria-hidden="true"></i>
+                    Statuses
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="mailings" ui-sref-active="active">
+                    <i class="fa fa-bell menu-icon" aria-hidden="true"></i>
+                    E-mail notifications
                 </md-button>
             </md-list-item>
         </md-list>
     </md-sidenav>
 
     <md-content layout="column" flex>
+        <md-toolbar layout="row">
+            <md-button ng-click="main.toggleSideNav()" class="menu" hide-gt-sm aria-label="Show User List">
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </md-button>
+            <h1>{{ main.showTitle() }}</h1>
+        </md-toolbar>
+
         <md-card>
             <ui-view flex id="content">
                 <h3>Loading</h3>

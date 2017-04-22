@@ -25,5 +25,10 @@
                 });
                 return found;
             };
+        }])
+
+        .controller("mailboxesController", ["$mailboxes", function ($mailboxes) {
+            var ctrl = this;
+            ctrl.mailboxes = $mailboxes.fetch();
         }]);
 })();

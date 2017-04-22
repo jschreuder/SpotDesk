@@ -31,5 +31,14 @@
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Manage departments") } ]
             });
+
+            $stateProvider.state({
+                name: "mailboxes",
+                url: "/mailboxes",
+                templateUrl: "assets/templates/mailboxes.html",
+                controller: "mailboxesController",
+                controllerAs: "ctrl",
+                onEnter: ["$title", function($title) { $title.change("Manage mailboxes") } ]
+            });
         }]);
 })();

@@ -63,5 +63,21 @@
                     return result;
                 }
             };
+        }])
+
+        .factory("$mailboxes", ["$http", function ($http) {
+            return {
+                fetch: function () {
+                    var result = [];
+                    $http.get("/mailboxes").then(function (response) {
+                        angular.forEach(response.data.mailboxes, function (mailbox) {
+                            result.push(mailbox);
+                        });
+                    }, function () {
+                        alert("mailboxes_load_failed")
+                    });
+                    return result;
+                }
+            };
         }]);
 })();

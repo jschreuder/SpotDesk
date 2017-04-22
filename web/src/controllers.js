@@ -3,9 +3,9 @@
 
     angular.module("spotdesk")
 
-        .controller("ticketsController", ["$tickets", function ($tickets) {
+        .controller("ticketsController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
             var ctrl = this;
-            ctrl.tickets = $tickets.fetchOpen();
+            ctrl.tickets = $tickets.fetch($stateParams.status_type || "open");
         }])
 
         .controller("usersController", ["$users", function ($users) {

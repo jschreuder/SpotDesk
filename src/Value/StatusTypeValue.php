@@ -13,6 +13,11 @@ class StatusTypeValue
         return new self($statusType);
     }
 
+    static public function getValues(): array
+    {
+        return [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED];
+    }
+
     /** @var  string */
     private $value;
 

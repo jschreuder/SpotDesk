@@ -11,6 +11,7 @@ use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use jschreuder\SpotDesk\Value\StatusTypeValue;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -114,7 +115,10 @@ class TicketRepository
         return $this->arrayToTicket($query->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function getOpenTicketsForUser(EmailAddressValue $email): TicketCollection
+    public function getOpenTicketsForUser(
+        EmailAddressValue $email,
+        ?StatusTypeValue $statusType = null
+    ): TicketCollection
     {
         // Fetch all tickets that are either assigned to a department the given user is a part of
         // or those that haven't been assigned to a specific department
@@ -123,11 +127,14 @@ class TicketRepository
             FROM `tickets` t
             LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
             LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
-            INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = 'open'
+            INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = :status_type
             WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
             ORDER BY t.`created_at`
         ");
-        $query->execute(['email' => $email->toString()]);
+        $query->execute([
+            'email' => $email->toString(),
+            'status_type' => $statusType ? $statusType->toString() : StatusTypeValue::TYPE_OPEN,
+        ]);
 
         $ticketCollection = new TicketCollection();
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {

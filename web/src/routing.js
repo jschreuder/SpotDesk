@@ -3,15 +3,26 @@
 
     angular.module("spotdesk").config(["$stateProvider", "$urlRouterProvider",
         function($stateProvider, $urlRouterProvider) {
-            $urlRouterProvider.when("", "/");
+            $urlRouterProvider.when("", "/tickets");
 
             $stateProvider.state({
                 name: "tickets",
-                url: "/",
+                url: "/tickets",
                 templateUrl: "assets/templates/tickets.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Open tickets") } ]
+            });
+
+            $stateProvider.state({
+                name: "tickets_status_type",
+                url: "/type/{status_type}",
+                templateUrl: "assets/templates/tickets.html",
+                controller: "ticketsController",
+                controllerAs: "ctrl",
+                onEnter: ["$title", "$stateParams", function($title, $stateParams) {
+                    $title.change($stateParams.status_type + " tickets")
+                }]
             });
 
             $stateProvider.state({

@@ -19,9 +19,9 @@
 
         .factory("$tickets", ["$http", function ($http) {
             return {
-                fetchOpen: function () {
+                fetch: function (status_type) {
                     var result = [];
-                    $http.get("/tickets").then(function (response) {
+                    $http.get("/tickets", { params: { status_type: status_type } }).then(function (response) {
                         angular.forEach(response.data.tickets, function (ticket) {
                             result.push(ticket);
                         });

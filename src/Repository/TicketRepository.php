@@ -154,12 +154,19 @@ class TicketRepository
         $ticket->setStatus($status);
     }
 
-    public function updateUpdateStats(Ticket $ticket): void
+    public function updateTicketUpdateStats(Ticket $ticket): void
     {
-        $query = $this->db->query("
-            UPDATE `tickets`
-            LEFT JOIN (SELECT COUNT(
+        $query = $this->db->prepare("
+            UPDATE `tickets` t
+            INNER JOIN (
+                    SELECT `ticket_id`, COUNT(`ticket_update_id`) updates, MAX(`created_at`) last_update 
+                    FROM `ticket_updates` 
+                    GROUP BY `ticket_id`
+                ) tu ON (t.`ticket_id` = tu.`ticket_id`)
+            SET t.`updates` = tu.updates, t.`last_update` = tu.last_update
+            WHERE t.`ticket_id` = :ticket_id
         ");
+        $query->execute(['ticket_id' => $ticket->getId()->getBytes()]);
     }
 
     public function createTicketUpdate(
@@ -191,6 +198,8 @@ class TicketRepository
             'created_at' => $ticketUpdate->getCreatedAt()->format('Y-m-d H:i:s'),
             'internal' => $ticketUpdate->isInternal(),
         ]);
+
+        $this->updateTicketUpdateStats($ticket);
 
         return $ticketUpdate;
     }

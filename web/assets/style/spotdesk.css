@@ -56,7 +56,7 @@ md-sidenav md-list-item > .md-button.active {
     color: white;
 }
 
-md-sidenav md-list-item > .md-button.active:hover {
+md-sidenav md-list-item > .md-button.active:hover, md-sidenav md-list-item > .md-button.active:active {
     background: #333;
 }
 

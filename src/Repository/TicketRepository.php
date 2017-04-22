@@ -129,7 +129,7 @@ class TicketRepository
             LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
             INNER JOIN `statuses` s ON t.`status` = s.`status` AND s.`type` = :status_type
             WHERE ud.`email` IS NOT NULL OR t.`department_id` IS NULL
-            ORDER BY t.`created_at`
+            ORDER BY t.`last_update` DESC
         ");
         $query->execute([
             'email' => $email->toString(),

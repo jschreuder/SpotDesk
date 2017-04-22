@@ -101,6 +101,10 @@ md-sidenav md-list {
     color: #ff00ff;
 }
 
+#content .md-toolbar-tools div, #content .md-toolbar-tools .md-button {
+    margin: auto 0;
+}
+
 #content md-card {
     position: relative;
 }

@@ -1,4 +1,13 @@
 <md-card>
+    <md-toolbar class="md-table-toolbar alternate" ng-show="ctrl.selected.length">
+        <div class="md-toolbar-tools" layout-align="space-between">
+            <div>{{ctrl.selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</div>
+            <md-button class="md-icon-button" ng-click="ctrl.delete($event)" aria-label="Remove selected">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+            </md-button>
+        </div>
+    </md-toolbar>
+
     <md-table-container>
         <table md-table md-row-select multiple ng-model="ctrl.selected">
             <thead md-head md-order="ctrl.order">
@@ -25,4 +34,8 @@
             </tbody>
         </table>
     </md-table-container>
+
+
+    <md-table-pagination md-limit="ctrl.query.limit" md-limit-options="[5, 10, 15]" md-page="ctrl.query.page"
+                         md-total="{{ ctrl.tickets.count }}" md-on-paginate="" md-page-select></md-table-pagination>
 </md-card>

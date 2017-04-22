@@ -13,6 +13,9 @@
         .controller("viewTicketController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
             var ctrl = this;
             ctrl.ticket = $tickets.fetchOne($stateParams.ticket_id);
+            ctrl.addReply = function () {
+                alert("This should be a modal with fields to compose a reply");
+            };
         }])
 
         .controller("usersController", ["$users", function ($users) {

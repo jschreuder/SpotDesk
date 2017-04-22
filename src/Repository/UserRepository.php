@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use jschreuder\SpotDesk\Collection\UserCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
@@ -37,6 +38,16 @@ class UserRepository
             $row['password'],
             $row['totp_secret']
         );
+    }
+
+    public function getUsers(): UserCollection
+    {
+        $query = $this->db->query("SELECT * FROM `users`");
+        $users = new UserCollection();
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+            $users->push($this->arrayToUser($row));
+        }
+        return $users;
     }
 
     public function getUserByEmail(EmailAddressValue $email): User

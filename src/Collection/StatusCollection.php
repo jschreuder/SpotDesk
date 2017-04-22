@@ -8,9 +8,6 @@ class StatusCollection implements \ArrayAccess, \Countable, \Iterator
 {
     use CollectionTrait;
 
-    /** @var  Status[] */
-    private $collection = [];
-
     public function __construct(Status ...$statuses)
     {
         foreach ($statuses as $status) {

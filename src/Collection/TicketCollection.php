@@ -8,9 +8,6 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
 {
     use CollectionTrait;
 
-    /** @var  Ticket[] */
-    private $collection = [];
-
     public function __construct(Ticket ...$tickets)
     {
         foreach ($tickets as $ticket) {

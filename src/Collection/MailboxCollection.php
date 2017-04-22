@@ -8,9 +8,6 @@ class MailboxCollection implements \ArrayAccess, \Countable, \Iterator
 {
     use CollectionTrait;
 
-    /** @var  Mailbox[] */
-    private $collection = [];
-
     public function __construct(Mailbox ...$mailboxes)
     {
         foreach ($mailboxes as $mailbox) {

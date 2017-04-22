@@ -8,9 +8,6 @@ class DepartmentCollection implements \ArrayAccess, \Countable, \Iterator
 {
     use CollectionTrait;
 
-    /** @var  Department[] */
-    private $collection = [];
-
     public function __construct(Department ...$departments)
     {
         foreach ($departments as $department) {

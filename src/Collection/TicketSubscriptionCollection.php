@@ -8,9 +8,6 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
 {
     use CollectionTrait;
 
-    /** @var  TicketSubscription[] */
-    private $collection = [];
-
     public function __construct(TicketSubscription ...$ticketSubscriptions)
     {
         foreach ($ticketSubscriptions as $ticketSubscription) {

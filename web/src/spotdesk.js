@@ -1,7 +1,7 @@
 (function () {
     "use strict";
 
-    angular.module("spotdesk", ["ngMaterial", "ui.router", "ngCookies"])
+    angular.module("spotdesk", ["ngMaterial", "ngCookies", "ui.router", "md.data.table"])
 
         .config(["$httpProvider", "$mdThemingProvider",
             function($httpProvider, $mdThemingProvider){

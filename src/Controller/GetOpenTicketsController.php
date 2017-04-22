@@ -39,7 +39,7 @@ class GetOpenTicketsController implements ControllerInterface
                         ? null
                         : $ticket->getDepartment()->getId()->toString(),
                     'updates' => $ticket->getUpdates(),
-                    'last_update' => $ticket->getLastUpdate(),
+                    'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
                 ];
             }, $tickets->toArray())
         ], 200);

@@ -11,6 +11,10 @@
     </tr>
     <tr>
         <th>Status</th>
-        <td>{{ ticket.getStatus().getStatus() }}</td>
+        <td>{{ ticket.getStatus().getName() }}</td>
+    </tr>
+    <tr>
+        <th>Message</th>
+        <td>{{ ticketUpdate.getMessage() | nl2br }}</td>
     </tr>
 </table>

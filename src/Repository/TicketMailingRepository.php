@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\TicketMailingCollection;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
+use jschreuder\SpotDesk\Entity\TicketUpdate;
 use Ramsey\Uuid\Uuid;
 
 class TicketMailingRepository
@@ -21,21 +22,25 @@ class TicketMailingRepository
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function createTicketMailing(Ticket $ticket, string $type): TicketMailing
+    public function createTicketMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate): TicketMailing
     {
         $ticketMailing = new TicketMailing(
             Uuid::uuid4(),
             $ticket,
+            $ticketUpdate,
             $type
         );
 
         $query = $this->db->prepare("
-            INSERT INTO `ticket_mailings` (`ticket_mailing_id`, `ticket_id`, `type`)
-            VALUES (:ticket_mailing_id, :ticket_id, :type)
+            INSERT INTO `ticket_mailings` (`ticket_mailing_id`, `ticket_id`, `ticket_update_id`, `type`)
+            VALUES (:ticket_mailing_id, :ticket_id, :ticket_update_id, :type)
         ");
         $query->execute([
             'ticket_mailing_id' => $ticketMailing->getId()->getBytes(),
             'ticket_id' => $ticketMailing->getTicket()->getId()->getBytes(),
+            'ticket_update_id' => $ticketMailing->getTicketUpdate()
+                ? $ticketMailing->getTicketUpdate()->getId()->getBytes()
+                : null,
             'type' => $ticketMailing->getType(),
         ]);
 
@@ -44,9 +49,14 @@ class TicketMailingRepository
 
     private function arrayToTicketMailing(array $row): TicketMailing
     {
+        $ticket = $this->ticketRepository->getTicket(Uuid::fromBytes($row['ticket_id']));
+        $updates = $this->ticketRepository->getTicketUpdates($ticket);
         return new TicketMailing(
             Uuid::fromBytes($row['ticket_mailing_id']),
-            $this->ticketRepository->getTicket(Uuid::fromBytes($row['ticket_id'])),
+            $ticket,
+            $row['ticket_update_id']
+                ? $updates[Uuid::fromBytes($row['ticket_update_id'])->toString()]
+                : null,
             $row['type'],
             is_null($row['sent_at'])
                 ? null

@@ -91,7 +91,9 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
             $this->ticketRepository->updateTicketStatus($ticket, $openStatus);
         }
 
-        $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_UPDATE_TICKET);
+        if (!$ticketUpdate->isInternal()) {
+            $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
+        }
 
         return new JsonResponse([
             'ticket_update' => [

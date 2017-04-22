@@ -10,7 +10,7 @@
         <td>{{ ticket.getSubject() }}</td>
     </tr>
     <tr>
-        <th>Status</th>
-        <td>{{ ticket.getStatus().getStatus() }}</td>
+        <th>Message</th>
+        <td>{{ ticket.getMessage() | nl2br }}</td>
     </tr>
 </table>

@@ -3,6 +3,7 @@
 namespace jschreuder\SpotDesk\Service\SendMailService;
 
 use jschreuder\SpotDesk\Entity\Ticket;
+use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Service\MailServiceInterface;
 
 class MailTemplateFactory
@@ -19,7 +20,7 @@ class MailTemplateFactory
         $this->updateTicket = $updateTicket;
     }
 
-    public function getMail(Ticket $ticket, string $type): MailTemplateInterface
+    public function getMail(Ticket $ticket, ?TicketUpdate $ticketUpdate, string $type): MailTemplateInterface
     {
         switch ($type) {
             case MailServiceInterface::TYPE_NEW_TICKET:
@@ -31,7 +32,7 @@ class MailTemplateFactory
             default:
                 throw new \InvalidArgumentException('Invalid mail type: ' . $type);
         }
-        $mail->setVariables(['ticket' => $ticket]);
+        $mail->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate]);
         return $mail;
     }
 }

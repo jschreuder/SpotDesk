@@ -30,7 +30,7 @@ class DevCron extends Command
         while (true) {
             $output->writeln('[' . date('Y-m-d H:i:s') . '] checking mail');
             `./console mail:check`;
-            $output->writeln('[' . date('Y-m-d H:i:s') . '] checking mail');
+            $output->writeln('[' . date('Y-m-d H:i:s') . '] sending mail');
             `./console mail:send`;
             $output->writeln('[' . date('Y-m-d H:i:s') . '] done');
             $output->writeln('');

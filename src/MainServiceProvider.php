@@ -24,6 +24,7 @@ use jschreuder\SpotDesk\Service\AuthenticationService\JwtAuthenticationService;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
 use jschreuder\SpotDesk\Service\SendMailService\SmtpSendMailService;
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -141,7 +142,9 @@ class MainServiceProvider implements ServiceProviderInterface
             return new SmtpSendMailService(
                 $container['repository.ticket_mailings'],
                 $container['mail.swiftmailer'],
-                $container['mail.template_factory']
+                $container['mail.template_factory'],
+                EmailAddressValue::get($container['smtp.from']),
+                $container['site.title']
             );
         };
 

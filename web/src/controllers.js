@@ -5,6 +5,7 @@
 
         .controller("ticketsController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
             var ctrl = this;
+            ctrl.order = "-last_update";
             ctrl.selected = [];
             ctrl.tickets = $tickets.fetch($stateParams.status_type || "open");
         }])
@@ -16,12 +17,14 @@
 
         .controller("usersController", ["$users", function ($users) {
             var ctrl = this;
+            ctrl.order = "email";
             ctrl.selected = [];
             ctrl.users = $users.fetch();
         }])
 
         .controller("departmentsController", ["$departments", function ($departments) {
             var ctrl = this;
+            ctrl.order = "name";
             ctrl.selected = [];
             ctrl.departments = $departments.fetch();
             ctrl.getDepartment = function (departmentId) {
@@ -37,6 +40,7 @@
 
         .controller("mailboxesController", ["$mailboxes", function ($mailboxes) {
             var ctrl = this;
+            ctrl.order = "department_name";
             ctrl.selected = [];
             ctrl.mailboxes = $mailboxes.fetch();
         }]);

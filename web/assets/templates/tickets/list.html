@@ -1,16 +1,17 @@
 <md-card>
     <md-table-container>
         <table md-table md-row-select multiple ng-model="ctrl.selected">
-            <thead md-head>
+            <thead md-head md-order="ctrl.order">
                 <tr md-row>
-                    <th md-column><span>Subject</span></th>
-                    <th md-column><span>Updates</span></th>
-                    <th md-column><span>Last update</span></th>
-                    <th md-column><span>Status</span></th>
+                    <th md-column md-order-by="subject"><span>Subject</span></th>
+                    <th md-column md-order-by="updates"><span>Updates</span></th>
+                    <th md-column md-order-by="last_update" md-desc><span>Last update</span></th>
+                    <th md-column md-order-by="status"><span>Status</span></th>
                 </tr>
             </thead>
             <tbody md-body>
-                <tr md-row md-select="t" md-select-id="ticket_id" md-auto-select ng-repeat="t in ctrl.tickets">
+                <tr md-row md-select="t" md-select-id="ticket_id" md-auto-select
+                    ng-repeat="t in ctrl.tickets | orderBy: ctrl.order">
                     <td md-cell>
                         <a ui-sref="tickets_view({ ticket_id: t.ticket_id })">{{ t.subject }}</a><br />
                         By {{ t.created_by }} on {{ t.created_at }}

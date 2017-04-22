@@ -1,25 +1,25 @@
 <md-card>
     <md-table-container>
         <table md-table md-row-select multiple ng-model="ctrl.selected">
-            <thead md-head md-row-select multiple ng-model="ctrl.selected">
-            <tr md-row>
-                <th md-column><span>Name</span></th>
-                <th md-column><span>Department</span></th>
-                <th md-column><span>Last check</span></th>
-            </tr>
+            <thead md-head md-order="ctrl.order">
+                <tr md-row>
+                    <th md-column md-order-by="name"><span>Name</span></th>
+                    <th md-column md-order-by="department_name"><span>Department</span></th>
+                    <th md-column md-order-by="last_check"><span>Last check</span></th>
+                </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select ng-repeat="m in ctrl.mailboxes">
-                <td md-cell>
-                    <strong>{{ m.name }}</strong>
-                </td>
-                <td md-cell>
-                    {{ m.department_name }}
-                </td>
-                <td md-cell>
-                    {{ m.last_check }}
-                </td>
-            </tr>
+                <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select ng-repeat="m in ctrl.mailboxes">
+                    <td md-cell>
+                        <strong>{{ m.name }}</strong>
+                    </td>
+                    <td md-cell>
+                        {{ m.department_name }}
+                    </td>
+                    <td md-cell>
+                        {{ m.last_check }}
+                    </td>
+                </tr>
             </tbody>
         </table>
     </md-table-container>

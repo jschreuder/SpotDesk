@@ -1,10 +1,10 @@
 <md-card>
     <md-table-container>
         <table md-table md-row-select multiple ng-model="ctrl.selected">
-            <thead md-head>
+            <thead md-head md-order="ctrl.order">
             <tr md-row>
-                <th md-column><span>Department</span></th>
-                <th md-column><span>Parent</span></th>
+                <th md-column md-order-by="name"><span>Department</span></th>
+                <th md-column md-order-by="parent_name"><span>Parent</span></th>
             </tr>
             </thead>
             <tbody md-body>
@@ -13,7 +13,7 @@
                     <strong>{{ d.name }}</strong>
                 </td>
                 <td md-cell>
-                    {{ ctrl.getDepartment(d.parent_id).name }}
+                    {{ d.parent_name }}
                 </td>
             </tr>
             </tbody>

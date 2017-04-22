@@ -1,14 +1,15 @@
 <md-card>
     <md-table-container>
         <table md-table md-row-select multiple ng-model="ctrl.selected">
-            <thead md-head>
+            <thead md-head md-order="ctrl.order">
             <tr md-row>
-                <th md-column><span>E-mail</span></th>
-                <th md-column><span>Display name</span></th>
+                <th md-column md-order-by="email"><span>E-mail</span></th>
+                <th md-column md-order-by="display_name"><span>Display name</span></th>
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="u" md-select-id="email" md-auto-select ng-repeat="u in ctrl.users">
+            <tr md-row md-select="u" md-select-id="email" md-auto-select
+                ng-repeat="u in ctrl.users | orderBy: ctrl.order">
                 <td md-cell>
                     {{ u.email }}
                 </td>

@@ -1,25 +1,27 @@
-<md-table-container>
-    <table md-table>
-        <thead md-head>
-            <tr md-row>
-                <th md-column><span>Subject</span></th>
-                <th md-column><span>Updates</span></th>
-                <th md-column><span>Last update</span></th>
-                <th md-column><span>Status</span></th>
-            </tr>
-        </thead>
-        <tbody md-body>
-            <tr md-row ng-repeat="t in ctrl.tickets">
-                <td md-cell>
-                    <strong>{{ t.subject }}</strong><br />
-                    By {{ t.created_by }} on {{ t.created_at }}
-                </td>
-                <td md-cell>{{ t.updates }}</td>
-                <td md-cell>
-                    {{ t.last_update }}
-                </td>
-                <td md-cell>{{ t.status }}</td>
-            </tr>
-        </tbody>
-    </table>
-</md-table-container>
+<md-card>
+    <md-table-container>
+        <table md-table>
+            <thead md-head>
+                <tr md-row>
+                    <th md-column><span>Subject</span></th>
+                    <th md-column><span>Updates</span></th>
+                    <th md-column><span>Last update</span></th>
+                    <th md-column><span>Status</span></th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="t in ctrl.tickets">
+                    <td md-cell>
+                        <strong>{{ t.subject }}</strong><br />
+                        By {{ t.created_by }} on {{ t.created_at }}
+                    </td>
+                    <td md-cell>{{ t.updates }}</td>
+                    <td md-cell>
+                        {{ t.last_update }}
+                    </td>
+                    <td md-cell>{{ t.status }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</md-card>

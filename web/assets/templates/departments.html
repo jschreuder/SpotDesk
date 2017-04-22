@@ -1,20 +1,22 @@
-<md-table-container>
-    <table md-table>
-        <thead md-head>
-        <tr md-row>
-            <th md-column><span>Department</span></th>
-            <th md-column><span>Parent</span></th>
-        </tr>
-        </thead>
-        <tbody md-body>
-        <tr md-row ng-repeat="d in ctrl.departments">
-            <td md-cell>
-                <strong>{{ d.name }}</strong>
-            </td>
-            <td md-cell>
-                {{ ctrl.getDepartment(d.parent_id).name }}
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</md-table-container>
+<md-card>
+    <md-table-container>
+        <table md-table>
+            <thead md-head>
+            <tr md-row>
+                <th md-column><span>Department</span></th>
+                <th md-column><span>Parent</span></th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row ng-repeat="d in ctrl.departments">
+                <td md-cell>
+                    <strong>{{ d.name }}</strong>
+                </td>
+                <td md-cell>
+                    {{ ctrl.getDepartment(d.parent_id).name }}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</md-card>

@@ -84,8 +84,11 @@ md-sidenav md-list {
 /* Primary content area */
 
 #content {
-    overflow: auto;
     margin: 2em;
+}
+
+#content md-card {
+    overflow: auto;
 }
 
 #content .md-button.share {

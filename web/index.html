@@ -93,11 +93,9 @@
             <h1>{{ main.showTitle() }}</h1>
         </md-toolbar>
 
-        <md-card id="content">
-            <ui-view flex>
-                <h3>Loading</h3>
-            </ui-view>
-        </md-card>
+        <ui-view flex id="content">
+            <h3>Loading</h3>
+        </ui-view>
     </md-content>
 </div>
 

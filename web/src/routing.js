@@ -8,7 +8,7 @@
             $stateProvider.state({
                 name: "tickets",
                 url: "/tickets",
-                templateUrl: "assets/templates/tickets.html",
+                templateUrl: "assets/templates/tickets/list.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Open tickets") } ]
@@ -17,7 +17,7 @@
             $stateProvider.state({
                 name: "tickets_status_type",
                 url: "/tickets/type/{status_type}",
-                templateUrl: "assets/templates/tickets.html",
+                templateUrl: "assets/templates/tickets/list.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", "$stateParams", function($title, $stateParams) {
@@ -39,7 +39,7 @@
             $stateProvider.state({
                 name: "users",
                 url: "/users",
-                templateUrl: "assets/templates/users.html",
+                templateUrl: "assets/templates/users/list.html",
                 controller: "usersController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Manage users") } ]
@@ -48,7 +48,7 @@
             $stateProvider.state({
                 name: "departments",
                 url: "/departments",
-                templateUrl: "assets/templates/departments.html",
+                templateUrl: "assets/templates/departments/list.html",
                 controller: "departmentsController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Manage departments") } ]
@@ -57,7 +57,7 @@
             $stateProvider.state({
                 name: "mailboxes",
                 url: "/mailboxes",
-                templateUrl: "assets/templates/mailboxes.html",
+                templateUrl: "assets/templates/mailboxes/list.html",
                 controller: "mailboxesController",
                 controllerAs: "ctrl",
                 onEnter: ["$title", function($title) { $title.change("Manage mailboxes") } ]

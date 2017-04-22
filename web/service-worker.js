@@ -22,10 +22,11 @@ var urlsToCache = [
     "./node_modules/font-awesome/css/font-awesome.css",
 
     // views
-    "./assets/templates/departments.html",
-    "./assets/templates/mailboxes.html",
-    "./assets/templates/tickets.html",
-    "./assets/templates/users.html",
+    "./assets/templates/departments/list.html",
+    "./assets/templates/mailboxes/list.html",
+    "./assets/templates/tickets/list.html",
+    "./assets/templates/tickets/view.html",
+    "./assets/templates/users/list.html",
 
     // js sources
     "./src/controllers.js",

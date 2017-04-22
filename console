@@ -22,7 +22,7 @@ $application->add(new \jschreuder\SpotDesk\Command\SendMailingsCommand(
 
 // dev: namespace
 $application->add(new \jschreuder\SpotDesk\Command\DevCreateFakerTickets(
-    $container['repository.tickets'], $container['repository.departments']
+    $container['repository.tickets'], $container['repository.departments'], $container['repository.statuses']
 ));
 $application->add(new \jschreuder\SpotDesk\Command\DevCron());
 

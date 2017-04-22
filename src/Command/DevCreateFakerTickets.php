@@ -5,8 +5,10 @@ namespace jschreuder\SpotDesk\Command;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use jschreuder\SpotDesk\Entity\Department;
+use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\Uuid;
@@ -23,17 +25,22 @@ class DevCreateFakerTickets extends Command
     /** @var  DepartmentRepository */
     private $departmentRepository;
 
+    /** @var  StatusRepository */
+    private $statusRepository;
+
     /** @var  FakerGenerator */
     private $faker;
 
     public function __construct(
         TicketRepository $ticketRepository,
         DepartmentRepository $departmentRepository,
+        StatusRepository $statusRepository,
         FakerGenerator $faker = null
     )
     {
         $this->ticketRepository = $ticketRepository;
         $this->departmentRepository = $departmentRepository;
+        $this->statusRepository = $statusRepository;
         $this->faker = $faker ?? FakerFactory::create();
         parent::__construct();
     }
@@ -75,7 +82,14 @@ class DevCreateFakerTickets extends Command
 
         for ($idx = 0; $idx < $repeat; $idx++) {
             $ticket = $this->createTicket($department);
-            $this->createReplies($ticket, $admin, random_int(0, 10));
+            $replies = random_int(0, 10);
+            if ($replies > 0) {
+                $this->createReplies($ticket, $admin, $replies);
+                $this->ticketRepository->updateTicketStatus(
+                    $ticket,
+                    $this->statusRepository->getStatus(Status::STATUS_OPEN)
+                );
+            }
         }
     }
 

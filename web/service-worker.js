@@ -22,8 +22,9 @@ var urlsToCache = [
     "./node_modules/font-awesome/css/font-awesome.css",
 
     // views
-    "./assets/templates/config.html",
+    "./assets/templates/departments.html",
     "./assets/templates/tickets.html",
+    "./assets/templates/users.html",
 
     // js sources
     "./src/controllers.js",

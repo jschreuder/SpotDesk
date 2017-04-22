@@ -9,6 +9,7 @@ use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
 use jschreuder\SpotDesk\Controller\ChangeTicketStatusController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
+use jschreuder\SpotDesk\Controller\GetDepartmentsController;
 use jschreuder\SpotDesk\Controller\GetOpenTicketsController;
 use jschreuder\SpotDesk\Controller\GetTicketController;
 use jschreuder\SpotDesk\Controller\GetUsersController;
@@ -52,6 +53,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
 
         // Departments
+        $router->get('departments.list', '/departments', function () {
+            return new GetDepartmentsController($this->container['repository.departments']);
+        });
         $router->post('departments.create', '/departments', function () {
             return new CreateDepartmentController($this->container['repository.departments']);
         });

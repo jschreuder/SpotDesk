@@ -31,5 +31,37 @@
                     return result;
                 }
             };
+        }])
+
+        .factory("$users", ["$http", function ($http) {
+            return {
+                fetch: function () {
+                    var result = [];
+                    $http.get("/users").then(function (response) {
+                        angular.forEach(response.data.users, function (user) {
+                            result.push(user);
+                        });
+                    }, function () {
+                        alert("users_load_failed")
+                    });
+                    return result;
+                }
+            };
+        }])
+
+        .factory("$departments", ["$http", function ($http) {
+            return {
+                fetch: function () {
+                    var result = [];
+                    $http.get("/departments").then(function (response) {
+                        angular.forEach(response.data.departments, function (department) {
+                            result.push(department);
+                        });
+                    }, function () {
+                        alert("departments_load_failed")
+                    });
+                    return result;
+                }
+            };
         }]);
 })();

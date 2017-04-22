@@ -75,7 +75,8 @@ class DepartmentRepository
 
             foreach ($departmentCollection as $id => $department) {
                 if (!is_null($departmentRows[$id]['parent_id'])) {
-                    $department->setParent($departmentCollection[$id]);
+                    $parentId = Uuid::fromBytes($departmentRows[$id]['parent_id'])->toString();
+                    $department->setParent($departmentCollection[$parentId]);
                 }
             }
             $this->_departments = $departmentCollection;

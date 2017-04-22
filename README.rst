@@ -4,7 +4,10 @@ SpotDesk Helpdesk
 
 Very basic e-mail based Helpdesk software. It reads from one or more mailboxes
 and converts the e-mails into tickets. Those tickets can be sorted into
-departments and can be responded to by SpotDesk users.
+departments and can be responded to by SpotDesk users. It is also designed with
+security and privacy in mind. This means among other things that no external
+dependencies may be loaded and that users should be able to control their own
+data.
 
 This project is based on my own `Middle framework <https://github.com/jschreuder/Middle>`_
 and requires PHP 7.1. The frontend of the project is based on

@@ -9,6 +9,14 @@ var urlsToCache = [
     // stylesheets
     "./assets/style/spotdesk.css",
 
+    // fonts
+    "./node_modules/font-awesome/fonts/FontAwesome.otf?v=4.7.0",
+    "./node_modules/font-awesome/fonts/fontawesome-webfont.eot?v=4.7.0",
+    "./node_modules/font-awesome/fonts/fontawesome-webfont.svg?v=4.7.0",
+    "./node_modules/font-awesome/fonts/fontawesome-webfont.ttf?v=4.7.0",
+    "./node_modules/font-awesome/fonts/fontawesome-webfont.woff?v=4.7.0",
+    "./node_modules/font-awesome/fonts/fontawesome-webfont.woff2?v=4.7.0",
+
     // 3rd party dependencies
     "./node_modules/angular/angular.js",
     "./node_modules/angular/angular-csp.css",

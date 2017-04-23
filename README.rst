@@ -17,6 +17,16 @@ and requires PHP 7.1. The frontend of the project is based on
 Project status
 --------------
 
+.. image:: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/badges/quality-score.png?b=master
+   :target: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/?branch=master
+   :alt: Scrutinizer Code Quality
+.. image:: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/badges/coverage.png?b=master
+   :target: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/?branch=master
+   :alt: Scrutinizer Build Status
+.. image:: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/badges/build.png?b=master
+   :target: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/?branch=master
+   :alt: Scrutinizer Build Status
+
 Early alpha or even more unfinished/unstable.
 
 -----------

@@ -4,7 +4,7 @@ namespace jschreuder\SpotDesk\Value;
 
 class EmailAddressValue
 {
-    static public function get(string $emailAddress): self
+    public static function get(string $emailAddress): self
     {
         return new self($emailAddress);
     }

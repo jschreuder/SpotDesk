@@ -8,12 +8,12 @@ class StatusTypeValue
     const TYPE_PAUSED = 'paused';
     const TYPE_CLOSED = 'closed';
 
-    static public function get(string $statusType): self
+    public static function get(string $statusType): self
     {
         return new self($statusType);
     }
 
-    static public function getValues(): array
+    public static function getValues(): array
     {
         return [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED];
     }

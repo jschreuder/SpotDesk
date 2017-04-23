@@ -8,12 +8,12 @@ class MailTransportSecurityValue
     const SECURITY_SSL = 'ssl';
     const SECURITY_TLS = 'tls';
 
-    static public function get(string $statusType): self
+    public static function get(string $statusType): self
     {
         return new self($statusType);
     }
 
-    static public function getValues(): array
+    public static function getValues(): array
     {
         return [self::SECURITY_NONE, self::SECURITY_SSL, self::SECURITY_TLS];
     }

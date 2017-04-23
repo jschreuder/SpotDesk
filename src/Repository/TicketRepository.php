@@ -191,6 +191,35 @@ class TicketRepository
         $ticket->setStatus($status);
     }
 
+    public function updateTicketDepartment(Ticket $ticket, ?Department $department): void
+    {
+        $query = $this->db->prepare("
+            UPDATE `tickets`
+            SET `department_id` = :department_id
+            WHERE `ticket_id` = :ticket_id
+        ");
+        $query->execute([
+            'department_id' => $department ? $department->getId()->getBytes() : null,
+            'ticket_id' => $ticket->getId()->getBytes(),
+        ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to update department for ticket: ' . $ticket->getId()->toString());
+        }
+        $ticket->setDepartment($department);
+    }
+
+    public function deleteTicket(Ticket $ticket): void
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `tickets`
+            WHERE `ticket_id` = :ticket_id
+        ");
+        $query->execute([
+            'ticket_id' => $ticket->getId()->getBytes(),
+        ]);
+    }
+
     public function updateTicketUpdateStats(Ticket $ticket): void
     {
         $query = $this->db->prepare("

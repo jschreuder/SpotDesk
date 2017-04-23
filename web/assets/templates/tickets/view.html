@@ -12,36 +12,29 @@
             <md-fab-speed-dial md-direction="left" class="md-scale md-fab-top-right">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab md-primary">
-                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Menu</md-tooltip>
+                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Ticket actions</md-tooltip>
                         <i class="fa fa-cog"></i>
                     </md-button>
                 </md-fab-trigger>
 
                 <md-fab-actions>
                     <div>
-                        <md-button aria-label="Forward ticket" class="md-fab md-raised md-mini"
-                                   ng-click="">
-                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
-                                Forward ticket
-                            </md-tooltip>
-                            <i class="fa fa-forward" aria-label="Forward ticket"></i>
-                        </md-button>
                         <md-button aria-label="Change department" class="md-fab md-raised md-mini"
-                                   ng-click="">
+                                   ng-click="ctrl.changeDepartment()">
                             <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
                                 Change department
                             </md-tooltip>
                             <i class="fa fa-building" aria-label="Change department"></i>
                         </md-button>
                         <md-button aria-label="Change status" class="md-fab md-raised md-mini"
-                                   ng-click="">
+                                   ng-click="ctrl.changeStatus()">
                             <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
                                 Change status
                             </md-tooltip>
                             <i class="fa fa-tag" aria-label="Change status"></i>
                         </md-button>
                         <md-button aria-label="Delete ticket" class="md-fab md-raised md-mini"
-                                   ng-click="">
+                                   ng-click="ctrl.deleteTicket()">
                             <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
                                 Delete ticket
                             </md-tooltip>
@@ -73,6 +66,90 @@
         {{ tu.message }}
     </md-card-content>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="changeDepartment">
+        <md-dialog aria-label="Change department">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Change department</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelDepartmentChange()">
+                            <i class="fa fa-close" aria-label="Cancel status department"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Change department to...</label>
+                                <md-select ng-model="ctrl.change_department_id">
+                                    <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
+                                        {{ department.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelDepartmentChange()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitDepartmentChange()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="changeStatus">
+        <md-dialog aria-label="Change status">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Change status</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelStatusChange()">
+                            <i class="fa fa-close" aria-label="Cancel status change"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <label>Change status to...</label>
+                                <md-select ng-model="ctrl.change_status">
+                                    <md-option ng-repeat="status in ctrl.statuses" value="{{ status.name }}">
+                                        {{ status.name }}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelStatusChange()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitStatusChange()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
 
 <div style="visibility: hidden">
     <div class="md-dialog-container" id="addTicketReply">

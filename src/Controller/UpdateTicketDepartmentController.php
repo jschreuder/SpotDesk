@@ -6,7 +6,7 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
-use jschreuder\SpotDesk\Repository\StatusRepository;
+use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
@@ -15,18 +15,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class UpdateTicketStatusController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UpdateTicketDepartmentController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  TicketRepository */
     private $ticketRepository;
 
-    /** @var  StatusRepository */
-    private $statusRepository;
+    /** @var  DepartmentRepository */
+    private $departmentRepository;
 
-    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
+    public function __construct(TicketRepository $ticketRepository, DepartmentRepository $departmentRepository)
     {
         $this->ticketRepository = $ticketRepository;
-        $this->statusRepository = $statusRepository;
+        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
@@ -35,7 +35,7 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
         $filter->value('ticket_id')->string()->trim();
-        $filter->value('status')->string();
+        $filter->value('department_id')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -44,7 +44,7 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
     {
         $validator = new Validator();
         $validator->required('ticket_id')->uuid();
-        $validator->required('status')->string();
+        $validator->optional('department_id')->uuid();
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -57,13 +57,15 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
         $body = (array) $request->getParsedBody();
 
         $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
-        $status = $this->statusRepository->getStatus($body['status']);
-        $this->ticketRepository->updateTicketStatus($ticket, $status);
+        $department = $body['department_id']
+            ? $this->departmentRepository->getDepartment(Uuid::fromString($body['department_id']))
+            : null;
+        $this->ticketRepository->updateTicketDepartment($ticket, $department);
 
         return new JsonResponse([
             'ticket' => [
                 'ticket_id' => $ticket->getId()->toString(),
-                'status' => $ticket->getStatus()->getName(),
+                'department_id' => $ticket->getDepartment() ? $ticket->getDepartment()->getId() : null,
             ]
         ], 200);
     }

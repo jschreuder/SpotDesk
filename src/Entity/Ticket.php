@@ -127,7 +127,7 @@ class Ticket
         return $this->department;
     }
 
-    public function setDepartment(Department $department): void
+    public function setDepartment(?Department $department): void
     {
         $this->department = $department;
     }

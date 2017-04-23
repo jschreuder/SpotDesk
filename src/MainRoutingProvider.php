@@ -7,8 +7,8 @@ use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
+use jschreuder\SpotDesk\Controller\DeleteTicketController;
 use jschreuder\SpotDesk\Controller\DeleteUserController;
-use jschreuder\SpotDesk\Controller\UpdateTicketStatusController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\CreateUserController;
@@ -20,6 +20,8 @@ use jschreuder\SpotDesk\Controller\GetTicketController;
 use jschreuder\SpotDesk\Controller\GetUserController;
 use jschreuder\SpotDesk\Controller\GetUsersController;
 use jschreuder\SpotDesk\Controller\UpdateDepartmentController;
+use jschreuder\SpotDesk\Controller\UpdateTicketDepartmentController;
+use jschreuder\SpotDesk\Controller\UpdateTicketStatusController;
 use jschreuder\SpotDesk\Controller\UpdateUserDepartmentsController;
 use Pimple\Container;
 use Ramsey\Uuid\Uuid;
@@ -61,6 +63,15 @@ class MainRoutingProvider implements RoutingProviderInterface
                 $this->container['repository.tickets'],
                 $this->container['repository.statuses']
             );
+        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        $router->put('tickets.department_update', '/tickets/{ticket_id}/department', function () {
+            return new UpdateTicketDepartmentController(
+                $this->container['repository.tickets'],
+                $this->container['repository.departments']
+            );
+        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        $router->delete('tickets.delete', '/tickets/{ticket_id}', function () {
+            return new DeleteTicketController($this->container['repository.tickets']);
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
 
         // Departments

@@ -39,6 +39,18 @@
                         internal: internal,
                         status_update: status_update
                     });
+                },
+
+                changeStatus: function (ticket_id, new_status) {
+                    return $http.put("/tickets/" + ticket_id + "/status", { status: new_status });
+                },
+
+                changeDepartment: function (ticket_id, new_department_id) {
+                    return $http.put("/tickets/" + ticket_id + "/department", { department_id: new_department_id });
+                },
+
+                delete: function (ticket_id) {
+                    return $http.delete("/tickets/" + ticket_id);
                 }
             };
         }])

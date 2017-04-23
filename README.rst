@@ -49,9 +49,14 @@ Features implemented
 * Angular Material based frontend
 * Basic service worker setup to turn this into a progressive webapp
 * E-mails from mailbox automatically turned into tickets
+* Ticket overviews in paginated sortable tables
 * Users can only see e-mails from departments to which they belong and those
   that do not belong to a department
 * Tickets can get "internal" updates that are not send or visible to the client
+* Clients receive updates to their ticket by e-mail
+* Ticket operations like moving to other departments, adding responses and
+  changing status
+* User management: creating, deleting and changing their department assignments
 * Development tooling like ``./console dev:cron`` to simulate running cronjobs
   and ``./console dev:create-faker-tickets`` to create fake tickets
 

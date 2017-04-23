@@ -22,7 +22,7 @@ class AuthenticationMiddleware implements MiddlewareInterface
         $this->authenticationService = $authenticationService;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
         // Respond to login attempt
         if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {

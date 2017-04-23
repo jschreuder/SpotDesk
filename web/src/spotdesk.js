@@ -74,7 +74,6 @@
                         pass: password
                     }).then(function successCallback() {
                         if (!srvc.loggedIn()) {
-                            console.log("SpotDesk: successful return status, but no authorization token found.");
                             $adminMessage.error("auth_login_failed");
                         }
                         $state.reload();
@@ -117,7 +116,7 @@
 
         // Controller for the entire layout
         .controller("mainController", ["$mdSidenav", "$auth", "$title", "$adminMessage",
-            function ($mdSidenav, $auth, $title) {
+            function ($mdSidenav, $auth, $title, $adminMessage) {
                 var ctrl = this;
 
                 ctrl.loggedIn = $auth.loggedIn;

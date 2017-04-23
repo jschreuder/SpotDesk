@@ -31,7 +31,11 @@ var urlsToCache = [
     "./assets/templates/users/view.html",
 
     // js sources
-    "./src/controllers.js",
+    "./src/controllers/departments.js",
+    "./src/controllers/mailboxes.js",
+    "./src/controllers/statuses.js",
+    "./src/controllers/tickets.js",
+    "./src/controllers/users.js",
     "./src/routing.js",
     "./src/services.js",
     "./src/spotdesk.js"

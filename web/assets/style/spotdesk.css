@@ -113,33 +113,13 @@ md-sidenav md-list {
     position: relative;
 }
 
-#content md-card-title-text .tag-label {
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 0;
-    background: #eee;
-    color: #333;
-    padding: .5em 1em;
-    border-radius: 1em;
-    font-weight: bold;
-    font-size: .8em;
+#content md-card-title-text .has-top-right-icon {
+    padding-right: 72px;
 }
 
-#content md-card-title-text .tag-label.status-open {
-    font-size: 1.25em;
-    background: #ff00ff;
-    color: white;
-}
-#content md-card-title-text .tag-label.status-paused {
-    font-size: 1.25em;
-    background: #00af4f;
-    color: white;
-}
-#content md-card-title-text .tag-label.status-closed {
-    font-size: 1.25em;
-    background: #666;
-    color: white;
+#content md-card-title-text md-fab-speed-dial {
+    top: 0;
+    right: 0;
 }
 
 #content md-card.dark {

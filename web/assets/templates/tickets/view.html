@@ -2,24 +2,55 @@
     <md-card-title>
         <md-card-title-media>
             <div class="md-media-sm card-media" layout>
-                <i class="fa fa-envelope-open-o" aria-hidden="true" ng-hide="ctrl.ticket.status == 'closed'"></i>
+                <i class="fa fa-envelope-open-o" aria-hidden="true" ng-show="ctrl.ticket.status == 'open'"></i>
+                <i class="fa fa-envelope-open-o" aria-hidden="true" ng-show="ctrl.ticket.status == 'new'"></i>
+                <i class="fa fa-pause-circle-o" aria-hidden="true" ng-show="ctrl.ticket.status == 'awaiting-client'"></i>
                 <i class="fa fa-envelope-o" aria-hidden="true" ng-show="ctrl.ticket.status == 'closed'"></i>
             </div>
         </md-card-title-media>
         <md-card-title-text>
-            <span class="md-headline">{{ ctrl.ticket.subject }}</span>
-            <div class="tag-label status-open" aria-hidden="true" ng-show="ctrl.getStatus(ctrl.ticket.status).status_type == 'open'">
-                <i class="fa fa-envelope-open"></i>
-                open
-            </div>
-            <div class="tag-label status-paused" aria-hidden="true" ng-show="ctrl.getStatus(ctrl.ticket.status).status_type == 'paused'">
-                <i class="fa fa-pause-circle"></i>
-                paused
-            </div>
-            <div class="tag-label status-closed" aria-hidden="true" ng-show="ctrl.getStatus(ctrl.ticket.status).status_type == 'closed'">
-                <i class="fa fa-envelope"></i>
-                closed
-            </div>
+            <md-fab-speed-dial md-direction="left" class="md-scale md-fab-top-right">
+                <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab md-primary">
+                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Menu</md-tooltip>
+                        <i class="fa fa-cog"></i>
+                    </md-button>
+                </md-fab-trigger>
+
+                <md-fab-actions>
+                    <div>
+                        <md-button aria-label="Forward ticket" class="md-fab md-raised md-mini"
+                                   ng-click="">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Forward ticket
+                            </md-tooltip>
+                            <i class="fa fa-forward" aria-label="Forward ticket"></i>
+                        </md-button>
+                        <md-button aria-label="Change department" class="md-fab md-raised md-mini"
+                                   ng-click="">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Change department
+                            </md-tooltip>
+                            <i class="fa fa-building" aria-label="Change department"></i>
+                        </md-button>
+                        <md-button aria-label="Change status" class="md-fab md-raised md-mini"
+                                   ng-click="">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Change status
+                            </md-tooltip>
+                            <i class="fa fa-tag" aria-label="Change status"></i>
+                        </md-button>
+                        <md-button aria-label="Delete ticket" class="md-fab md-raised md-mini"
+                                   ng-click="">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Delete ticket
+                            </md-tooltip>
+                            <i class="fa fa-trash" aria-label="Delete ticket"></i>
+                        </md-button>
+                    </div>
+                </md-fab-actions>
+            </md-fab-speed-dial>
+            <span class="md-headline has-top-right-icon">{{ ctrl.ticket.subject }}</span>
             <span class="md-subhead description">
                 By {{ ctrl.ticket.created_by }} on {{ ctrl.ticket.created_at }} in
                 {{ ctrl.ticket.department_name || "no_department" }}

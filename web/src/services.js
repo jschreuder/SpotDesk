@@ -59,6 +59,18 @@
                         display_name: display_name,
                         password: password
                     });
+                },
+
+                saveDepartments: function (email, departmentIds) {
+                    var departments = [];
+                    departmentIds.forEach(function (departmentId) {
+                        departments.push({ department_id: departmentId });
+                    });
+
+                    return $http.put("/users/" + btoa(email) + "/departments", {
+                        email: email,
+                        departments: departments
+                    });
                 }
             };
         }])

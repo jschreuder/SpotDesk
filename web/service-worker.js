@@ -28,6 +28,7 @@ var urlsToCache = [
     "./assets/templates/tickets/list.html",
     "./assets/templates/tickets/view.html",
     "./assets/templates/users/list.html",
+    "./assets/templates/users/view.html",
 
     // js sources
     "./src/controllers.js",

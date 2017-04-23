@@ -180,6 +180,17 @@
                     $adminMessage.error("departments_load_failed");
                 });
 
+                ctrl.saveDepartments = function () {
+                    $users.saveDepartments(ctrl.user.email, ctrl.user_departments).then(function (response) {
+                        ctrl.user_departments = [];
+                        angular.forEach(response.data.user_departments, function (department) {
+                            ctrl.user_departments.push(department.department_id);
+                        });
+                    }, function () {
+                        $adminMessage.error("user_departments_saving_failed");
+                    });
+                };
+
                 ctrl.departmentIndexOf = function (department) {
                     var found = -1;
                     ctrl.user_departments.forEach(function (departmentId, idx) {

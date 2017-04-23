@@ -21,8 +21,12 @@
         </md-card-title-text>
     </md-card-title>
     <md-card-content>
-        <div layout="row" layout-wrap flex>
+        <div layout="row">
             <div flex-xs flex="100" style="margin: 1em 0;">
+                <md-button class="md-raised md-primary" ng-click="ctrl.saveDepartments()">
+                    Save
+                </md-button>
+                <span flex></span>
                 <md-checkbox aria-label="Select All"
                              ng-checked="ctrl.allDepartmentsChecked()"
                              md-indeterminate="ctrl.departmentsAreIndeterminate()"
@@ -32,7 +36,7 @@
                 <md-divider></md-divider>
             </div>
         </div>
-        <div layout="row" layout-wrap flex>
+        <div layout="row">
             <div flex-xs flex="50" ng-repeat="d in ctrl.departments">
                 <md-checkbox ng-checked="ctrl.hasDepartment(d)"
                              ng-click="ctrl.toggleDepartment(d)">

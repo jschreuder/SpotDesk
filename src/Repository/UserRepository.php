@@ -89,4 +89,16 @@ class UserRepository
             'department_id' => $department->getId()->getBytes(),
         ]);
     }
+
+    public function removeUserFromDepartment(User $user, Department $department): void
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `users_departments`
+            WHERE `email` = :email AND `department_id` = :department_id
+        ");
+        $query->execute([
+            'email' => $user->getEmail()->toString(),
+            'department_id' => $department->getId()->getBytes(),
+        ]);
+    }
 }

@@ -15,7 +15,10 @@ filter:
         - "src/MainRoutingProvider.php"
         - "src/MainServiceProvider.php"
 checks:
-    php: true
+    php:
+        code_rating: true
+        duplication: false
+    javascript: true
 coding_style:
     php:
         spaces:

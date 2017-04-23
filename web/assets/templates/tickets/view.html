@@ -58,8 +58,9 @@
 <md-card ng-repeat="tu in ctrl.updates" ng-class="{ dark: tu.internal }" id="{{ tu.ticket_update_id }}">
     <md-card-title>
         <md-card-title-text>
-            <span class="md-headline">{{ tu.created_by }} wrote on {{ tu.created_at }}</span>
-            <div class="tag-label" ng-show="tu.internal">internal</div>
+            <span class="md-headline">
+                <i class="fa fa-eye-slash" ng-show="tu.internal"></i> {{ tu.created_by }} wrote on {{ tu.created_at }}
+            </span>
         </md-card-title-text>
     </md-card-title>
     <md-card-content>

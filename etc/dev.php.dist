@@ -10,8 +10,9 @@ return [
         return $logger;
     },
 
-    'site.title' => 'SpotDesk',
+    // Note: if the site URL starts with https:// the SecurityHeadersMiddleware will activate HSTS
     'site.url' => 'http://localhost:8080',
+    'site.title' => 'SpotDesk',
 
     // Database settings
     'db.dsn'    => 'mysql:host=localhost;charset=utf8',

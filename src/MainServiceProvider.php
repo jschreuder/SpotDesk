@@ -14,6 +14,7 @@ use jschreuder\Middle\ServerMiddleware\RequestFilterMiddleware;
 use jschreuder\Middle\ServerMiddleware\RequestValidatorMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
+use jschreuder\SpotDesk\Middleware\SecurityHeadersMiddleware;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\StatusRepository;
@@ -47,6 +48,7 @@ class MainServiceProvider implements ServiceProviderInterface
                     $container['app.router'],
                     $container['app.error_handlers.404']
                 ),
+                new SecurityHeadersMiddleware($container['site.url']),
                 new ErrorHandlerMiddleware(
                     $container['logger'],
                     $container['app.error_handlers.500']

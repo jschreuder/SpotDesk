@@ -52,7 +52,7 @@
                         ctrl.ticket = response.data.ticket;
                         ctrl.updates = response.data.ticket_updates;
                     }, function () {
-                        errorDialog($mdDialog, "ticket_load_failed");
+                        $adminMessage.error("ticket_load_failed");
                     });
                 };
                 ctrl.fetchTicket();
@@ -61,7 +61,7 @@
                     angular.forEach(response.data.statuses, function (status) {
                         ctrl.statuses.push(status);
                     }, function () {
-                        errorDialog($mdDialog, "statuses_load_failed");
+                        $adminMessage.error("statuses_load_failed");
                     });
                 });
                 ctrl.getStatus = function (statusName) {
@@ -97,7 +97,7 @@
                         ctrl.fetchTicket();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error($mdDialog, "ticket_update_failed");
+                        $adminMessage.error("ticket_update_failed");
                     });
                 };
             }
@@ -117,7 +117,7 @@
                             ctrl.users.push(user);
                         });
                     }, function () {
-                        $adminMessage.error($mdDialog, "users_load_failed");
+                        $adminMessage.error("users_load_failed");
                     });
                 };
                 ctrl.fetchUsers();
@@ -145,8 +145,77 @@
                         ctrl.fetchUsers();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error($mdDialog, "user_create_failed");
+                        $adminMessage.error("user_create_failed");
                     });
+                };
+            }
+        ])
+
+        .controller("viewUserController", ["$users", "$departments", "$stateParams", "$adminMessage",
+            function ($users, $departments, $stateParams, $adminMessage) {
+                var ctrl = this;
+                ctrl.user = null;
+                ctrl.user_departments = [];
+                ctrl.departments = [];
+
+                ctrl.fetchUser = function () {
+                    $users.fetchOne($stateParams.email).then(function (response) {
+                        ctrl.user = response.data.user;
+                        ctrl.user_departments = [];
+                        angular.forEach(response.data.departments, function (department) {
+                            ctrl.user_departments.push(department.department_id);
+                        });
+                    }, function () {
+                        $adminMessage.error("user_load_failed");
+                    });
+                };
+                ctrl.fetchUser();
+
+                $departments.fetch().then(function (response) {
+                    ctrl.departments = [];
+                    angular.forEach(response.data.departments, function (department) {
+                        ctrl.departments.push(department);
+                    });
+                }, function () {
+                    $adminMessage.error("departments_load_failed");
+                });
+
+                ctrl.departmentIndexOf = function (department) {
+                    var found = -1;
+                    ctrl.user_departments.forEach(function (departmentId, idx) {
+                        if (departmentId === department.department_id) {
+                            found = idx;
+                        }
+                    });
+                    return found;
+                };
+                ctrl.hasDepartment = function (department) {
+                    return ctrl.departmentIndexOf(department) > -1;
+                };
+                ctrl.toggleDepartment = function (department) {
+                    var idx = ctrl.departmentIndexOf(department);
+                    if (idx > -1) {
+                        ctrl.user_departments.splice(idx, 1);
+                    } else {
+                        ctrl.user_departments.push(department.department_id);
+                    }
+                };
+
+                ctrl.departmentsAreIndeterminate = function() {
+                    return (ctrl.user_departments.length !== 0
+                        && ctrl.user_departments.length !== ctrl.departments.length);
+                };
+                ctrl.allDepartmentsChecked = function() {
+                    return ctrl.user_departments.length === ctrl.departments.length;
+                };
+                ctrl.toggleAllDepartments = function() {
+                    var oldLength = ctrl.user_departments.length;
+                    ctrl.user_departments = [];
+                    if (oldLength === 0 || oldLength < ctrl.departments.length) {
+                        ctrl.departments.forEach(function (department) {
+                            ctrl.user_departments.push(department.department_id);
+                        });
+                    }
                 };
             }
         ])
@@ -163,7 +232,7 @@
                     ctrl.departments.push(department);
                 });
             }, function () {
-                $adminMessage.error($mdDialog, "ticket_load_failed");
+                $adminMessage.error("departments_load_failed");
             });
 
             ctrl.getDepartment = function (departmentId) {
@@ -189,7 +258,7 @@
                     ctrl.mailboxes.push(mailbox);
                 });
             }, function () {
-                $adminMessage.error($mdDialog, "mailboxes_load_failed");
+                $adminMessage.error("mailboxes_load_failed");
             });
         }])
 
@@ -204,7 +273,7 @@
                 angular.forEach(response.data.statuses, function (status) {
                     ctrl.statuses.push(status);
                 }, function () {
-                    $adminMessage.error($mdDialog, "statuses_load_failed");
+                    $adminMessage.error("statuses_load_failed");
                 });
             });
         }]);

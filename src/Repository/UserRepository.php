@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Collection\UserCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;

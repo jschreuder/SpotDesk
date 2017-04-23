@@ -46,6 +46,17 @@
             });
 
             $stateProvider.state({
+                name: "users_view",
+                url: "/users/view/{email}",
+                templateUrl: "assets/templates/users/view.html",
+                controller: "viewUserController",
+                controllerAs: "ctrl",
+                onEnter: ["$title", "$stateParams", function($title) {
+                    $title.change("View user")
+                }]
+            });
+
+            $stateProvider.state({
                 name: "departments",
                 url: "/departments",
                 templateUrl: "assets/templates/departments/list.html",

@@ -49,6 +49,10 @@
                     return $http.get("/users");
                 },
 
+                fetchOne: function (email) {
+                    return $http.get("/users/" + btoa(email));
+                },
+
                 create: function (email, display_name, password) {
                     return $http.post("/users", {
                         email: email,

@@ -11,10 +11,10 @@
             <tr md-row md-select="u" md-select-id="email" md-auto-select
                 ng-repeat="u in ctrl.users | orderBy: ctrl.order">
                 <td md-cell>
-                    {{ u.email }}
+                    <a ui-sref="users_view({ email: u.email })">{{ u.email }}</a>
                 </td>
                 <td md-cell>
-                    <strong>{{ u.display_name }}</strong>
+                    {{ u.display_name }}
                 </td>
             </tr>
             </tbody>

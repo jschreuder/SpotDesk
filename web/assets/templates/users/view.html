@@ -1,0 +1,44 @@
+<md-card id="{{ ctrl.user.ticket_id }}">
+    <md-card-title>
+        <md-card-title-media>
+            <div class="md-media-sm card-media" layout>
+                <i class="fa fa-user" aria-hidden="true"></i>
+            </div>
+        </md-card-title-media>
+        <md-card-title-text>
+            <span class="md-headline">{{ ctrl.user.display_name }}</span>
+            <span class="md-subhead description">
+                E-mail: {{ ctrl.user.email }}
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+</md-card>
+
+<md-card>
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">Departments</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <div layout="row" layout-wrap flex>
+            <div flex-xs flex="100" style="margin: 1em 0;">
+                <md-checkbox aria-label="Select All"
+                             ng-checked="ctrl.allDepartmentsChecked()"
+                             md-indeterminate="ctrl.departmentsAreIndeterminate()"
+                             ng-click="ctrl.toggleAllDepartments()">
+                    <span ng-if="ctrl.allDepartmentsChecked()">Un-</span>Select All
+                </md-checkbox>
+                <md-divider></md-divider>
+            </div>
+        </div>
+        <div layout="row" layout-wrap flex>
+            <div flex-xs flex="50" ng-repeat="d in ctrl.departments">
+                <md-checkbox ng-checked="ctrl.hasDepartment(d)"
+                             ng-click="ctrl.toggleDepartment(d)">
+                    <strong>{{ d.name }}</strong> <span ng-if="d.parent_name">({{ d.parent_name }})</span>
+                </md-checkbox>
+            </div>
+        </div>
+    </md-card-content>
+</md-card>

@@ -4,6 +4,7 @@ namespace jschreuder\SpotDesk\Repository;
 
 use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Entity\Department;
+use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -82,6 +83,25 @@ class DepartmentRepository
             $this->_departments = $departmentCollection;
         }
         return $this->_departments;
+    }
+
+    public function getDepartmentsForUser(User $user): DepartmentCollection
+    {
+        $query = $this->db->prepare("
+            SELECT d.*
+            FROM `departments` d
+            INNER JOIN `users_departments` ud ON d.`department_id` = ud.`department_id` AND ud.email = :email
+        ");
+        $query->execute(['email' => $user->getEmail()->toString()]);
+
+        $departmentCollection = new DepartmentCollection();
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+            $departmentCollection->push($this->arrayToDepartment(
+                $row,
+                $row['parent_id'] ? $this->getDepartment(Uuid::fromBytes($row['parent_id'])) : null
+            ));
+        }
+        return $departmentCollection;
     }
 
     public function updateDepartment(Department $department): void

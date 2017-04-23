@@ -15,6 +15,7 @@ use jschreuder\SpotDesk\Controller\GetMailboxesController;
 use jschreuder\SpotDesk\Controller\GetStatusesController;
 use jschreuder\SpotDesk\Controller\GetTicketsController;
 use jschreuder\SpotDesk\Controller\GetTicketController;
+use jschreuder\SpotDesk\Controller\GetUserController;
 use jschreuder\SpotDesk\Controller\GetUsersController;
 use jschreuder\SpotDesk\Controller\UpdateDepartmentController;
 use Pimple\Container;
@@ -80,6 +81,12 @@ class MainRoutingProvider implements RoutingProviderInterface
         // Users
         $router->get('users.list', '/users', function () {
             return new GetUsersController($this->container['repository.users']);
+        });
+        $router->get('users.get_one', '/users/{email}', function () {
+            return new GetUserController(
+                $this->container['repository.users'],
+                $this->container['repository.departments']
+            );
         });
         $router->post('users.create', '/users', function () {
             return new CreateUserController($this->container['service.authentication']);

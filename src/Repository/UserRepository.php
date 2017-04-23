@@ -101,4 +101,13 @@ class UserRepository
             'department_id' => $department->getId()->getBytes(),
         ]);
     }
+
+    public function deleteUser(User $user): void
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `users`
+            WHERE `email` = :email
+        ");
+        $query->execute(['email' => $user->getEmail()->toString()]);
+    }
 }

@@ -51,8 +51,9 @@
             }
         ])
 
-        .controller("viewUserController", ["$users", "$departments", "$stateParams", "$adminMessage",
-            function ($users, $departments, $stateParams, $adminMessage) {
+        .controller("viewUserController",
+            ["$users", "$departments", "$state", "$stateParams", "$adminMessage", "$mdDialog",
+            function ($users, $departments, $state, $stateParams, $adminMessage, $mdDialog) {
                 var ctrl = this;
                 ctrl.user = null;
                 ctrl.user_departments = [];
@@ -79,6 +80,24 @@
                 }, function () {
                     $adminMessage.error("departments_load_failed");
                 });
+
+                ctrl.deleteUser = function () {
+                    $mdDialog.show(
+                        $mdDialog.confirm()
+                            .title("Delete user")
+                            .textContent("Would you like to delete user '" + ctrl.user.display_name
+                                + "' with e-mailaddress " + ctrl.user.email + "?")
+                            .ariaLabel("Delete user")
+                            .ok('Yes')
+                            .cancel('No')
+                    ).then(function () {
+                        $users.delete(ctrl.user.email).then(function () {
+                            $state.go("users");
+                        }, function () {
+                            $adminMessage.error("user_delete_failed");
+                        });
+                    });
+                };
 
                 ctrl.saveDepartments = function () {
                     $users.saveDepartments(ctrl.user.email, ctrl.user_departments).then(function (response) {

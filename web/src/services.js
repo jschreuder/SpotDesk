@@ -71,6 +71,10 @@
                         email: email,
                         departments: departments
                     });
+                },
+
+                delete: function (email) {
+                    return $http.delete("/users/" + btoa(email));
                 }
             };
         }])

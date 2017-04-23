@@ -6,6 +6,7 @@ use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
+use jschreuder\SpotDesk\Controller\DeleteUserController;
 use jschreuder\SpotDesk\Controller\UpdateTicketStatusController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
@@ -97,6 +98,9 @@ class MainRoutingProvider implements RoutingProviderInterface
                 $this->container['repository.users'],
                 $this->container['repository.departments']
             );
+        });
+        $router->delete('users.delete', '/users/{email}', function () {
+            return new DeleteUserController($this->container['repository.users']);
         });
 
         // Statuses

@@ -27,7 +27,7 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $filter = new Filter();
         $filter->value('name')->string()->stripHtml()->trim();
         $filter->value('parent_id')->string()->trim();
@@ -43,7 +43,7 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
         $validator->optional('parent_id')->uuid();
         $validator->required('email')->email();
 
-        $validationResult = $validator->validate($request->getParsedBody());
+        $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -51,7 +51,7 @@ class CreateDepartmentController implements ControllerInterface, RequestValidato
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
 
         $department = $this->departmentRepository->createDepartment(
             $body['name'],

@@ -31,7 +31,7 @@ class ChangeTicketStatusController implements ControllerInterface, RequestFilter
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
         $filter->value('ticket_id')->string()->trim();
@@ -46,7 +46,7 @@ class ChangeTicketStatusController implements ControllerInterface, RequestFilter
         $validator->required('ticket_id')->uuid();
         $validator->required('status_update')->string();
 
-        $validationResult = $validator->validate($request->getParsedBody());
+        $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -54,7 +54,7 @@ class ChangeTicketStatusController implements ControllerInterface, RequestFilter
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
 
         $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
         $status = $this->statusRepository->getStatus($body['status_update']);

@@ -37,7 +37,7 @@ class UpdateUserDepartmentsController implements ControllerInterface, RequestVal
             $validator->required('department_id')->uuid();
         });
 
-        $validationResult = $validator->validate($request->getParsedBody());
+        $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -45,7 +45,7 @@ class UpdateUserDepartmentsController implements ControllerInterface, RequestVal
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($body['email']));
         $userDepartments = $this->departmentRepository->getDepartmentsForUser($user)->toArray();
         $departmentIds = array_map(function (array $department) {

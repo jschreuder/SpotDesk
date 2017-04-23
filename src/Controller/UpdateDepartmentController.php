@@ -27,7 +27,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $body['department_id'] = $request->getAttribute('department_id');
         $filter = new Filter();
         $filter->value('department_id')->string()->trim();
@@ -44,7 +44,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         $validator->required('name')->string();
         $validator->required('email')->email();
 
-        $validationResult = $validator->validate($request->getParsedBody());
+        $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -52,7 +52,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = $request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $department = $this->departmentRepository->getDepartment(Uuid::fromString($body['department_id']));
 
         $department->setName($body['name']);

@@ -22,7 +22,7 @@ class Mailbox
     /** @var  int */
     private $imapPort;
 
-    /** @var  string */
+    /** @var  MailTransportSecurityValue */
     private $imapSecurity;
 
     /** @var  string */

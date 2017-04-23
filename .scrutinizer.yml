@@ -10,7 +10,7 @@ build:
                     file: 'coverage.xml'
                     format: 'php-clover'
 filter:
-    paths: ["src/*"]
+    paths: ["src/*", "web/src/*"]
     excluded_paths:
         - "src/MainRoutingProvider.php"
         - "src/MainServiceProvider.php"

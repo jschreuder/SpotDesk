@@ -1,5 +1,6 @@
 /.idea/
 /bin/
+/coverage.xml
 /datamodel/
 /etc/env.php
 /etc/dev.php

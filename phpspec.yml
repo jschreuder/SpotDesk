@@ -1,0 +1,11 @@
+suites:
+    acme_suite:
+        namespace: jschreuder\SpotDesk
+        psr4_prefix: jschreuder\SpotDesk
+
+extensions:
+    PhpSpecCodeCoverage\CodeCoverageExtension:
+      format:
+          - clover
+      output:
+          clover: coverage.xml

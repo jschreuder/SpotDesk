@@ -24,7 +24,7 @@
 <div flex layout="row" ng-show="main.loggedIn()">
     <md-sidenav ng-click="main.toggleSideNav()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >
         <md-toolbar layout="row">
-            <h1>SpotDesk</h1>
+            <h1><?php echo $siteTitle; ?></h1>
         </md-toolbar>
 
         <md-list>

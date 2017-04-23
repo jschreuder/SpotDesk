@@ -24,6 +24,10 @@ class AuthenticationMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
     {
+        // Allow site template without auth
+        if ($request->getMethod() === 'GET' && trim($request->getUri()->getPath(), '/') === '') {
+            return $delegate->process($request);
+        }
         // Respond to login attempt
         if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {
             return $this->login($request);

@@ -28,8 +28,9 @@ class SecurityHeadersMiddleware implements MiddlewareInterface
             ->withAddedHeader('X-Content-Type-Options', 'nosniff')
             ->withAddedHeader(
                 'Content-Security-Policy',
-                'default-src \'self\'; script-src \'self\'; img-src \'self\'; style-src \'self\'; '
-                . 'form-action \'self\'; font-src \'self\'; child-src \'none\'; object-src \'none\''
+                'default-src \'self\'; script-src \'self\' \'sha256-no9xHsC3XWcOv0jYdPiPE8EclOgXfoMbP647ArOoT1E=\';'
+                . 'img-src \'self\'  data:; style-src \'self\' \'unsafe-inline\'; '
+                . 'form-action \'self\'; font-src \'self\'; child-src \'self\'; object-src \'none\''
             );
 
         // Determine STS based on site URL

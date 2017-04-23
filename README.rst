@@ -86,6 +86,6 @@ To run it:
 * Run ``./console dev:create-faker-tickets test@helpdesk.dev 25`` (change
   e-mailaddress to whatever you used in the previous step) to set up 25 tickets
   with fake content and replies by the given user
-* Go to ``http://localhost:8080/index.html`` in your browser to view SpotDesk
+* Go to ``http://localhost:8080/`` in your browser to view SpotDesk
 
 TODO in this section: setting up departments.

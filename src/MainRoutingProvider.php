@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk;
 
+use jschreuder\Middle\Controller\CallableController;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
@@ -36,6 +37,10 @@ class MainRoutingProvider implements RoutingProviderInterface
     public function registerRoutes(RouterInterface $router): void
     {
         /** @var  SymfonyRouter  $router */
+
+        $router->get('homepage', '/', function () {
+            return CallableController::fromCallable($this->container['site.template']);
+        });
 
         // Tickets
         $router->get('tickets.get_one', '/tickets/{ticket_id}', function () {

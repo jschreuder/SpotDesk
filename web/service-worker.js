@@ -4,13 +4,14 @@ var CACHE_NAME = 'spotdesk';
 
 var urlsToCache = [
     // main file
-    "./index.html",
+    "./",
 
     // stylesheets
     "./assets/style/spotdesk.css",
 
     // 3rd party dependencies
     "./node_modules/angular/angular.js",
+    "./node_modules/angular/angular-csp.css",
     "./node_modules/angular-animate/angular-animate.js",
     "./node_modules/angular-aria/angular-aria.js",
     "./node_modules/angular-cookies/angular-cookies.js",
@@ -46,7 +47,6 @@ self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(function(cache) {
-                console.log('Opened cache');
                 return cache.addAll(urlsToCache);
             })
     );

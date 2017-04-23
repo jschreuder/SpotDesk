@@ -5,20 +5,21 @@
 <head>
     <meta charset="utf-8" />
 
-    <title>SpotDesk</title>
+    <title><?php echo $siteTitle; ?></title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="description" content="" />
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
     <link rel="manifest" href="./manifest.json" />
 
+    <link rel="stylesheet" href="./node_modules/angular/angular-csp.css" />
     <link rel="stylesheet" href="./node_modules/angular-material/angular-material.css" />
     <link rel="stylesheet" href="./node_modules/font-awesome/css/font-awesome.css" />
     <link rel="stylesheet" href="./node_modules/angular-material-data-table/dist/md-data-table.css" />
     <link rel="stylesheet" href="assets/style/spotdesk.css" />
 </head>
 
-<body ng-app="spotdesk" ng-controller="mainController as main" layout="column" ng-cloak>
+<body ng-app="spotdesk" ng-csp ng-controller="mainController as main" layout="column" ng-cloak>
 
 <div flex layout="row" ng-show="main.loggedIn()">
     <md-sidenav ng-click="main.toggleSideNav()" md-is-locked-open="$mdMedia('gt-sm')" md-component-id="left" class="md-whiteframe-z2" >

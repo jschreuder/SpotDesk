@@ -8,7 +8,6 @@
             function($httpProvider , $mdThemingProvider){
                 $httpProvider.interceptors.push("authInterceptor");
 
-                // Theming is not allowed due to CSP
                 $mdThemingProvider.theme("default")
                     .primaryPalette("green")
                     .accentPalette("pink");

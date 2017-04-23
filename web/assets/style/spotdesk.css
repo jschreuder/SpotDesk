@@ -186,3 +186,7 @@ md-sidenav md-list {
 .content-wrapper {
     position: relative;
 }
+
+.user-department-select-all {
+    padding-top: 1em;
+}

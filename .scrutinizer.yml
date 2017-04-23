@@ -9,3 +9,22 @@ build:
                 coverage:
                     file: 'coverage.xml'
                     format: 'php-clover'
+filter:
+    paths: ["src/*"]
+    excluded_paths:
+        - "src/MainRoutingProvider.php"
+        - "src/MainServiceProvider.php"
+checks:
+    php: true
+coding_style:
+    php:
+        spaces:
+            before_parentheses:
+                closure_definition: true
+            around_operators:
+                concatenation: true
+        upper_lower_casing:
+            keywords:
+                general: lower
+            constants:
+                true_false_null: lower

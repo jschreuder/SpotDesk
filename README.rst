@@ -29,6 +29,8 @@ Screenshots
 .. image:: docs/assets/view-ticket.png
    :alt: View a single ticket
 
+*Note: the data shown in the screenshots was generated with `Faker <https://github.com/fzaninotto/Faker>`_.*
+
 --------------------
 Features implemented
 --------------------

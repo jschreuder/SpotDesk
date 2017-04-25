@@ -28,7 +28,7 @@ trait CollectionTrait
 
     public function offsetExists($key): bool
     {
-        return isset($this->collection[$key]);
+        return isset($this->collection[strval($key)]);
     }
 
     public function offsetSet($key, $value): void

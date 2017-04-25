@@ -27,16 +27,9 @@ class DepartmentCollection implements \ArrayAccess, \Countable, \Iterator
 
     public function offsetGet($departmentId): Department
     {
-        if (!$this->offsetExists($departmentId)) {
+        if (!isset($this[strval($departmentId)])) {
             throw new \OutOfBoundsException('No such department: ' . $departmentId);
         }
-        return $this->collection[$departmentId];
-    }
-
-    public function getChildrenOf(?Department $department)
-    {
-        return array_filter($this->collection, function (Department $current) use ($department) {
-            return $current->getParent() === $department;
-        });
+        return $this->collection[strval($departmentId)];
     }
 }

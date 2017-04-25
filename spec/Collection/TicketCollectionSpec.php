@@ -98,4 +98,12 @@ class TicketCollectionSpec extends ObjectBehavior
             $uuid3->toString() => $ticket3,
         ]);
     }
+
+    public function it_can_contain_a_total_count()
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringGetTotalCount();
+
+        $this->setTotalCount(42);
+        $this->getTotalCount()->shouldBe(42);
+    }
 }

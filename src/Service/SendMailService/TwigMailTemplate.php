@@ -3,7 +3,7 @@
 
 namespace jschreuder\SpotDesk\Service\SendMailService;
 
-class TwigMailTemplate implements MailTemplateInterface
+final class TwigMailTemplate implements MailTemplateInterface
 {
     /** @var  \Twig_Environment */
     private $twig;

@@ -4,9 +4,9 @@ namespace jschreuder\SpotDesk\Service\SendMailService;
 
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
-use jschreuder\SpotDesk\Service\MailServiceInterface;
+use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 
-class MailTemplateFactory
+final class MailTemplateFactory implements MailTemplateFactoryInterface
 {
     /** @var  MailTemplateInterface */
     private $newTicket;
@@ -23,10 +23,10 @@ class MailTemplateFactory
     public function getMail(Ticket $ticket, ?TicketUpdate $ticketUpdate, string $type): MailTemplateInterface
     {
         switch ($type) {
-            case MailServiceInterface::TYPE_NEW_TICKET:
+            case SendMailServiceInterface::TYPE_NEW_TICKET:
                 $mail = clone $this->newTicket;
                 break;
-            case MailServiceInterface::TYPE_UPDATE_TICKET:
+            case SendMailServiceInterface::TYPE_UPDATE_TICKET:
                 $mail = clone $this->updateTicket;
                 break;
             default:

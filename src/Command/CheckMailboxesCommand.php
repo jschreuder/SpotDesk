@@ -5,7 +5,7 @@ namespace jschreuder\SpotDesk\Command;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use jschreuder\SpotDesk\Service\MailServiceInterface;
+use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpImap\Mailbox as ImapConnection;
 use Ramsey\Uuid\Uuid;
@@ -22,13 +22,13 @@ class CheckMailboxesCommand extends Command
     /** @var  TicketRepository */
     private $ticketRepository;
 
-    /** @var  MailServiceInterface */
+    /** @var  SendMailServiceInterface */
     private $mailService;
 
     public function __construct(
         MailboxRepository $mailboxRepository,
         TicketRepository $ticketRepository,
-        MailServiceInterface $mailService
+        SendMailServiceInterface $mailService
     )
     {
         $this->mailboxRepository = $mailboxRepository;
@@ -99,7 +99,7 @@ class CheckMailboxesCommand extends Command
                     $ticket = $this->ticketRepository->createTicket(
                         $email, $subject, $message, $department, $createdAt
                     );
-                    $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_NEW_TICKET);
+                    $this->mailService->addMailing($ticket, SendMailServiceInterface::TYPE_NEW_TICKET);
                 }
 
                 // Mark e-mail as read once the ticket has been created or duplicate was detected

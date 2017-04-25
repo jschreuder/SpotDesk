@@ -6,10 +6,10 @@ use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
-use jschreuder\SpotDesk\Service\MailServiceInterface;
+use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
-class SmtpSendMailService implements MailServiceInterface
+final class SmtpSendSendMailService implements SendMailServiceInterface
 {
     /** @var  \Swift_Mailer */
     private $swiftMailer;

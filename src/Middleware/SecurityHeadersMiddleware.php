@@ -7,7 +7,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class SecurityHeadersMiddleware implements MiddlewareInterface
+final class SecurityHeadersMiddleware implements MiddlewareInterface
 {
     /** @var  string */
     private $siteUrl;

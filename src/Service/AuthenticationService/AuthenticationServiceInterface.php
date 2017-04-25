@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace jschreuder\SpotDesk\Service;
+namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;

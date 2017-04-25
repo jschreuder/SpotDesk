@@ -3,7 +3,7 @@
 namespace jschreuder\SpotDesk\Command;
 
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
-use jschreuder\SpotDesk\Service\MailServiceInterface;
+use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,10 +13,10 @@ class SendMailingsCommand extends Command
     /** @var  TicketMailingRepository */
     private $ticketMailingsRepository;
 
-    /** @var  MailServiceInterface */
+    /** @var  SendMailServiceInterface */
     private $mailService;
 
-    public function __construct(TicketMailingRepository $ticketMailingsRepository, MailServiceInterface $mailService)
+    public function __construct(TicketMailingRepository $ticketMailingsRepository, SendMailServiceInterface $mailService)
     {
         $this->ticketMailingsRepository = $ticketMailingsRepository;
         $this->mailService = $mailService;

@@ -6,7 +6,7 @@ use jschreuder\Middle\Session\Session;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use jschreuder\SpotDesk\Service\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -16,7 +16,7 @@ use Lcobucci\JWT\ValidationData;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class JwtAuthenticationService implements AuthenticationServiceInterface
+final class JwtAuthenticationService implements AuthenticationServiceInterface
 {
     /** @var  UserRepository */
     private $userRepository;

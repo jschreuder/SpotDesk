@@ -5,12 +5,12 @@ namespace jschreuder\SpotDesk\Middleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationFailedException;
-use jschreuder\SpotDesk\Service\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class AuthenticationMiddleware implements MiddlewareInterface
+final class AuthenticationMiddleware implements MiddlewareInterface
 {
     const AUTHORIZATION_HEADER = 'SpotDesk-Authorization';
 

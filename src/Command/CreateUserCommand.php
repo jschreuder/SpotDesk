@@ -2,7 +2,7 @@
 
 namespace jschreuder\SpotDesk\Command;
 
-use jschreuder\SpotDesk\Service\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

@@ -9,7 +9,7 @@ use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use jschreuder\SpotDesk\Service\MailServiceInterface;
+use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
@@ -26,13 +26,13 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
     /** @var  StatusRepository */
     private $statusRepository;
 
-    /** @var  MailServiceInterface */
+    /** @var  SendMailServiceInterface */
     private $mailService;
 
     public function __construct(
         TicketRepository $ticketRepository,
         StatusRepository $statusRepository,
-        MailServiceInterface $mailService
+        SendMailServiceInterface $mailService
     )
     {
         $this->ticketRepository = $ticketRepository;
@@ -92,7 +92,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         }
 
         if (!$ticketUpdate->isInternal()) {
-            $this->mailService->addMailing($ticket, MailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
+            $this->mailService->addMailing($ticket, SendMailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
         }
 
         return new JsonResponse([

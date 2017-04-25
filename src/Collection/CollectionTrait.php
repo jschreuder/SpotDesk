@@ -6,37 +6,37 @@ trait CollectionTrait
 {
     private $collection = [];
 
-    public function next(): void
+    public function next() : void
     {
         next($this->collection);
     }
 
-    public function key(): string
+    public function key() : string
     {
         return key($this->collection);
     }
 
-    public function valid(): bool
+    public function valid() : bool
     {
         return key($this->collection) !== null;
     }
 
-    public function rewind(): void
+    public function rewind() : void
     {
         reset($this->collection);
     }
 
-    public function offsetExists($key): bool
+    public function offsetExists($key) : bool
     {
         return isset($this->collection[strval($key)]);
     }
 
-    public function offsetSet($key, $value): void
+    public function offsetSet($key, $value) : void
     {
         throw new \RuntimeException('Collections cannot be modified as array');
     }
 
-    public function offsetUnset($key): void
+    public function offsetUnset($key) : void
     {
         throw new \RuntimeException('Collections cannot be modified as array');
     }
@@ -46,7 +46,7 @@ trait CollectionTrait
         return count($this->collection);
     }
 
-    public function toArray(): array
+    public function toArray() : array
     {
         return $this->collection;
     }

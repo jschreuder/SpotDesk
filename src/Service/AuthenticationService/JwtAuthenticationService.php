@@ -6,7 +6,6 @@ use jschreuder\Middle\Session\Session;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
@@ -62,7 +61,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         $this->sessionRefreshAfter = $sessionRefreshAfter;
     }
 
-    public function createUser(string $email, string $displayName, string $password): User
+    public function createUser(string $email, string $displayName, string $password) : User
     {
         $user = new User(
             EmailAddressValue::get($email),
@@ -74,7 +73,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         return $user;
     }
 
-    public function login(string $email, string $password): string
+    public function login(string $email, string $password) : string
     {
         try {
             $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
@@ -96,7 +95,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         return strval($this->createSessionJwt($user->getEmail()->toString()));
     }
 
-    private function createSessionJwt(string $userId): Token
+    private function createSessionJwt(string $userId) : Token
     {
         return (new Builder())->setIssuer($this->siteUrl)
             ->setAudience($this->siteUrl)
@@ -108,7 +107,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
             ->getToken();
     }
 
-    public function checkLogin(ServerRequestInterface $request, string $authorizationHeader): ?SessionInterface
+    public function checkLogin(ServerRequestInterface $request, string $authorizationHeader) : ?SessionInterface
     {
         $sessionId = $request->getHeaderLine($authorizationHeader);
         if (!$sessionId) {
@@ -147,7 +146,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         ResponseInterface $response,
         string $authorizationHeader,
         SessionInterface $session
-    ): ResponseInterface {
+    ) : ResponseInterface {
         $jwt = $session->get('jwt');
         $issuedAt = $jwt->getClaim('iat');
 

@@ -19,7 +19,7 @@ class GetDepartmentsController implements ControllerInterface
         $this->departmentRepository = $departmentRepository;
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $departments = $this->departmentRepository->getDepartments();
 
@@ -28,7 +28,7 @@ class GetDepartmentsController implements ControllerInterface
                 return [
                     'department_id' => $department->getId()->toString(),
                     'name' => $department->getName(),
-                    'parent_id' => $department->getParent() ? $department->getParent()->getid()->toString() : null,
+                    'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
                     'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
                 ];
             }, $departments->toArray())

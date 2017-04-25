@@ -27,37 +27,37 @@ class Department
         $this->email = $email;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name) : void
     {
         $this->name = $name;
     }
 
-    public function getParent(): ?Department
+    public function getParent() : ?Department
     {
         return $this->parent;
     }
 
-    public function setParent(?Department $parent): void
+    public function setParent(?Department $parent) : void
     {
         $this->parent = $parent;
     }
 
-    public function getEmail(): EmailAddressValue
+    public function getEmail() : EmailAddressValue
     {
         return $this->email;
     }
 
-    public function setEmail(EmailAddressValue $email): void
+    public function setEmail(EmailAddressValue $email) : void
     {
         $this->email = $email;
     }

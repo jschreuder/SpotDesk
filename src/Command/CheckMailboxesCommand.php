@@ -56,7 +56,7 @@ class CheckMailboxesCommand extends Command
         }
     }
 
-    private function createConnection(Mailbox $mailbox): ImapConnection
+    private function createConnection(Mailbox $mailbox) : ImapConnection
     {
         $path = '{' . $mailbox->getImapServer() . ':' . $mailbox->getImapPort() . '/imap';
         switch ($mailbox->getImapSecurity()->toString()) {
@@ -116,7 +116,7 @@ class CheckMailboxesCommand extends Command
         $this->mailboxRepository->updateLastCheck($mailbox);
     }
 
-    private function stripHtml(string $message): string
+    private function stripHtml(string $message) : string
     {
         $message = preg_replace('#<br\s*\/?>#i', "\n", $message);
         $message = preg_replace('#<p\s*[^>]*>#i', "\n\n", $message);

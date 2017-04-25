@@ -30,42 +30,42 @@ class User
         $this->totpSecret = $totpSecret;
     }
 
-    public function getEmail(): EmailAddressValue
+    public function getEmail() : EmailAddressValue
     {
         return $this->email;
     }
 
-    public function setEmail(EmailAddressValue $email): void
+    public function setEmail(EmailAddressValue $email) : void
     {
         $this->email = $email;
     }
 
-    public function getDisplayName(): string
+    public function getDisplayName() : string
     {
         return $this->displayName;
     }
 
-    public function setDisplayName(string $displayName): void
+    public function setDisplayName(string $displayName) : void
     {
         $this->displayName = $displayName;
     }
 
-    public function getPassword(): string
+    public function getPassword() : string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): void
+    public function setPassword(string $password) : void
     {
         $this->password = $password;
     }
 
-    public function getTotpSecret(): string
+    public function getTotpSecret() : string
     {
         return $this->totpSecret;
     }
 
-    public function setTotpSecret(string $totpSecret): void
+    public function setTotpSecret(string $totpSecret) : void
     {
         $this->totpSecret = $totpSecret;
     }

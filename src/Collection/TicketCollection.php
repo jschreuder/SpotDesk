@@ -18,17 +18,17 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(Ticket $ticket): void
+    public function push(Ticket $ticket) : void
     {
         $this->collection[$ticket->getId()->toString()] = $ticket;
     }
 
-    public function current(): Ticket
+    public function current() : Ticket
     {
         return current($this->collection);
     }
 
-    public function offsetGet($ticketId): Ticket
+    public function offsetGet($ticketId) : Ticket
     {
         if (!$this->offsetExists($ticketId)) {
             throw new \OutOfBoundsException('No ticket with ID: ' . $ticketId);
@@ -36,7 +36,7 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
         return $this->collection[$ticketId];
     }
 
-    public function getTotalCount(): int
+    public function getTotalCount() : int
     {
         if (is_null($this->totalCount)) {
             throw new \RuntimeException('Total count must be set before it is retrieved.');

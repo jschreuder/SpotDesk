@@ -15,17 +15,17 @@ class TicketUpdateCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(TicketUpdate $ticketUpdate): void
+    public function push(TicketUpdate $ticketUpdate) : void
     {
         $this->collection[$ticketUpdate->getId()->toString()] = $ticketUpdate;
     }
 
-    public function current(): TicketUpdate
+    public function current() : TicketUpdate
     {
         return current($this->collection);
     }
 
-    public function offsetGet($ticketUpdateId): TicketUpdate
+    public function offsetGet($ticketUpdateId) : TicketUpdate
     {
         if (!$this->offsetExists($ticketUpdateId)) {
             throw new \OutOfBoundsException('No such status: ' . $ticketUpdateId);

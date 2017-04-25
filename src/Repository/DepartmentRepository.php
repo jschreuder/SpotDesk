@@ -22,7 +22,7 @@ class DepartmentRepository
         $this->db = $db;
     }
 
-    public function createDepartment(string $name, ?Department $parent, EmailAddressValue $email): Department
+    public function createDepartment(string $name, ?Department $parent, EmailAddressValue $email) : Department
     {
         $department = new Department(Uuid::uuid4(), $name, $parent, $email);
 
@@ -40,7 +40,7 @@ class DepartmentRepository
         return $department;
     }
 
-    private function arrayToDepartment(array $row, ?Department $parent): Department
+    private function arrayToDepartment(array $row, ?Department $parent) : Department
     {
         return new Department(
             Uuid::fromBytes($row['department_id']),
@@ -50,7 +50,7 @@ class DepartmentRepository
         );
     }
 
-    public function getDepartment(UuidInterface $departmentId): Department
+    public function getDepartment(UuidInterface $departmentId) : Department
     {
         $departments = $this->getDepartments();
         if (!isset($departments[$departmentId->toString()])) {
@@ -60,7 +60,7 @@ class DepartmentRepository
         return $departments[$departmentId->toString()];
     }
 
-    public function getDepartments(): DepartmentCollection
+    public function getDepartments() : DepartmentCollection
     {
         if (is_null($this->_departments)) {
             $query = $this->db->prepare("SELECT * FROM `departments`");
@@ -85,7 +85,7 @@ class DepartmentRepository
         return $this->_departments;
     }
 
-    public function getDepartmentsForUser(User $user): DepartmentCollection
+    public function getDepartmentsForUser(User $user) : DepartmentCollection
     {
         $query = $this->db->prepare("
             SELECT d.*
@@ -104,7 +104,7 @@ class DepartmentRepository
         return $departmentCollection;
     }
 
-    public function updateDepartment(Department $department): void
+    public function updateDepartment(Department $department) : void
     {
         $query = $this->db->prepare("
             UPDATE `departments`

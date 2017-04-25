@@ -7,5 +7,5 @@ use jschreuder\SpotDesk\Entity\TicketUpdate;
 
 interface MailTemplateFactoryInterface
 {
-    public function getMail(Ticket $ticket, ?TicketUpdate $ticketUpdate, string $type): MailTemplateInterface;
+    public function getMail(Ticket $ticket, ?TicketUpdate $ticketUpdate, string $type) : MailTemplateInterface;
 }

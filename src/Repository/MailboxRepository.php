@@ -32,7 +32,7 @@ class MailboxRepository
         string $imapUser,
         string $imapPass,
         ?\DateTimeInterface $lastCheck = null
-    ): Mailbox {
+    ) : Mailbox {
         $mailbox = new Mailbox(
             Uuid::uuid4(),
             $name,
@@ -71,7 +71,7 @@ class MailboxRepository
         return $mailbox;
     }
 
-    private function arrayToMailbox(array $row): Mailbox
+    private function arrayToMailbox(array $row) : Mailbox
     {
         $department = is_null($row['department_id'])
             ? null
@@ -90,7 +90,7 @@ class MailboxRepository
         );
     }
 
-    public function getMailbox(UuidInterface $mailboxId): Mailbox
+    public function getMailbox(UuidInterface $mailboxId) : Mailbox
     {
         $query = $this->db->prepare("SELECT * FROM `mailboxes` WHERE `mailbox_id` = :mailbox_id");
         $query->execute(['mailbox_id' => $mailboxId->getBytes()]);
@@ -102,7 +102,7 @@ class MailboxRepository
         return $this->arrayToMailbox($query->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function getMailboxes(): MailboxCollection
+    public function getMailboxes() : MailboxCollection
     {
         $query = $this->db->prepare("SELECT * FROM `mailboxes`");
         $query->execute();
@@ -114,7 +114,7 @@ class MailboxRepository
         return $mailboxCollection;
     }
 
-    public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null)
+    public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null) : void
     {
         $checkTime = $checkTime ?? new \DateTimeImmutable('now');
         $query = $this->db->prepare("

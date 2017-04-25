@@ -15,17 +15,17 @@ class TicketMailingCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(TicketMailing $ticketMailing): void
+    public function push(TicketMailing $ticketMailing) : void
     {
         $this->collection[$ticketMailing->getId()->toString()] = $ticketMailing;
     }
 
-    public function current(): TicketMailing
+    public function current() : TicketMailing
     {
         return current($this->collection);
     }
 
-    public function offsetGet($ticketMailingId): TicketMailing
+    public function offsetGet($ticketMailingId) : TicketMailing
     {
         if (!$this->offsetExists($ticketMailingId)) {
             throw new \OutOfBoundsException('No ticket with ID: ' . $ticketMailingId);

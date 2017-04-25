@@ -4,7 +4,7 @@ namespace jschreuder\SpotDesk\Value;
 
 final class EmailAddressValue
 {
-    public static function get(string $emailAddress): self
+    public static function get(string $emailAddress) : self
     {
         return new self($emailAddress);
     }
@@ -20,18 +20,18 @@ final class EmailAddressValue
         $this->value = $emailAddress;
     }
 
-    public function toString(): string
+    public function toString() : string
     {
         return $this->value;
     }
 
-    public function getLocalPart(): string
+    public function getLocalPart() : string
     {
         $parts = explode('@', $this->value, 2);
         return $parts[0];
     }
 
-    public function getDomain(): string
+    public function getDomain() : string
     {
         $parts = explode('@', $this->value, 2);
         return $parts[1];

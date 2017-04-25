@@ -22,7 +22,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         $this->authenticationService = $authenticationService;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         // Allow site template without auth
         if ($request->getMethod() === 'GET' && trim($request->getUri()->getPath(), '/') === '') {
@@ -48,7 +48,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         );
     }
 
-    private function login(ServerRequestInterface $request): ResponseInterface
+    private function login(ServerRequestInterface $request) : ResponseInterface
     {
         try {
             $body = (array)$request->getParsedBody();

@@ -29,7 +29,7 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
         $this->statusRepository = $statusRepository;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array)$request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
@@ -40,7 +40,7 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
         return $request->withParsedBody($filter->filter($body));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('ticket_id')->uuid();
@@ -52,7 +52,7 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
 

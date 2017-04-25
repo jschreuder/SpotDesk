@@ -19,7 +19,7 @@ class GetMailboxesController implements ControllerInterface
         $this->mailboxRepository = $mailboxRepository;
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $mailboxes = $this->mailboxRepository->getMailboxes();
 

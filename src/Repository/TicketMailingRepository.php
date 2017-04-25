@@ -22,7 +22,7 @@ class TicketMailingRepository
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function createTicketMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate): TicketMailing
+    public function createTicketMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate) : TicketMailing
     {
         $ticketMailing = new TicketMailing(
             Uuid::uuid4(),
@@ -47,7 +47,7 @@ class TicketMailingRepository
         return $ticketMailing;
     }
 
-    private function arrayToTicketMailing(array $row): TicketMailing
+    private function arrayToTicketMailing(array $row) : TicketMailing
     {
         $ticket = $this->ticketRepository->getTicket(Uuid::fromBytes($row['ticket_id']));
         $updates = $this->ticketRepository->getTicketUpdates($ticket);
@@ -64,7 +64,7 @@ class TicketMailingRepository
         );
     }
 
-    public function getUnsent(): TicketMailingCollection
+    public function getUnsent() : TicketMailingCollection
     {
         $query = $this->db->prepare("
             SELECT * FROM `ticket_mailings` WHERE `sent_at` IS NULL
@@ -78,7 +78,7 @@ class TicketMailingRepository
         return $ticketMailingCollection;
     }
 
-    public function setSent(TicketMailing $ticketMailing, ?\DateTimeInterface $sentAt = null)
+    public function setSent(TicketMailing $ticketMailing, ?\DateTimeInterface $sentAt = null) : void
     {
         $sentAt = $sentAt ?? new \DateTimeImmutable();
         $query = $this->db->prepare("

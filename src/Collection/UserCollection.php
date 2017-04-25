@@ -15,17 +15,17 @@ class UserCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(User $user): void
+    public function push(User $user) : void
     {
         $this->collection[$user->getEmail()->toString()] = $user;
     }
 
-    public function current(): User
+    public function current() : User
     {
         return current($this->collection);
     }
 
-    public function offsetGet($email): User
+    public function offsetGet($email) : User
     {
         if (!$this->offsetExists($email)) {
             throw new \OutOfBoundsException('No user with e-mail: ' . $email);

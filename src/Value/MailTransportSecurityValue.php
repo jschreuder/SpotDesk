@@ -8,12 +8,12 @@ final class MailTransportSecurityValue
     const SECURITY_SSL = 'ssl';
     const SECURITY_TLS = 'tls';
 
-    public static function get(string $statusType): self
+    public static function get(string $statusType) : self
     {
         return new self($statusType);
     }
 
-    public static function getValues(): array
+    public static function getValues() : array
     {
         return [self::SECURITY_NONE, self::SECURITY_SSL, self::SECURITY_TLS];
     }
@@ -29,7 +29,7 @@ final class MailTransportSecurityValue
         $this->value = $transportSecurity;
     }
 
-    public function toString(): string
+    public function toString() : string
     {
         return $this->value;
     }

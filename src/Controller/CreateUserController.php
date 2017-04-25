@@ -23,7 +23,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
         $this->authenticationService = $authenticationService;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array)$request->getParsedBody();
         $filter = new Filter();
@@ -34,7 +34,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
         return $request->withParsedBody($filter->filter($body));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('email')->string()->email()->lengthBetween(6, 123);
@@ -47,7 +47,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
 

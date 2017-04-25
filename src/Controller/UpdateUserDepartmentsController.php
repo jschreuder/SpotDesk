@@ -29,7 +29,7 @@ class UpdateUserDepartmentsController implements ControllerInterface, RequestVal
         $this->departmentRepository = $departmentRepository;
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('email')->email();
@@ -43,7 +43,7 @@ class UpdateUserDepartmentsController implements ControllerInterface, RequestVal
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
         $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($body['email']));

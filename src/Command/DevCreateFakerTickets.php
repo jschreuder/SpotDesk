@@ -68,7 +68,7 @@ class DevCreateFakerTickets extends Command
             );
     }
 
-    private function getFaker(): FakerGenerator
+    private function getFaker() : FakerGenerator
     {
         return $this->faker;
     }
@@ -104,7 +104,7 @@ class DevCreateFakerTickets extends Command
         }
     }
 
-    private function createTicket(?Department $department): Ticket
+    private function createTicket(?Department $department) : Ticket
     {
         $faker = $this->getFaker();
         return $this->ticketRepository->createTicket(
@@ -116,7 +116,7 @@ class DevCreateFakerTickets extends Command
         );
     }
 
-    private function createReplies(Ticket $ticket, EmailAddressValue $admin, int $repeat): TicketUpdateCollection
+    private function createReplies(Ticket $ticket, EmailAddressValue $admin, int $repeat) : TicketUpdateCollection
     {
         $faker = $this->getFaker();
         $ticketUpdates = new TicketUpdateCollection();

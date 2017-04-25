@@ -6,7 +6,6 @@ use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
-use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
 final class SmtpSendSendMailService implements SendMailServiceInterface
@@ -40,12 +39,12 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
         $this->siteName = $siteName;
     }
 
-    public function addMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate = null): void
+    public function addMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate = null) : void
     {
         $this->ticketMailingRepository->createTicketMailing($ticket, $type, $ticketUpdate);
     }
 
-    public function send(TicketMailing $ticketMailing): void
+    public function send(TicketMailing $ticketMailing) : void
     {
         $ticket = $ticketMailing->getTicket();
         $mail = $this->mailTemplateFactory->getMail(
@@ -63,7 +62,7 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
         $this->ticketMailingRepository->setSent($ticketMailing);
     }
 
-    private function createMessage(Ticket $ticket, MailTemplateInterface $mail): \Swift_Message
+    private function createMessage(Ticket $ticket, MailTemplateInterface $mail) : \Swift_Message
     {
         $fromMail = $ticket->getDepartment()
             ? $ticket->getDepartment()->getEmail()->toString()

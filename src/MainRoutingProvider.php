@@ -36,7 +36,7 @@ class MainRoutingProvider implements RoutingProviderInterface
         $this->container = $container;
     }
 
-    public function registerRoutes(RouterInterface $router): void
+    public function registerRoutes(RouterInterface $router) : void
     {
         /** @var  SymfonyRouter $router */
 

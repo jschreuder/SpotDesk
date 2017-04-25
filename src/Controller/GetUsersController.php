@@ -19,7 +19,7 @@ class GetUsersController implements ControllerInterface
         $this->userRepository = $userRepository;
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $users = $this->userRepository->getUsers();
 

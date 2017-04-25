@@ -56,87 +56,87 @@ class Mailbox
         $this->lastCheck = $lastCheck;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
 
-    public function setName(string $name): void
+    public function setName(string $name) : void
     {
         $this->name = $name;
     }
 
-    public function getDepartment(): ?Department
+    public function getDepartment() : ?Department
     {
         return $this->department;
     }
 
-    public function setDepartment(?Department $department): void
+    public function setDepartment(?Department $department) : void
     {
         $this->department = $department;
     }
 
-    public function getImapServer(): string
+    public function getImapServer() : string
     {
         return $this->imapServer;
     }
 
-    public function setImapServer(string $imapServer): void
+    public function setImapServer(string $imapServer) : void
     {
         $this->imapServer = $imapServer;
     }
 
-    public function getImapPort(): int
+    public function getImapPort() : int
     {
         return $this->imapPort;
     }
 
-    public function setImapPort(int $imapPort): void
+    public function setImapPort(int $imapPort) : void
     {
         $this->imapPort = $imapPort;
     }
 
-    public function getImapSecurity(): MailTransportSecurityValue
+    public function getImapSecurity() : MailTransportSecurityValue
     {
         return $this->imapSecurity;
     }
 
-    public function setImapSecurity(MailTransportSecurityValue $imapSecurity): void
+    public function setImapSecurity(MailTransportSecurityValue $imapSecurity) : void
     {
         $this->imapSecurity = $imapSecurity;
     }
 
-    public function getImapUser(): string
+    public function getImapUser() : string
     {
         return $this->imapUser;
     }
 
-    public function setImapUser(string $imapUser): void
+    public function setImapUser(string $imapUser) : void
     {
         $this->imapUser = $imapUser;
     }
 
-    public function getImapPass(): string
+    public function getImapPass() : string
     {
         return $this->imapPass;
     }
 
-    public function setImapPass(string $imapPass): void
+    public function setImapPass(string $imapPass) : void
     {
         $this->imapPass = $imapPass;
     }
 
-    public function getLastCheck(): \DateTimeInterface
+    public function getLastCheck() : \DateTimeInterface
     {
         return $this->lastCheck;
     }
 
-    public function setLastCheck(\DateTimeInterface $lastCheck): void
+    public function setLastCheck(\DateTimeInterface $lastCheck) : void
     {
         $this->lastCheck = $lastCheck;
     }

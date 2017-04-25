@@ -25,7 +25,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         $this->departmentRepository = $departmentRepository;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array)$request->getParsedBody();
         $body['department_id'] = $request->getAttribute('department_id');
@@ -37,7 +37,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         return $request->withParsedBody($filter->filter($body));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('department_id')->uuid();
@@ -50,7 +50,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
         $department = $this->departmentRepository->getDepartment(Uuid::fromString($body['department_id']));

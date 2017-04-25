@@ -23,32 +23,32 @@ class Status
         $this->type = $type;
     }
 
-    public function getName(): string
+    public function getName() : string
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(string $status) : void
     {
         $this->status = $status;
     }
 
-    public function getType(): StatusTypeValue
+    public function getType() : StatusTypeValue
     {
         return $this->type;
     }
 
-    public function isOpen(): bool
+    public function isOpen() : bool
     {
         return $this->type->toString() === StatusTypeValue::TYPE_OPEN;
     }
 
-    public function isPaused(): bool
+    public function isPaused() : bool
     {
         return $this->type->toString() === StatusTypeValue::TYPE_PAUSED;
     }
 
-    public function isClosed(): bool
+    public function isClosed() : bool
     {
         return $this->type->toString() === StatusTypeValue::TYPE_CLOSED;
     }

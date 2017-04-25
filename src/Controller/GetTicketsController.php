@@ -27,14 +27,14 @@ class GetTicketsController implements ControllerInterface, RequestFilterInterfac
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $filter = new Filter();
         $filter->values(['limit', 'page'])->int();
         return $request->withQueryParams($filter->filter($request->getQueryParams()));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->optional('status_type')->string()->inArray(StatusTypeValue::getValues(), true);
@@ -49,7 +49,7 @@ class GetTicketsController implements ControllerInterface, RequestFilterInterfac
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         /** @var  SessionInterface $session */
         $session = $request->getAttribute('session');

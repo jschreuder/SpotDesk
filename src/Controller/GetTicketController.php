@@ -20,7 +20,7 @@ class GetTicketController implements ControllerInterface
         $this->ticketRepository = $ticketRepository;
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $ticketId = Uuid::fromString($request->getAttribute('ticket_id'));
         $ticket = $this->ticketRepository->getTicket($ticketId);
@@ -43,7 +43,7 @@ class GetTicketController implements ControllerInterface
                 'updates' => $ticket->getUpdates(),
                 'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
             ],
-            'ticket_updates' => array_map(function (TicketUpdate $ticketUpdate): array {
+            'ticket_updates' => array_map(function (TicketUpdate $ticketUpdate) : array {
                 return [
                     'ticket_update_id' => $ticketUpdate->getId()->toString(),
                     'message' => $ticketUpdate->getMessage(),

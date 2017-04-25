@@ -36,7 +36,7 @@ use Zend\Diactoros\Response\JsonResponse;
 
 class MainServiceProvider implements ServiceProviderInterface
 {
-    public function register(Container $container): void
+    public function register(Container $container) : void
     {
         $container['app'] = function (Container $container) {
             return new ApplicationStack(
@@ -88,7 +88,7 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['requestValidator.errorHandler'] = $container->protect(function (
             ServerRequestInterface $request,
             ValidationFailedException $validationFailedException
-        ): ResponseInterface {
+        ) : ResponseInterface {
             return new JsonResponse([
                 'errors' => $validationFailedException->getValidationErrors(),
             ], 400);

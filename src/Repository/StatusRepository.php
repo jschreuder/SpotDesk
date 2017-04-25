@@ -19,12 +19,12 @@ class StatusRepository
         $this->db = $db;
     }
 
-    private function arrayToStatus(array $row): Status
+    private function arrayToStatus(array $row) : Status
     {
         return new Status($row['status'], StatusTypeValue::get($row['type']));
     }
 
-    public function getStatus(string $status): Status
+    public function getStatus(string $status) : Status
     {
         $statuses = $this->getStatuses();
         if (!isset($statuses[$status])) {
@@ -34,7 +34,7 @@ class StatusRepository
         return $statuses[$status];
     }
 
-    public function getStatuses(): StatusCollection
+    public function getStatuses() : StatusCollection
     {
         if (is_null($this->_statuses)) {
             $query = $this->db->prepare("

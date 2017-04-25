@@ -39,7 +39,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         $this->mailService = $mailService;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array)$request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
@@ -54,7 +54,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         return $request->withParsedBody($filter->filter($body));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('ticket_id')->uuid();
@@ -69,7 +69,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
 

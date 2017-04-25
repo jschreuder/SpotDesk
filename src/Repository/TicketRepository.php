@@ -44,7 +44,7 @@ class TicketRepository
         string $message,
         ?Department $department,
         ?\DateTimeInterface $createdAt = null
-    ): Ticket {
+    ) : Ticket {
         $ticket = new Ticket(
             Uuid::uuid4(),
             random_bytes(127),
@@ -83,7 +83,7 @@ class TicketRepository
         return $ticket;
     }
 
-    private function arrayToTicket(array $row): Ticket
+    private function arrayToTicket(array $row) : Ticket
     {
         return new Ticket(
             Uuid::fromBytes($row['ticket_id']),
@@ -101,7 +101,7 @@ class TicketRepository
         );
     }
 
-    public function getTicket(UuidInterface $id): Ticket
+    public function getTicket(UuidInterface $id) : Ticket
     {
         $query = $this->db->prepare("
             SELECT * FROM `tickets` WHERE `ticket_id` = :ticket_id
@@ -122,7 +122,7 @@ class TicketRepository
         int $page,
         string $sortBy,
         string $sortDirection = 'ASC'
-    ): TicketCollection {
+    ) : TicketCollection {
         if (!in_array($sortBy, self::ALLOWED_SORT_COLUMNS)) {
             throw new \InvalidArgumentException('Invalid column for sorting: ' . $sortBy);
         }
@@ -170,7 +170,7 @@ class TicketRepository
         return $ticketCollection;
     }
 
-    public function updateTicketStatus(Ticket $ticket, Status $status): void
+    public function updateTicketStatus(Ticket $ticket, Status $status) : void
     {
         $query = $this->db->prepare("
             UPDATE `tickets`
@@ -188,7 +188,7 @@ class TicketRepository
         $ticket->setStatus($status);
     }
 
-    public function updateTicketDepartment(Ticket $ticket, ?Department $department): void
+    public function updateTicketDepartment(Ticket $ticket, ?Department $department) : void
     {
         $query = $this->db->prepare("
             UPDATE `tickets`
@@ -206,7 +206,7 @@ class TicketRepository
         $ticket->setDepartment($department);
     }
 
-    public function deleteTicket(Ticket $ticket): void
+    public function deleteTicket(Ticket $ticket) : void
     {
         $query = $this->db->prepare("
             DELETE FROM `tickets`
@@ -217,7 +217,7 @@ class TicketRepository
         ]);
     }
 
-    public function updateTicketUpdateStats(Ticket $ticket): void
+    public function updateTicketUpdateStats(Ticket $ticket) : void
     {
         $query = $this->db->prepare("
             UPDATE `tickets` t
@@ -238,7 +238,7 @@ class TicketRepository
         string $message,
         bool $internal,
         ?\DateTimeInterface $createdAt = null
-    ): TicketUpdate {
+    ) : TicketUpdate {
         $ticketUpdate = new TicketUpdate(
             Uuid::uuid4(),
             $ticket,
@@ -266,7 +266,7 @@ class TicketRepository
         return $ticketUpdate;
     }
 
-    private function arrayToTicketUpdate(array $row, Ticket $ticket): TicketUpdate
+    private function arrayToTicketUpdate(array $row, Ticket $ticket) : TicketUpdate
     {
         return new TicketUpdate(
             Uuid::fromBytes($row['ticket_update_id']),
@@ -278,7 +278,7 @@ class TicketRepository
         );
     }
 
-    public function getTicketUpdates(Ticket $ticket): TicketUpdateCollection
+    public function getTicketUpdates(Ticket $ticket) : TicketUpdateCollection
     {
         $query = $this->db->prepare("
             SELECT * FROM `ticket_updates` WHERE `ticket_id` = :ticket_id ORDER BY `created_at` ASC
@@ -292,7 +292,7 @@ class TicketRepository
         return $updateCollection;
     }
 
-    private function arrayToTicketSubscription(array $row, Ticket $ticket): TicketSubscription
+    private function arrayToTicketSubscription(array $row, Ticket $ticket) : TicketSubscription
     {
         return new TicketSubscription(
             Uuid::fromBytes($row['ticket_subscription_id']),
@@ -301,7 +301,7 @@ class TicketRepository
         );
     }
 
-    public function getTicketSubscriptions(Ticket $ticket): TicketSubscriptionCollection
+    public function getTicketSubscriptions(Ticket $ticket) : TicketSubscriptionCollection
     {
         $query = $this->db->prepare("
             SELECT * FROM `ticket_subscriptions` WHERE `ticket_id` = :ticket_id
@@ -321,7 +321,7 @@ class TicketRepository
         string $message,
         \DateTimeInterface $createdAt,
         ?Department $department
-    ): bool {
+    ) : bool {
         $departmentWhere = (is_null($department) ? "IS NULL" : "= :department_id");
         $query = $this->db->prepare("
             SELECT COUNT(*)

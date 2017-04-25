@@ -2,7 +2,6 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
-use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Collection\UserCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
@@ -18,7 +17,7 @@ class UserRepository
         $this->db = $db;
     }
 
-    public function createUser(User $user): void
+    public function createUser(User $user) : void
     {
         $query = $this->db->prepare("
             INSERT INTO `users` (`email`, `display_name`, `password`)
@@ -31,7 +30,7 @@ class UserRepository
         ]);
     }
 
-    private function arrayToUser(array $row): User
+    private function arrayToUser(array $row) : User
     {
         return new User(
             EmailAddressValue::get($row['email']),
@@ -41,7 +40,7 @@ class UserRepository
         );
     }
 
-    public function getUsers(): UserCollection
+    public function getUsers() : UserCollection
     {
         $query = $this->db->query("SELECT * FROM `users`");
         $users = new UserCollection();
@@ -51,7 +50,7 @@ class UserRepository
         return $users;
     }
 
-    public function getUserByEmail(EmailAddressValue $email): User
+    public function getUserByEmail(EmailAddressValue $email) : User
     {
         $query = $this->db->prepare("SELECT * FROM `users` WHERE `email` = :email");
         $query->execute(['email' => $email->toString()]);
@@ -63,7 +62,7 @@ class UserRepository
         return $this->arrayToUser($query->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function updatePassword(User $user, string $newPassword): void
+    public function updatePassword(User $user, string $newPassword) : void
     {
         $query = $this->db->prepare("
             UPDATE `users` 
@@ -78,7 +77,7 @@ class UserRepository
         $user->setPassword($newPassword);
     }
 
-    public function assignUserToDepartment(User $user, Department $department): void
+    public function assignUserToDepartment(User $user, Department $department) : void
     {
         $query = $this->db->prepare("
             INSERT INTO `users_departments` (`email`, `department_id`)
@@ -90,7 +89,7 @@ class UserRepository
         ]);
     }
 
-    public function removeUserFromDepartment(User $user, Department $department): void
+    public function removeUserFromDepartment(User $user, Department $department) : void
     {
         $query = $this->db->prepare("
             DELETE FROM `users_departments`
@@ -102,7 +101,7 @@ class UserRepository
         ]);
     }
 
-    public function deleteUser(User $user): void
+    public function deleteUser(User $user) : void
     {
         $query = $this->db->prepare("
             DELETE FROM `users`

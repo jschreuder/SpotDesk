@@ -15,17 +15,17 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
         }
     }
 
-    public function push(TicketSubscription $ticketSubscription): void
+    public function push(TicketSubscription $ticketSubscription) : void
     {
         $this->collection[$ticketSubscription->getId()->toString()] = $ticketSubscription;
     }
 
-    public function current(): TicketSubscription
+    public function current() : TicketSubscription
     {
         return current($this->collection);
     }
 
-    public function offsetGet($ticketSubscriptionId): TicketSubscription
+    public function offsetGet($ticketSubscriptionId) : TicketSubscription
     {
         if (!$this->offsetExists($ticketSubscriptionId)) {
             throw new \OutOfBoundsException('No such status: ' . $ticketSubscriptionId);

@@ -19,7 +19,7 @@ class GetStatusesController implements ControllerInterface
         $this->statusRepository = $statusRepository;
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $statuses = $this->statusRepository->getStatuses();
 

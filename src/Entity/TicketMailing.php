@@ -35,32 +35,32 @@ class TicketMailing
         $this->sentAt = $sentAt;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getTicket(): Ticket
+    public function getTicket() : Ticket
     {
         return $this->ticket;
     }
 
-    public function getTicketUpdate(): ?TicketUpdate
+    public function getTicketUpdate() : ?TicketUpdate
     {
         return $this->ticketUpdate;
     }
 
-    public function getType(): string
+    public function getType() : string
     {
         return $this->type;
     }
 
-    public function getSentAt(): ?\DateTimeInterface
+    public function getSentAt() : ?\DateTimeInterface
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt): void
+    public function setSentAt(\DateTimeInterface $sentAt) : void
     {
         $this->sentAt = $sentAt;
     }

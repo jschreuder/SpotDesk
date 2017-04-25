@@ -24,7 +24,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
         $this->userRepository = $userRepository;
     }
 
-    public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
+    public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array)$request->getParsedBody();
         $body['email'] = base64_decode($request->getAttribute('email'));
@@ -34,7 +34,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
         return $request->withParsedBody($filter->filter($body));
     }
 
-    public function validateRequest(ServerRequestInterface $request): void
+    public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
         $validator->required('email')->email();
@@ -45,7 +45,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
         }
     }
 
-    public function execute(ServerRequestInterface $request): ResponseInterface
+    public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array)$request->getParsedBody();
         $email = EmailAddressValue::get($body['email']);

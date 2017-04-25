@@ -15,17 +15,17 @@ class StatusCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(Status $status): void
+    public function push(Status $status) : void
     {
         $this->collection[$status->getName()] = $status;
     }
 
-    public function current(): Status
+    public function current() : Status
     {
         return current($this->collection);
     }
 
-    public function offsetGet($status): Status
+    public function offsetGet($status) : Status
     {
         if (!$this->offsetExists($status)) {
             throw new \OutOfBoundsException('No such status: ' . $status);

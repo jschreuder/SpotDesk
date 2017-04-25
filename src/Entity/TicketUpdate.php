@@ -41,32 +41,32 @@ class TicketUpdate
         $this->internal = $internal;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getTicket(): Ticket
+    public function getTicket() : Ticket
     {
         return $this->ticket;
     }
 
-    public function getEmail(): EmailAddressValue
+    public function getEmail() : EmailAddressValue
     {
         return $this->email;
     }
 
-    public function getMessage(): string
+    public function getMessage() : string
     {
         return $this->message;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt() : \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function isInternal(): bool
+    public function isInternal() : bool
     {
         return $this->internal;
     }

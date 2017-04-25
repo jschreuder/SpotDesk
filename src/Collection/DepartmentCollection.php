@@ -15,17 +15,17 @@ class DepartmentCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(Department $department): void
+    public function push(Department $department) : void
     {
         $this->collection[$department->getId()->toString()] = $department;
     }
 
-    public function current(): Department
+    public function current() : Department
     {
         return current($this->collection);
     }
 
-    public function offsetGet($departmentId): Department
+    public function offsetGet($departmentId) : Department
     {
         if (!isset($this[strval($departmentId)])) {
             throw new \OutOfBoundsException('No such department: ' . $departmentId);

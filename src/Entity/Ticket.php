@@ -61,72 +61,72 @@ class Ticket
         $this->department = $department;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getSecretKey(): string
+    public function getSecretKey() : string
     {
         return $this->secretKey;
     }
 
-    public function getEmail(): EmailAddressValue
+    public function getEmail() : EmailAddressValue
     {
         return $this->email;
     }
 
-    public function getSubject(): string
+    public function getSubject() : string
     {
         return $this->subject;
     }
 
-    public function getMessage(): string
+    public function getMessage() : string
     {
         return $this->message;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt() : \DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function getUpdates(): int
+    public function getUpdates() : int
     {
         return $this->updates;
     }
 
-    public function setUpdates(int $updates): void
+    public function setUpdates(int $updates) : void
     {
         $this->updates = $updates;
     }
 
-    public function getLastUpdate(): \DateTimeInterface
+    public function getLastUpdate() : \DateTimeInterface
     {
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(\DateTimeInterface $lastUpdate): void
+    public function setLastUpdate(\DateTimeInterface $lastUpdate) : void
     {
         $this->lastUpdate = $lastUpdate;
     }
 
-    public function getStatus(): Status
+    public function getStatus() : Status
     {
         return $this->status;
     }
 
-    public function setStatus(Status $status): void
+    public function setStatus(Status $status) : void
     {
         $this->status = $status;
     }
 
-    public function getDepartment(): ?Department
+    public function getDepartment() : ?Department
     {
         return $this->department;
     }
 
-    public function setDepartment(?Department $department): void
+    public function setDepartment(?Department $department) : void
     {
         $this->department = $department;
     }

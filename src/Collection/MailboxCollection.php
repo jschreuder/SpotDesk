@@ -15,17 +15,17 @@ class MailboxCollection implements \ArrayAccess, \Countable, \Iterator
         }
     }
 
-    public function push(Mailbox $mailbox): void
+    public function push(Mailbox $mailbox) : void
     {
         $this->collection[$mailbox->getId()->toString()] = $mailbox;
     }
 
-    public function current(): Mailbox
+    public function current() : Mailbox
     {
         return current($this->collection);
     }
 
-    public function offsetGet($mailboxId): Mailbox
+    public function offsetGet($mailboxId) : Mailbox
     {
         if (!$this->offsetExists($mailboxId)) {
             throw new \OutOfBoundsException('No such status: ' . $mailboxId);

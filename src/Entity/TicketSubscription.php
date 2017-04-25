@@ -23,17 +23,17 @@ class TicketSubscription
         $this->email = $email;
     }
 
-    public function getId(): UuidInterface
+    public function getId() : UuidInterface
     {
         return $this->id;
     }
 
-    public function getTicket(): Ticket
+    public function getTicket() : Ticket
     {
         return $this->ticket;
     }
 
-    public function getEmail(): EmailAddressValue
+    public function getEmail() : EmailAddressValue
     {
         return $this->email;
     }

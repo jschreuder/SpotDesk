@@ -17,7 +17,7 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
         $this->siteUrl = $siteUrl;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate): ResponseInterface
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $response = $delegate->process($request);
 

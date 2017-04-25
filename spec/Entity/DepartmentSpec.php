@@ -47,10 +47,7 @@ class DepartmentSpec extends ObjectBehavior
     public function it_can_instantiate_without_parent()
     {
         $this->beConstructedWith($this->id, $this->name, null, $this->email);
-        $this->getId()->shouldReturn($this->id);
-        $this->getName()->shouldReturn($this->name);
         $this->getParent()->shouldReturn(null);
-        $this->getEmail()->shouldReturn($this->email);
     }
 
     public function it_can_change_some_properties(Department $parent)

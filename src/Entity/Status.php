@@ -12,25 +12,25 @@ class Status
     const STATUS_CLOSED = 'closed';
 
     /** @var  string */
-    private $status;
+    private $name;
 
     /** @var  StatusTypeValue */
     private $type;
 
-    public function __construct(string $status, StatusTypeValue $type)
+    public function __construct(string $name, StatusTypeValue $type)
     {
-        $this->status = $status;
+        $this->name = $name;
         $this->type = $type;
     }
 
     public function getName() : string
     {
-        return $this->status;
+        return $this->name;
     }
 
-    public function setStatus(string $status) : void
+    public function setName(string $name) : void
     {
-        $this->status = $status;
+        $this->name = $name;
     }
 
     public function getType() : StatusTypeValue

@@ -2,7 +2,7 @@
 
 namespace jschreuder\SpotDesk\Value;
 
-class EmailAddressValue
+final class EmailAddressValue
 {
     public static function get(string $emailAddress): self
     {

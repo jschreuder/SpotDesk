@@ -2,7 +2,7 @@
 
 namespace jschreuder\SpotDesk\Value;
 
-class StatusTypeValue
+final class StatusTypeValue
 {
     const TYPE_OPEN = 'open';
     const TYPE_PAUSED = 'paused';

@@ -2,7 +2,7 @@
 
 namespace jschreuder\SpotDesk\Value;
 
-class MailTransportSecurityValue
+final class MailTransportSecurityValue
 {
     const SECURITY_NONE = 'none';
     const SECURITY_SSL = 'ssl';

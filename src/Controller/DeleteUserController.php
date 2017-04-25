@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -26,7 +26,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $body['email'] = base64_decode($request->getAttribute('email'));
         $filter = new Filter();
         $filter->value('email')->string()->trim();
@@ -39,7 +39,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
         $validator = new Validator();
         $validator->required('email')->email();
 
-        $validationResult = $validator->validate((array) $request->getParsedBody());
+        $validationResult = $validator->validate((array)$request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -47,7 +47,7 @@ class DeleteUserController implements ControllerInterface, RequestFilterInterfac
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $email = EmailAddressValue::get($body['email']);
 
         $user = $this->userRepository->getUserByEmail($email);

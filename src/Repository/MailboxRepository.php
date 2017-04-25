@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Repository;
 
@@ -32,8 +32,7 @@ class MailboxRepository
         string $imapUser,
         string $imapPass,
         ?\DateTimeInterface $lastCheck = null
-    ): Mailbox
-    {
+    ): Mailbox {
         $mailbox = new Mailbox(
             Uuid::uuid4(),
             $name,

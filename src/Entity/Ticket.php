@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Entity;
 
@@ -48,8 +48,7 @@ class Ticket
         \DateTimeInterface $lastUpdate,
         Status $status,
         ?Department $department
-    )
-    {
+    ) {
         $this->id = $id;
         $this->secretKey = $secretKey;
         $this->email = $email;

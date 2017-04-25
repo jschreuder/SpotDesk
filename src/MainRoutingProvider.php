@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk;
 
@@ -38,7 +38,7 @@ class MainRoutingProvider implements RoutingProviderInterface
 
     public function registerRoutes(RouterInterface $router): void
     {
-        /** @var  SymfonyRouter  $router */
+        /** @var  SymfonyRouter $router */
 
         $router->get('homepage', '/', function () {
             return CallableController::fromCallable($this->container['site.template']);

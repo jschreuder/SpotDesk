@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace spec\jschreuder\SpotDesk\Collection;
 
@@ -25,8 +25,11 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($ticketMailing2);
     }
 
-    public function it_can_push_items(TicketMailing $ticketMailing1, TicketMailing $ticketMailing2, TicketMailing $ticketMailing3)
-    {
+    public function it_can_push_items(
+        TicketMailing $ticketMailing1,
+        TicketMailing $ticketMailing2,
+        TicketMailing $ticketMailing3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -43,8 +46,11 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($ticketMailing3);
     }
 
-    public function it_is_iterable(TicketMailing $ticketMailing1, TicketMailing $ticketMailing2, TicketMailing $ticketMailing3)
-    {
+    public function it_is_iterable(
+        TicketMailing $ticketMailing1,
+        TicketMailing $ticketMailing2,
+        TicketMailing $ticketMailing3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -67,8 +73,11 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($ticketMailing1);
     }
 
-    public function it_is_countable(TicketMailing $ticketMailing1, TicketMailing $ticketMailing2, TicketMailing $ticketMailing3)
-    {
+    public function it_is_countable(
+        TicketMailing $ticketMailing1,
+        TicketMailing $ticketMailing2,
+        TicketMailing $ticketMailing3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -82,8 +91,11 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(TicketMailing $ticketMailing1, TicketMailing $ticketMailing2, TicketMailing $ticketMailing3)
-    {
+    public function it_can_return_array(
+        TicketMailing $ticketMailing1,
+        TicketMailing $ticketMailing2,
+        TicketMailing $ticketMailing3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();

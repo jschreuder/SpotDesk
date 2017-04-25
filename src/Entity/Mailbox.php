@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Entity;
 
@@ -44,8 +44,7 @@ class Mailbox
         string $imapUser,
         string $imapPass,
         \DateTimeInterface $lastCheck
-    )
-    {
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->department = $department;

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -25,7 +25,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $filter = new Filter();
         $filter->value('email')->string()->trim();
         $filter->value('display_name')->string()->trim();
@@ -41,7 +41,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
         $validator->optional('display_name')->string()->lengthBetween(2, 63);
         $validator->required('password')->string()->lengthBetween(8, null);
 
-        $validationResult = $validator->validate((array) $request->getParsedBody());
+        $validationResult = $validator->validate((array)$request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -49,7 +49,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
 
         $user = $this->authenticationService->createUser(
             $body['email'],
@@ -57,9 +57,11 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
             $body['password']
         );
 
-        return new JsonResponse(['user' => [
-            'email' => $user->getEmail(),
-            'display_name' => $user->getDisplayName(),
-        ]], 201);
+        return new JsonResponse([
+            'user' => [
+                'email' => $user->getEmail(),
+                'display_name' => $user->getDisplayName(),
+            ]
+        ], 201);
     }
 }

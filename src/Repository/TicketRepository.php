@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Repository;
 
@@ -32,8 +32,7 @@ class TicketRepository
         \PDO $db,
         StatusRepository $statusRepository,
         DepartmentRepository $departmentRepository
-    )
-    {
+    ) {
         $this->db = $db;
         $this->statusRepository = $statusRepository;
         $this->departmentRepository = $departmentRepository;
@@ -45,8 +44,7 @@ class TicketRepository
         string $message,
         ?Department $department,
         ?\DateTimeInterface $createdAt = null
-    ): Ticket
-    {
+    ): Ticket {
         $ticket = new Ticket(
             Uuid::uuid4(),
             random_bytes(127),
@@ -124,8 +122,7 @@ class TicketRepository
         int $page,
         string $sortBy,
         string $sortDirection = 'ASC'
-    ): TicketCollection
-    {
+    ): TicketCollection {
         if (!in_array($sortBy, self::ALLOWED_SORT_COLUMNS)) {
             throw new \InvalidArgumentException('Invalid column for sorting: ' . $sortBy);
         }
@@ -157,7 +154,7 @@ class TicketRepository
         }
 
         $countQuery = $this->db->prepare("
-            SELECT COUNT(t.`ticket_id`) as ticket_count
+            SELECT COUNT(t.`ticket_id`) AS ticket_count
             FROM `tickets` t
             LEFT JOIN `departments` d ON t.`department_id` = d.`department_id`
             LEFT JOIN `users_departments` ud ON (ud.`department_id` = d.`department_id` AND ud.`email` = :email)
@@ -241,8 +238,7 @@ class TicketRepository
         string $message,
         bool $internal,
         ?\DateTimeInterface $createdAt = null
-    ): TicketUpdate
-    {
+    ): TicketUpdate {
         $ticketUpdate = new TicketUpdate(
             Uuid::uuid4(),
             $ticket,
@@ -325,8 +321,7 @@ class TicketRepository
         string $message,
         \DateTimeInterface $createdAt,
         ?Department $department
-    ): bool
-    {
+    ): bool {
         $departmentWhere = (is_null($department) ? "IS NULL" : "= :department_id");
         $query = $this->db->prepare("
             SELECT COUNT(*)

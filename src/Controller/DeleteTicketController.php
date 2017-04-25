@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -27,7 +27,7 @@ class DeleteTicketController implements ControllerInterface, RequestFilterInterf
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
         $filter->value('ticket_id')->string()->trim();
@@ -40,7 +40,7 @@ class DeleteTicketController implements ControllerInterface, RequestFilterInterf
         $validator = new Validator();
         $validator->required('ticket_id')->uuid();
 
-        $validationResult = $validator->validate((array) $request->getParsedBody());
+        $validationResult = $validator->validate((array)$request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -48,7 +48,7 @@ class DeleteTicketController implements ControllerInterface, RequestFilterInterf
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
         $this->ticketRepository->deleteTicket($ticket);
 

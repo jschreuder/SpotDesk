@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk;
 
@@ -123,10 +123,10 @@ class MainServiceProvider implements ServiceProviderInterface
 
         $container['mail.swiftmailer'] = function () use ($container) {
             $transport = \Swift_SmtpTransport::newInstance(
-                    $container['smtp.server'],
-                    $container['smtp.port'],
-                    $container['smtp.security']
-                )
+                $container['smtp.server'],
+                $container['smtp.port'],
+                $container['smtp.security']
+            )
                 ->setUsername($container['smtp.user'])
                 ->setPassword($container['smtp.pass']);
             return \Swift_Mailer::newInstance($transport);

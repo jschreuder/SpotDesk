@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -31,7 +31,7 @@ class UpdateTicketDepartmentController implements ControllerInterface, RequestFi
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
         $filter->value('ticket_id')->string()->trim();
@@ -46,7 +46,7 @@ class UpdateTicketDepartmentController implements ControllerInterface, RequestFi
         $validator->required('ticket_id')->uuid();
         $validator->optional('department_id')->uuid();
 
-        $validationResult = $validator->validate((array) $request->getParsedBody());
+        $validationResult = $validator->validate((array)$request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -54,7 +54,7 @@ class UpdateTicketDepartmentController implements ControllerInterface, RequestFi
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
 
         $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
         $department = $body['department_id']

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Command;
 
@@ -16,8 +16,10 @@ class SendMailingsCommand extends Command
     /** @var  SendMailServiceInterface */
     private $mailService;
 
-    public function __construct(TicketMailingRepository $ticketMailingsRepository, SendMailServiceInterface $mailService)
-    {
+    public function __construct(
+        TicketMailingRepository $ticketMailingsRepository,
+        SendMailServiceInterface $mailService
+    ) {
         $this->ticketMailingsRepository = $ticketMailingsRepository;
         $this->mailService = $mailService;
         parent::__construct();

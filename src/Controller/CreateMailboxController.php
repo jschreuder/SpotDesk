@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Controller;
 
@@ -32,7 +32,7 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
 
     public function filterRequest(ServerRequestInterface $request): ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
         $filter = new Filter();
         $filter->value('name')->string()->stripHtml()->trim();
         $filter->value('department_id')->string()->trim();
@@ -56,7 +56,7 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
         $validator->required('imap_user')->string();
         $validator->required('imap_pass')->string();
 
-        $validationResult = $validator->validate((array) $request->getParsedBody());
+        $validationResult = $validator->validate((array)$request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -64,7 +64,7 @@ class CreateMailboxController implements ControllerInterface, RequestFilterInter
 
     public function execute(ServerRequestInterface $request): ResponseInterface
     {
-        $body = (array) $request->getParsedBody();
+        $body = (array)$request->getParsedBody();
 
         $department = empty($body['department_id'])
             ? null

@@ -1,10 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: jschreuder
- * Date: 25-4-17
- * Time: 22:43
- */
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Service\SendMailService;
 

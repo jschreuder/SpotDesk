@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace spec\jschreuder\SpotDesk\Collection;
 
@@ -25,8 +25,11 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($ticketUpdate2);
     }
 
-    public function it_can_push_items(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2, TicketUpdate $ticketUpdate3)
-    {
+    public function it_can_push_items(
+        TicketUpdate $ticketUpdate1,
+        TicketUpdate $ticketUpdate2,
+        TicketUpdate $ticketUpdate3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -43,8 +46,11 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($ticketUpdate3);
     }
 
-    public function it_is_iterable(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2, TicketUpdate $ticketUpdate3)
-    {
+    public function it_is_iterable(
+        TicketUpdate $ticketUpdate1,
+        TicketUpdate $ticketUpdate2,
+        TicketUpdate $ticketUpdate3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -67,8 +73,11 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($ticketUpdate1);
     }
 
-    public function it_is_countable(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2, TicketUpdate $ticketUpdate3)
-    {
+    public function it_is_countable(
+        TicketUpdate $ticketUpdate1,
+        TicketUpdate $ticketUpdate2,
+        TicketUpdate $ticketUpdate3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -82,8 +91,11 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2, TicketUpdate $ticketUpdate3)
-    {
+    public function it_can_return_array(
+        TicketUpdate $ticketUpdate1,
+        TicketUpdate $ticketUpdate2,
+        TicketUpdate $ticketUpdate3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();

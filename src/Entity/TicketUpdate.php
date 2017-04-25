@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Entity;
 
@@ -32,8 +32,7 @@ class TicketUpdate
         string $message,
         \DateTimeInterface $createdAt,
         bool $internal
-    )
-    {
+    ) {
         $this->id = $id;
         $this->ticket = $ticket;
         $this->email = $email;

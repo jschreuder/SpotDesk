@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Command;
 
@@ -29,8 +29,7 @@ class CheckMailboxesCommand extends Command
         MailboxRepository $mailboxRepository,
         TicketRepository $ticketRepository,
         SendMailServiceInterface $mailService
-    )
-    {
+    ) {
         $this->mailboxRepository = $mailboxRepository;
         $this->ticketRepository = $ticketRepository;
         $this->mailService = $mailService;

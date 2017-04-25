@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 return [
     'logger' => function () {
@@ -15,25 +15,25 @@ return [
     'site.title' => 'SpotDesk',
 
     // Database settings
-    'db.dsn'    => 'mysql:host=localhost;charset=utf8',
+    'db.dsn' => 'mysql:host=localhost;charset=utf8',
     'db.dbname' => 'spotdesk_dev',
-    'db.user'   => 'root',
-    'db.pass'   => '',
+    'db.user' => 'root',
+    'db.pass' => '',
 
     // User password hashing configuration
-    'password.algo'    => PASSWORD_BCRYPT,
+    'password.algo' => PASSWORD_BCRYPT,
     'password.options' => [],
 
     // User session configuration
-    'session.secret_key'    => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
-    'session.duration'      => 7200, // session expires after 2 hours
+    'session.secret_key' => null, // GIVE THIS A SECURE VALUE, DO NOT USE A DEFAULT OR PLACEHOLDER!
+    'session.duration' => 7200, // session expires after 2 hours
     'session.refresh_after' => .25,  // session is refreshed after .25 * 7200 = 1800 seconds (30 minutes)
 
     // SMTP configuration
-    'smtp.from'     => 'test@mail.dev',
-    'smtp.server'   => 'localhost',
-    'smtp.port'     => 587,
+    'smtp.from' => 'test@mail.dev',
+    'smtp.server' => 'localhost',
+    'smtp.port' => 587,
     'smtp.security' => null, // null, 'ssl' or 'tls'
-    'smtp.user'     => '',
-    'smtp.pass'     => '',
+    'smtp.user' => '',
+    'smtp.pass' => '',
 ];

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
@@ -51,8 +51,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         $jwtKey,
         int $sessionDuration = 3600,
         float $sessionRefreshAfter = .5
-    )
-    {
+    ) {
         $this->userRepository = $userRepository;
         $this->passwordAlgorithm = $passwordAlgorithm;
         $this->passwordOptions = $passwordOptions;
@@ -148,8 +147,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
         ResponseInterface $response,
         string $authorizationHeader,
         SessionInterface $session
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         $jwt = $session->get('jwt');
         $issuedAt = $jwt->getClaim('iat');
 

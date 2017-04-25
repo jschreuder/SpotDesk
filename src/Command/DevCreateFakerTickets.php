@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Command;
 
@@ -38,8 +38,7 @@ class DevCreateFakerTickets extends Command
         DepartmentRepository $departmentRepository,
         StatusRepository $statusRepository,
         FakerGenerator $faker = null
-    )
-    {
+    ) {
         $this->ticketRepository = $ticketRepository;
         $this->departmentRepository = $departmentRepository;
         $this->statusRepository = $statusRepository;

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace spec\jschreuder\SpotDesk\Collection;
 
@@ -9,8 +9,10 @@ use Ramsey\Uuid\Uuid;
 
 class TicketSubscriptionCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(TicketSubscription $ticketSubscription1, TicketSubscription $ticketSubscription2)
-    {
+    public function it_is_initializable(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $ticketSubscription1->getId()->willReturn($uuid1);
@@ -25,8 +27,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($ticketSubscription2);
     }
 
-    public function it_can_push_items(TicketSubscription $ticketSubscription1, TicketSubscription $ticketSubscription2, TicketSubscription $ticketSubscription3)
-    {
+    public function it_can_push_items(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2,
+        TicketSubscription $ticketSubscription3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -43,8 +48,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($ticketSubscription3);
     }
 
-    public function it_is_iterable(TicketSubscription $ticketSubscription1, TicketSubscription $ticketSubscription2, TicketSubscription $ticketSubscription3)
-    {
+    public function it_is_iterable(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2,
+        TicketSubscription $ticketSubscription3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -53,7 +61,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $ticketSubscription3->getId()->willReturn($uuid3);
         $this->beConstructedWith($ticketSubscription1, $ticketSubscription2, $ticketSubscription3);
 
-        $ticketSubscriptions = [[$uuid1, $ticketSubscription1], [$uuid2, $ticketSubscription2], [$uuid3, $ticketSubscription3]];
+        $ticketSubscriptions = [
+            [$uuid1, $ticketSubscription1],
+            [$uuid2, $ticketSubscription2],
+            [$uuid3, $ticketSubscription3]
+        ];
         foreach ($ticketSubscriptions as $pair) {
             list($uuid, $ticketSubscription) = $pair;
             $this->current()->shouldReturn($ticketSubscription);
@@ -67,8 +79,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($ticketSubscription1);
     }
 
-    public function it_is_countable(TicketSubscription $ticketSubscription1, TicketSubscription $ticketSubscription2, TicketSubscription $ticketSubscription3)
-    {
+    public function it_is_countable(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2,
+        TicketSubscription $ticketSubscription3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -82,8 +97,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(TicketSubscription $ticketSubscription1, TicketSubscription $ticketSubscription2, TicketSubscription $ticketSubscription3)
-    {
+    public function it_can_return_array(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2,
+        TicketSubscription $ticketSubscription3
+    ) {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();

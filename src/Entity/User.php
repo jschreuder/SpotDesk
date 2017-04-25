@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Entity;
 
@@ -23,8 +23,7 @@ class User
         string $displayName,
         string $password,
         ?string $totpSecret
-    )
-    {
+    ) {
         $this->email = $email;
         $this->displayName = $displayName;
         $this->password = $password;

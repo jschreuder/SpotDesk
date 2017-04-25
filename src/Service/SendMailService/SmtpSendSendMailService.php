@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace jschreuder\SpotDesk\Service\SendMailService;
 
@@ -32,8 +32,7 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
         MailTemplateFactory $mailTemplateFactory,
         EmailAddressValue $defaultFrom,
         string $siteName
-    )
-    {
+    ) {
         $this->ticketMailingRepository = $ticketMailingRepository;
         $this->swiftMailer = $swiftMailer;
         $this->mailTemplateFactory = $mailTemplateFactory;

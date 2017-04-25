@@ -77,7 +77,7 @@ final class JwtAuthenticationService implements AuthenticationServiceInterface
     {
         try {
             $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
-        } catch (\OutOfBoundsException|\DomainException $exception) {
+        } catch (\OutOfBoundsException | \DomainException $exception) {
             throw new AuthenticationFailedException('Unknown user');
         }
 

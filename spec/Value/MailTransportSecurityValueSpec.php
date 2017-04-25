@@ -37,4 +37,10 @@ class MailTransportSecurityValueSpec extends ObjectBehavior
             MailTransportSecurityValue::SECURITY_TLS,
         ]);
     }
+
+    public function it_errors_on_invalid_value()
+    {
+        $this->beConstructedThrough('get', ['nonsense']);
+        $this->shouldThrow(\DomainException::class)->duringInstantiation();
+    }
 }

@@ -41,7 +41,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
-        $body = (array)$request->getParsedBody();
+        $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $body['email'] = $request->getAttribute('session')->get('user');
         $filter = new Filter();
@@ -63,7 +63,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
         $validator->required('internal')->bool();
         $validator->optional('status_update')->string();
 
-        $validationResult = $validator->validate((array)$request->getParsedBody());
+        $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
             throw new ValidationFailedException($validationResult->getMessages());
         }
@@ -71,7 +71,7 @@ class AddTicketUpdateController implements ControllerInterface, RequestFilterInt
 
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
-        $body = (array)$request->getParsedBody();
+        $body = (array) $request->getParsedBody();
 
         $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
         $ticketUpdate = $this->ticketRepository->createTicketUpdate(

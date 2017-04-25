@@ -88,7 +88,7 @@
         ])
 
         // Intercepts all requests to add session token and to capture refreshed session tokens
-        .factory("authInterceptor", function () {
+        .factory("authInterceptor", ["$q", function ($q) {
             var interceptor = {
                 $auth: null,
                 request: function (config) {
@@ -104,15 +104,18 @@
                     if (interceptor.$auth && response.headers("SpotDesk-Authorization")) {
                         interceptor.$auth.updateToken(response.headers("SpotDesk-Authorization"));
                     }
+                    return response;
+                },
+                responseError: function (response) {
                     if (response.status === 401) {
                         interceptor.$auth.persistToken = false;
                         interceptor.$auth.updateToken(null);
                     }
-                    return response;
+                    return $q.reject(response);
                 }
             };
             return interceptor;
-        })
+        }])
 
         // Controller for the entire layout
         .controller("mainController", ["$mdSidenav", "$auth", "$title", "$adminMessage",

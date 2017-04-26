@@ -24,11 +24,12 @@ class DepartmentSpec extends ObjectBehavior
 
     public function let(UuidInterface $id, Department $parent)
     {
-        $this->id = $id;
-        $this->name = 'name';
-        $this->parent = $parent;
-        $this->email = EmailAddressValue::get('dep@art.ment');
-        $this->beConstructedWith($id, $this->name, $parent, $this->email);
+        $this->beConstructedWith(
+            $this->id = $id,
+            $this->name = 'name',
+            $this->parent = $parent,
+            $this->email = EmailAddressValue::get('dep@art.ment')
+        );
     }
 
     public function it_is_initializable()

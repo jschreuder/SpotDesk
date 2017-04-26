@@ -16,9 +16,10 @@ class StatusSpec extends ObjectBehavior
 
     public function let()
     {
-        $this->name = 'status';
-        $this->type = StatusTypeValue::get(StatusTypeValue::TYPE_PAUSED);
-        $this->beConstructedWith($this->name, $this->type);
+        $this->beConstructedWith(
+            $this->name = 'status',
+            $this->type = StatusTypeValue::get(StatusTypeValue::TYPE_PAUSED)
+        );
     }
 
     public function it_is_initializable()

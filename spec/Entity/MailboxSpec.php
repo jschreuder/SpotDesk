@@ -40,25 +40,16 @@ class MailboxSpec extends ObjectBehavior
 
     public function let(UuidInterface $id, Department $department)
     {
-        $this->id = $id;
-        $this->name = 'name';
-        $this->department = $department;
-        $this->imapServer = 'server.io';
-        $this->imapPort = 587;
-        $this->imapSecurity = MailTransportSecurityValue::get(MailTransportSecurityValue::SECURITY_SSL);
-        $this->imapUser = 'user';
-        $this->imapPass = 'pass';
-        $this->lastCheck = new \DateTimeImmutable('-1 month');
         $this->beConstructedWith(
-            $id,
-            $this->name,
-            $department,
-            $this->imapServer,
-            $this->imapPort,
-            $this->imapSecurity,
-            $this->imapUser,
-            $this->imapPass,
-            $this->lastCheck
+            $this->id = $id,
+            $this->name = 'name',
+            $this->department = $department,
+            $this->imapServer = 'server.io',
+            $this->imapPort = 587,
+            $this->imapSecurity = MailTransportSecurityValue::get(MailTransportSecurityValue::SECURITY_SSL),
+            $this->imapUser = 'user',
+            $this->imapPass = 'pass',
+            $this->lastCheck = new \DateTimeImmutable('-1 month')
         );
     }
 

@@ -10,7 +10,7 @@ use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\ValidationData;
 
-class JwtSessionStorage implements SessionStorageInterface
+final class JwtSessionStorage implements SessionStorageInterface
 {
     /** @var  string */
     private $siteUrl;

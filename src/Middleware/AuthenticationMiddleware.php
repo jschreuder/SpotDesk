@@ -12,8 +12,6 @@ use Zend\Diactoros\Response\JsonResponse;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
 {
-    const AUTHORIZATION_HEADER = 'SpotDesk-Authorization';
-
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
@@ -30,35 +28,18 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         }
         // Respond to login attempt
         if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {
-            return $this->login($request);
+            $body = (array) $request->getParsedBody();
+            return $this->authenticationService->login($body['user'] ?? '', $body['pass'] ?? '');
         }
 
         // Check login status
-        $session = $this->authenticationService->checkLogin($request, self::AUTHORIZATION_HEADER);
+        $session = $this->authenticationService->checkLogin($request);
         if (is_null($session)) {
             return new JsonResponse(['message' => 'Unauthorized'], 401);
         }
 
         // Check if session needs refresh, will add new session ID to response when it does
         $response = $delegate->process($request->withAttribute('session', $session));
-        return $this->authenticationService->refreshSession(
-            $response,
-            self::AUTHORIZATION_HEADER,
-            $session
-        );
-    }
-
-    private function login(ServerRequestInterface $request) : ResponseInterface
-    {
-        try {
-            $body = (array) $request->getParsedBody();
-            $sessionId = $this->authenticationService->login($body['user'] ?? '', $body['pass'] ?? '');
-        } catch (AuthenticationFailedException $exception) {
-            return new JsonResponse(['message' => 'Login failed'], 401);
-        }
-
-        return new JsonResponse(['message' => 'Login successful'], 201, [
-            self::AUTHORIZATION_HEADER => $sessionId,
-        ]);
+        return $this->authenticationService->attachSession($response, $session);
     }
 }

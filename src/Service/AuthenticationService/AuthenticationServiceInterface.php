@@ -15,24 +15,19 @@ interface AuthenticationServiceInterface
     public function createUser(string $email, string $displayName, string $password) : User;
 
     /**
-     * Should return a string session ID or throw an AuthenticationFailedException when user
-     * credentials are incorrect.
+     * Generates response based on the success of the login.
      */
-    public function login(string $email, string $password) : string;
+    public function login(string $email, string $password) : ResponseInterface;
 
     /**
      * Returns Session object if the session ID found in the $authorizationHeader is valid,
      * null otherwise.
      */
-    public function checkLogin(ServerRequestInterface $request, string $authorizationHeader) : ?SessionInterface;
+    public function checkLogin(ServerRequestInterface $request) : ?SessionInterface;
 
     /**
-     * Adds a fresh session ID to the response in the $authorizationHeader if it requires a
-     * refresh, just returns the given response otherwise.
+     * Adds a session ID to the response if it is new or requires a refresh,
+     * just returns the given response otherwise.
      */
-    public function refreshSession(
-        ResponseInterface $response,
-        string $authorizationHeader,
-        SessionInterface $session
-    ) : ResponseInterface;
+    public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface;
 }

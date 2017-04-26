@@ -21,7 +21,8 @@ use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use jschreuder\SpotDesk\Service\AuthenticationService\JwtAuthenticationService;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
+use jschreuder\SpotDesk\Service\AuthenticationService\JwtSessionStorage;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
 use jschreuder\SpotDesk\Service\SendMailService\SmtpSendSendMailService;
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
@@ -143,14 +144,20 @@ class MainServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $container['session.storage'] = function () use ($container) {
+            return new JwtSessionStorage(
+                $container['site.url'],
+                new Sha512(),
+                $container['session.secret_key']
+            );
+        };
+
         $container['service.authentication'] = function () use ($container) {
-            return new JwtAuthenticationService(
+            return new AuthenticationService(
                 $container['repository.users'],
                 $container['password.algo'],
                 $container['password.options'],
-                $container['site.url'],
-                new Sha512(),
-                $container['session.secret_key'],
+                $container['session.storage'],
                 $container['session.duration'],
                 $container['session.refresh_after']
             );

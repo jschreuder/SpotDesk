@@ -32,7 +32,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         // Check login status
-        $session = $this->authenticationService->checkLogin($request);
+        $session = $this->authenticationService->getSession($request);
         if (is_null($session)) {
             return new JsonResponse(['message' => 'Unauthorized'], 401);
         }

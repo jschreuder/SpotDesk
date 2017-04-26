@@ -23,7 +23,7 @@ interface AuthenticationServiceInterface
      * Returns Session object if the session ID found in the $authorizationHeader is valid,
      * null otherwise.
      */
-    public function checkLogin(ServerRequestInterface $request) : ?SessionInterface;
+    public function getSession(ServerRequestInterface $request) : ?SessionInterface;
 
     /**
      * Adds a session ID to the response if it is new or requires a refresh,

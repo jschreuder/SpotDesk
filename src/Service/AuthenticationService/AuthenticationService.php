@@ -85,7 +85,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
         ]);
     }
 
-    public function checkLogin(ServerRequestInterface $request) : ?SessionInterface
+    public function getSession(ServerRequestInterface $request) : ?SessionInterface
     {
         $sessionId = $request->getHeaderLine(self::AUTHORIZATION_HEADER);
         if (!$sessionId) {

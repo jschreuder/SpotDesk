@@ -2,6 +2,7 @@
 
 namespace spec\jschreuder\SpotDesk\Service\AuthenticationService;
 
+use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
@@ -10,6 +11,7 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class AuthenticationServiceSpec extends ObjectBehavior
 {
@@ -99,6 +101,25 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(401);
     }
 
+    public function it_fails_login_on_incorrect_password(User $user)
+    {
+        $userMail = 'user@test.dev';
+        $password = 'my-secret';
+        $user->getEmail()->willReturn(EmailAddressValue::get($userMail));
+        $user->getPassword()->willReturn(password_hash(
+            $password,
+            $this->passwordAlgorithm, $this->passwordOptions
+        ));
+
+        $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
+            ->willReturn($user);
+
+        $userEmail = 'not an e-mailaddress';
+        $response = $this->login($userEmail, 'nope');
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(401);
+    }
+
     public function it_regenerates_password_when_necessary(User $user)
     {
         $userMail = 'user@test.dev';
@@ -119,5 +140,58 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response = $this->login($userMail, $password);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(201);
+    }
+
+    public function it_can_retrieve_a_session(ServerRequestInterface $request, SessionInterface $session)
+    {
+        $sessionData = 'data';
+        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
+
+        $this->sessionStorage->load($sessionData)->willReturn($session);
+
+        $this->getSession($request)->shouldReturn($session);
+    }
+
+    public function it_returns_empty_when_there_is_no_session_data(ServerRequestInterface $request)
+    {
+        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn(null);
+        $this->getSession($request)->shouldReturn(null);
+    }
+
+    public function it_returns_empty_when_there_is_no_valid_session(ServerRequestInterface $request)
+    {
+        $sessionData = 'nope';
+        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
+
+        $this->sessionStorage->load($sessionData)->willReturn(null);
+
+        $this->getSession($request)->shouldReturn(null);
+    }
+
+    public function it_can_attach_a_session_to_response(
+        ResponseInterface $response,
+        ResponseInterface $responseWithSession,
+        SessionInterface $session
+    )
+    {
+        $this->sessionStorage->needsRefresh($session, 3600)->willReturn(true);
+
+        $userMail = 'user@test.dev';
+        $sessionData = 'data';
+        $session->get('user')->willReturn($userMail);
+        $this->sessionStorage->create($userMail, $this->sessionDuration)->willReturn($sessionData);
+        $response->withHeader(AuthenticationService::AUTHORIZATION_HEADER, $sessionData)
+            ->willReturn($responseWithSession);
+
+        $this->attachSession($response, $session)->shouldReturn($responseWithSession);
+    }
+
+    public function it_will_do_nothing_when_no_session_refresh_is_necessary(
+        ResponseInterface $response,
+        SessionInterface $session
+    )
+    {
+        $this->sessionStorage->needsRefresh($session, 3600)->willReturn(false);
+        $this->attachSession($response, $session)->shouldReturn($response);
     }
 }

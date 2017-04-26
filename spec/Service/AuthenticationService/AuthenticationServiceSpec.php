@@ -4,14 +4,14 @@ namespace spec\jschreuder\SpotDesk\Service\AuthenticationService;
 
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationFailedException;
-use jschreuder\SpotDesk\Service\AuthenticationService\JwtAuthenticationService;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
+use jschreuder\SpotDesk\Service\AuthenticationService\SessionStorageInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Lcobucci\JWT\Signer;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Psr\Http\Message\ResponseInterface;
 
-class JwtAuthenticationServiceSpec extends ObjectBehavior
+class AuthenticationServiceSpec extends ObjectBehavior
 {
     /** @var  UserRepository */
     private $userRepository;
@@ -22,14 +22,8 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
     /** @var  array */
     private $passwordOptions;
 
-    /** @var  string */
-    private $siteUrl;
-
-    /** @var  Signer */
-    private $jwtSigner;
-
-    /** @var  mixed */
-    private $jwtKey;
+    /** @var  SessionStorageInterface */
+    private $sessionStorage;
 
     /** @var  int */
     private $sessionDuration;
@@ -37,15 +31,13 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
     /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
     private $sessionRefreshAfter;
 
-    public function let(UserRepository $userRepository, Signer $signer)
+    public function let(UserRepository $userRepository, SessionStorageInterface $sessionStorage)
     {
         $this->beConstructedWith(
             $this->userRepository = $userRepository,
             $this->passwordAlgorithm = PASSWORD_BCRYPT,
             $this->passwordOptions = ['cost' => 8],
-            $this->siteUrl = 'http://localhost:8080',
-            $this->jwtSigner = $signer,
-            $this->jwtKey = 'my-super-duper-secret-key',
+            $this->sessionStorage = $sessionStorage,
             $this->sessionDuration = 7200,
             $this->sessionRefreshAfter = 0.5
         );
@@ -53,7 +45,7 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
 
     public function it_is_initializable()
     {
-        $this->shouldHaveType(JwtAuthenticationService::class);
+        $this->shouldHaveType(AuthenticationService::class);
     }
 
     public function it_can_create_a_user()
@@ -71,6 +63,7 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
+        $sessionToken = 'session-token';
         $user->getEmail()->willReturn(EmailAddressValue::get($userMail));
         $user->getPassword()->willReturn(password_hash(
             $password,
@@ -79,14 +72,21 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
 
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
+        $this->sessionStorage->create($userMail, $this->sessionDuration)
+            ->willReturn($sessionToken);
 
-        $this->login($userMail, $password)->shouldBeString();
+        $response = $this->login($userMail, $password);
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(201);
+        $response->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->shouldBe($sessionToken);
     }
 
     public function it_fails_login_on_invalid_emailaddress()
     {
         $userEmail = 'not an e-mailaddress';
-        $this->shouldThrow(AuthenticationFailedException::class)->duringLogin($userEmail, 'pass');
+        $response = $this->login($userEmail, 'pass');
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(401);
     }
 
     public function it_fails_when_user_is_not_found()
@@ -94,7 +94,9 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
         $userMail = 'user@test.dev';
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willThrow(new \OutOfBoundsException());
-        $this->shouldThrow(AuthenticationFailedException::class)->duringLogin($userMail, 'pass');
+        $response = $this->login($userMail, 'pass');
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(401);
     }
 
     public function it_regenerates_password_when_necessary(User $user)
@@ -111,7 +113,11 @@ class JwtAuthenticationServiceSpec extends ObjectBehavior
             ->willReturn($user);
         $this->userRepository->updatePassword($user, new Argument\Token\TypeToken('string'))
             ->shouldBeCalled();
+        $this->sessionStorage->create($userMail, $this->sessionDuration)
+            ->willReturn('session-token');
 
-        $this->login($userMail, $password)->shouldBeString();
+        $response = $this->login($userMail, $password);
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(201);
     }
 }

@@ -35,11 +35,6 @@ class User
         return $this->email;
     }
 
-    public function setEmail(EmailAddressValue $email) : void
-    {
-        $this->email = $email;
-    }
-
     public function getDisplayName() : string
     {
         return $this->displayName;
@@ -60,12 +55,17 @@ class User
         $this->password = $password;
     }
 
-    public function getTotpSecret() : string
+    public function hasTotpSecret() : bool
+    {
+        return $this->totpSecret !== null;
+    }
+
+    public function getTotpSecret() : ?string
     {
         return $this->totpSecret;
     }
 
-    public function setTotpSecret(string $totpSecret) : void
+    public function setTotpSecret(?string $totpSecret) : void
     {
         $this->totpSecret = $totpSecret;
     }

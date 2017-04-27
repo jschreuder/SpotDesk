@@ -51,7 +51,7 @@ final class SmtpSendMailService implements SendMailServiceInterface
 
         $mail = $this->mailTemplateFactory->getMailTemplate($ticketMailing->getType());
         $subject = $this->createSubject($ticket, $ticketUpdate);
-        $renderedMail = $mail->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate]);
+        $renderedMail = $mail->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate]);
 
         $message = $this->createMessage($ticket, $subject, $renderedMail);
         $sent = $this->swiftMailer->send($message);

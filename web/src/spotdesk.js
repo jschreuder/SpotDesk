@@ -1,3 +1,5 @@
+/** global: jsSHA */
+
 (function () {
     "use strict";
 

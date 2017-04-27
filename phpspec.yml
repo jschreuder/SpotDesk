@@ -5,7 +5,12 @@ suites:
 
 extensions:
     PhpSpecCodeCoverage\CodeCoverageExtension:
-      format:
-          - clover
-      output:
-          clover: coverage.xml
+        format:
+            - clover
+        output:
+            clover: coverage.xml
+        whitelist:
+            - src
+        blacklist_files:
+            - src/MainRoutingProvider.php
+            - src/MainServiceProvider.php

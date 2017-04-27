@@ -23,10 +23,10 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
 
         // Add a bunch of security related headers to the response
         $response = $response
-            ->withAddedHeader('X-Frame-Options', 'DENY')
-            ->withAddedHeader('X-XSS-Protection', '1; mode=block')
-            ->withAddedHeader('X-Content-Type-Options', 'nosniff')
-            ->withAddedHeader(
+            ->withHeader('X-Frame-Options', 'DENY')
+            ->withHeader('X-XSS-Protection', '1; mode=block')
+            ->withHeader('X-Content-Type-Options', 'nosniff')
+            ->withHeader(
                 'Content-Security-Policy',
                 'default-src \'self\'; script-src \'self\' \'sha256-no9xHsC3XWcOv0jYdPiPE8EclOgXfoMbP647ArOoT1E=\';'
                 . 'img-src \'self\'  data:; style-src \'self\' \'unsafe-inline\'; '
@@ -35,7 +35,7 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
 
         // Determine STS based on site URL
         if (strpos($this->siteUrl, 'https://') === 0) {
-            $response = $response->withAddedHeader(
+            $response = $response->withHeader(
                 'Strict-Transport-Security',
                 'max-age=15552000; includeSubDomains; preload'
             );

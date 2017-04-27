@@ -64,7 +64,7 @@ final class SmtpSendMailService implements SendMailServiceInterface
 
     private function createSubject(Ticket $ticket, ?TicketUpdate $ticketUpdate) : string
     {
-        return ($ticketUpdate ? 'Re: ' : '') . $ticket->getSubject() . '[' . $ticket->getId()->toString() . ']';
+        return ($ticketUpdate ? 'Re: ' : '') . $ticket->getSubject() . ' [' . $ticket->getId()->toString() . ']';
     }
 
     private function createMessage(Ticket $ticket, string $subject, string $renderedMail) : \Swift_Message

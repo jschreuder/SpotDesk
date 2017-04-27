@@ -114,8 +114,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
 
-        $userEmail = 'not an e-mailaddress';
-        $response = $this->login($userEmail, 'nope');
+        $response = $this->login($userMail, 'nope');
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(401);
     }

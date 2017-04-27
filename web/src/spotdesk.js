@@ -44,9 +44,17 @@
             return srvc;
         }])
 
+        .factory("$sdHash", function () {
+            return function (password) {
+                var sha = new jsSHA("SHA-512", "TEXT");
+                sha.update(password);
+                return sha.getHash("HEX");
+            };
+        })
+
         // Authentication service
-        .factory("$sdAuth", ["$http", "$cookies", "$state", "$sdAlert", "authInterceptor",
-            function ($http, $cookies, $state, $sdAlert, authInterceptor) {
+        .factory("$sdAuth", ["$http", "$cookies", "$state", "$sdAlert", "$sdHash", "authInterceptor",
+            function ($http, $cookies, $state, $sdAlert, $sdHash, authInterceptor) {
                 var srvc = this;
 
                 srvc.persistToken = false;
@@ -83,7 +91,7 @@
                     srvc.persistToken = persist && true;
                     $http.post("/login", {
                         user: username,
-                        pass: password
+                        pass: $sdHash(password)
                     }).then(function () {
                         if (!srvc.loggedIn()) {
                             $sdAlert.error("auth_login_failed");
@@ -97,8 +105,8 @@
 
                 srvc.changePassword = function (old_password, new_password) {
                     return $http.put("/change_password", {
-                        old_password: old_password,
-                        new_password: new_password
+                        old_password: $sdHash(old_password),
+                        new_password: $sdHash(new_password)
                     });
                 };
 

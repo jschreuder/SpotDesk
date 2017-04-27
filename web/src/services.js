@@ -55,7 +55,7 @@
             };
         }])
 
-        .factory("$sdUsers", ["$http", function ($http) {
+        .factory("$sdUsers", ["$http", "$sdHash", function ($http, $sdHash) {
             return {
                 fetch: function () {
                     return $http.get("/users");
@@ -69,7 +69,7 @@
                     return $http.post("/users", {
                         email: email,
                         display_name: display_name,
-                        password: password
+                        password: $sdHash(password)
                     });
                 },
 

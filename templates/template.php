@@ -149,6 +149,7 @@
 <script src="./node_modules/angular-material/angular-material.js"></script>
 <script src="./node_modules/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="./node_modules/angular-material-data-table/dist/md-data-table.js"></script>
+<script src="./node_modules/jssha/src/sha512.js"></script>
 <script src="./src/spotdesk.js"></script>
 <script src="./src/routing.js"></script>
 <script src="./src/services.js"></script>

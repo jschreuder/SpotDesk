@@ -29,6 +29,7 @@ var urlsToCache = [
     "./node_modules/angular-material-data-table/dist/md-data-table.js",
     "./node_modules/angular-material-data-table/dist/md-data-table.css",
     "./node_modules/font-awesome/css/font-awesome.css",
+    "./node_modules/jssha/src/sha512.js",
 
     // views
     "./assets/templates/departments/list.html",

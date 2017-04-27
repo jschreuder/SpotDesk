@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DevCreateFakerTickets extends Command
+class DevCreateFakerTicketsCommand extends Command
 {
     /** @var  TicketRepository */
     private $ticketRepository;

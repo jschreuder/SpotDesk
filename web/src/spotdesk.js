@@ -4,8 +4,8 @@
     angular.module("spotdesk", ["ngMaterial", "ngCookies", "ui.router", "md.data.table"])
 
         // Main configuration
-        .config(["$httpProvider", "$mdThemingProvider", "$mdToastProvider",
-            function($httpProvider , $mdThemingProvider, $mdToastProvider) {
+        .config(["$httpProvider", "$mdThemingProvider",
+            function($httpProvider , $mdThemingProvider) {
                 $httpProvider.interceptors.push("authInterceptor");
 
                 $mdThemingProvider.theme("default")

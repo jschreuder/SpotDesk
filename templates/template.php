@@ -50,6 +50,21 @@
                 </md-button>
             </md-list-item>
             <md-list-item class="header">
+                User
+            </md-list-item>
+            <md-list-item>
+                <md-button ui-sref="change_password" ui-sref-active="active">
+                    <i class="fa fa-key menu-icon" aria-hidden="true"></i>
+                    Change password
+                </md-button>
+            </md-list-item>
+            <md-list-item>
+                <md-button ng-click="main.logout()">
+                    <i class="fa fa-sign-out menu-icon" aria-hidden="true"></i>
+                    Logout
+                </md-button>
+            </md-list-item>
+            <md-list-item class="header">
                 Configuration
             </md-list-item>
             <md-list-item>

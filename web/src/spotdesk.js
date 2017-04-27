@@ -72,15 +72,20 @@
                     $http.post("/login", {
                         user: username,
                         pass: password
-                    }).then(function successCallback() {
+                    }).then(function () {
                         if (!srvc.loggedIn()) {
                             $adminMessage.error("auth_login_failed");
                         }
                         $state.reload();
                         successCallback();
-                    }, function errorCallback() {
+                    }, function () {
                         $adminMessage.error("auth_login_failed");
                     });
+                };
+
+                srvc.logout = function () {
+                    srvc.persistToken = false;
+                    srvc.updateToken(null);
                 };
 
                 authInterceptor.$auth = srvc;
@@ -119,8 +124,8 @@
         }])
 
         // Controller for the entire layout
-        .controller("mainController", ["$mdSidenav", "$auth", "$title", "$adminMessage",
-            function ($mdSidenav, $auth, $title, $adminMessage) {
+        .controller("mainController", ["$mdSidenav", "$mdDialog", "$auth", "$title", "$adminMessage",
+            function ($mdSidenav, $mdDialog, $auth, $title, $adminMessage) {
                 var ctrl = this;
 
                 ctrl.loggedIn = $auth.loggedIn;
@@ -140,6 +145,19 @@
                         ctrl.user.name = null;
                         ctrl.user.pass = null;
                         ctrl.user.persist = false;
+                    });
+                };
+
+                ctrl.logout = function () {
+                    $mdDialog.show(
+                        $mdDialog.confirm()
+                            .title("Log out")
+                            .textContent("Are you sure you want to log out?")
+                            .ariaLabel("Log out")
+                            .ok('Yes')
+                            .cancel('No')
+                    ).then(function () {
+                        $auth.logout();
                     });
                 };
 

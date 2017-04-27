@@ -139,8 +139,8 @@ class MainServiceProvider implements ServiceProviderInterface
 
         $container['mail.template_factory'] = function () use ($container) {
             return new MailTemplateFactory(
-                new TwigMailTemplate($container['mail.twig'], 'new_ticket.twig', 'New ticket created'),
-                new TwigMailTemplate($container['mail.twig'], 'update_ticket.twig', 'Ticket updated')
+                new TwigMailTemplate($container['mail.twig'], 'new_ticket.twig'),
+                new TwigMailTemplate($container['mail.twig'], 'update_ticket.twig')
             );
         };
 

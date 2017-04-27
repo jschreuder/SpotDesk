@@ -14,6 +14,7 @@ use jschreuder\SpotDesk\Service\SendMailService\SmtpSendMailService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use Ramsey\Uuid\Uuid;
 
 class SmtpSendMailServiceSpec extends ObjectBehavior
 {
@@ -78,15 +79,16 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
         $ticketMailing->getType()->willReturn($type);
 
+        $ticketId = Uuid::uuid4();
         $ticketEmail = 'ticker@user.email';
+        $ticketSubject = 'Some subject';
+        $ticket->getId()->willReturn($ticketId);
+        $ticket->getSubject()->willReturn($ticketSubject);
         $ticket->getDepartment()->willReturn(null);
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
 
-        $mailTemplate->getSubject()->willReturn('Some subject');
-        $mailTemplate->render()->willReturn('mail contents');
-
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->shouldBeCalled();
+        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
 
@@ -108,7 +110,11 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
         $ticketMailing->getType()->willReturn($type);
 
+        $ticketId = Uuid::uuid4();
         $ticketEmail = 'ticker@user.email';
+        $ticketSubject = 'Some subject';
+        $ticket->getId()->willReturn($ticketId);
+        $ticket->getSubject()->willReturn($ticketSubject);
         $ticket->getDepartment()->willReturn($department);
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
 
@@ -117,11 +123,8 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $department->getName()->willReturn($departmentName);
         $department->getEmail()->willReturn(EmailAddressValue::get($departmentMail));
 
-        $mailTemplate->getSubject()->willReturn('Some subject');
-        $mailTemplate->render()->willReturn('mail contents');
-
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->shouldBeCalled();
+        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
 
@@ -142,15 +145,16 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
         $ticketMailing->getType()->willReturn($type);
 
+        $ticketId = Uuid::uuid4();
         $ticketEmail = 'ticker@user.email';
+        $ticketSubject = 'Some subject';
+        $ticket->getId()->willReturn($ticketId);
+        $ticket->getSubject()->willReturn($ticketSubject);
         $ticket->getDepartment()->willReturn(null);
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
 
-        $mailTemplate->getSubject()->willReturn('Some subject');
-        $mailTemplate->render()->willReturn('mail contents');
-
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->shouldBeCalled();
+        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(0);
 

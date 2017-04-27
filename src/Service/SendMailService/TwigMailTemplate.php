@@ -11,32 +11,14 @@ final class TwigMailTemplate implements MailTemplateInterface
     /** @var  string */
     private $template;
 
-    /** @var  string */
-    private $subject;
-
-    /** @var  array */
-    private $variables;
-
-    public function __construct(\Twig_Environment $twig, string $template, string $subject, array $variables = [])
+    public function __construct(\Twig_Environment $twig, string $template)
     {
         $this->twig = $twig;
         $this->template = $template;
-        $this->subject = $subject;
-        $this->variables = $variables;
     }
 
-    public function setVariables(array $variables) : void
+    public function render(array $context) : string
     {
-        $this->variables = $variables;
-    }
-
-    public function getSubject() : string
-    {
-        return $this->subject;
-    }
-
-    public function render() : string
-    {
-        return $this->twig->render($this->template, $this->variables);
+        return $this->twig->render($this->template, $context);
     }
 }

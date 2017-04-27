@@ -47,10 +47,13 @@ final class SmtpSendMailService implements SendMailServiceInterface
     public function send(TicketMailing $ticketMailing) : void
     {
         $ticket = $ticketMailing->getTicket();
-        $mail = $this->mailTemplateFactory->getMailTemplate($ticketMailing->getType());
-        $mail->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketMailing->getTicketUpdate()]);
+        $ticketUpdate = $ticketMailing->getTicketUpdate();
 
-        $message = $this->createMessage($ticket, $mail);
+        $mail = $this->mailTemplateFactory->getMailTemplate($ticketMailing->getType());
+        $subject = $this->createSubject($ticket, $ticketUpdate);
+        $renderedMail = $mail->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate]);
+
+        $message = $this->createMessage($ticket, $subject, $renderedMail);
         $sent = $this->swiftMailer->send($message);
         if ($sent === 0) {
             throw new \RuntimeException('Failed to send mail');
@@ -59,7 +62,12 @@ final class SmtpSendMailService implements SendMailServiceInterface
         $this->ticketMailingRepository->setSent($ticketMailing);
     }
 
-    private function createMessage(Ticket $ticket, MailTemplateInterface $mail) : \Swift_Message
+    private function createSubject(Ticket $ticket, ?TicketUpdate $ticketUpdate) : string
+    {
+        return ($ticketUpdate ? 'Re: ' : '') . $ticket->getSubject() . '[' . $ticket->getId()->toString() . ']';
+    }
+
+    private function createMessage(Ticket $ticket, string $subject, string $renderedMail) : \Swift_Message
     {
         $fromMail = $ticket->getDepartment()
             ? $ticket->getDepartment()->getEmail()->toString()
@@ -68,9 +76,9 @@ final class SmtpSendMailService implements SendMailServiceInterface
             ? $ticket->getDepartment()->getName() . ' - ' . $this->siteName
             : $this->siteName;
 
-        return \Swift_Message::newInstance($mail->getSubject())
+        return \Swift_Message::newInstance($subject)
             ->setFrom($fromMail, $fromName)
             ->setTo($ticket->getEmail()->toString())
-            ->setBody($mail->render(), 'text/html');
+            ->setBody($renderedMail, 'text/html');
     }
 }

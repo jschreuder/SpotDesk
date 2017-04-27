@@ -95,7 +95,8 @@ final class AuthenticationService implements AuthenticationServiceInterface
         return $this->sessionStorage->load($sessionId);
     }
 
-    public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface {
+    public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface
+    {
         $refreshTimeframe = intval($this->sessionDuration * $this->sessionRefreshAfter);
         if (!$this->sessionStorage->needsRefresh($session, $refreshTimeframe)) {
             return $response;

@@ -37,8 +37,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         \Swift_Mailer $swiftMailer,
         MailTemplateFactoryInterface $templateFactory,
         TicketMailingRepository $repository
-    )
-    {
+    ) {
         $this->beConstructedWith(
             $this->ticketMailingRepository = $repository,
             $this->swiftMailer = $swiftMailer,
@@ -72,8 +71,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Ticket $ticket,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    )
-    {
+    ) {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
@@ -103,8 +101,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Department $department,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    )
-    {
+    ) {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
@@ -138,8 +135,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Ticket $ticket,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    )
-    {
+    ) {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);

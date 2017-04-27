@@ -4,7 +4,6 @@ namespace spec\jschreuder\SpotDesk\Value;
 
 use jschreuder\SpotDesk\Value\StatusTypeValue;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class StatusTypeValueSpec extends ObjectBehavior
 {

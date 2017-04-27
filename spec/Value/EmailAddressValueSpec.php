@@ -4,7 +4,6 @@ namespace spec\jschreuder\SpotDesk\Value;
 
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class EmailAddressValueSpec extends ObjectBehavior
 {

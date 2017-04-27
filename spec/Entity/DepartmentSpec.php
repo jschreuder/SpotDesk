@@ -5,7 +5,6 @@ namespace spec\jschreuder\SpotDesk\Entity;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Ramsey\Uuid\UuidInterface;
 
 class DepartmentSpec extends ObjectBehavior

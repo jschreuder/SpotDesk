@@ -6,7 +6,6 @@ use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Ramsey\Uuid\UuidInterface;
 
 class MailboxSpec extends ObjectBehavior

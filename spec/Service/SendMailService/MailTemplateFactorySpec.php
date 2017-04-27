@@ -6,7 +6,6 @@ use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateInterface;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MailTemplateFactorySpec extends ObjectBehavior
 {

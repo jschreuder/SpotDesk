@@ -6,7 +6,6 @@ use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Service\AuthenticationService\JwtSessionStorage;
 use Lcobucci\JWT\Signer;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class JwtSessionStorageSpec extends ObjectBehavior
 {

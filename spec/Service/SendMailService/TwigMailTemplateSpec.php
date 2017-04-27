@@ -4,7 +4,6 @@ namespace spec\jschreuder\SpotDesk\Service\SendMailService;
 
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class TwigMailTemplateSpec extends ObjectBehavior
 {

@@ -171,8 +171,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         ResponseInterface $response,
         ResponseInterface $responseWithSession,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->sessionStorage->needsRefresh($session, 3600)->willReturn(true);
 
         $userMail = 'user@test.dev';
@@ -188,8 +187,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
     public function it_will_do_nothing_when_no_session_refresh_is_necessary(
         ResponseInterface $response,
         SessionInterface $session
-    )
-    {
+    ) {
         $this->sessionStorage->needsRefresh($session, 3600)->willReturn(false);
         $this->attachSession($response, $session)->shouldReturn($response);
     }

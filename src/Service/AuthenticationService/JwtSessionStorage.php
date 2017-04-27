@@ -31,7 +31,7 @@ final class JwtSessionStorage implements SessionStorageInterface
     /**
      * Creates a JWT session and returns it as a string
      */
-    public function create(string $userId, int $sessionDuration): string
+    public function create(string $userId, int $sessionDuration) : string
     {
         $token = (new Builder())->setIssuer($this->siteUrl)
             ->setAudience($this->siteUrl)
@@ -48,7 +48,7 @@ final class JwtSessionStorage implements SessionStorageInterface
      * Parses the given JWT and returns any verified & validated claims, or
      * null when nothing did.
      */
-    public function load(string $sessionData): ?SessionInterface
+    public function load(string $sessionData) : ?SessionInterface
     {
         // Attempt to parse the Token, fail when it won't parse
         try {

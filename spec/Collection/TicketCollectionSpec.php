@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class TicketCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(Ticket $ticket1, Ticket $ticket2)
+    public function it_is_initializable(Ticket $ticket1, Ticket $ticket2) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -25,7 +25,7 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($ticket2);
     }
 
-    public function it_can_push_items(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3)
+    public function it_can_push_items(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -43,7 +43,7 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($ticket3);
     }
 
-    public function it_is_iterable(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3)
+    public function it_is_iterable(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -67,7 +67,7 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($ticket1);
     }
 
-    public function it_is_countable(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3)
+    public function it_is_countable(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -82,7 +82,7 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3)
+    public function it_can_return_array(Ticket $ticket1, Ticket $ticket2, Ticket $ticket3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -99,7 +99,7 @@ class TicketCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_can_contain_a_total_count()
+    public function it_can_contain_a_total_count() : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringGetTotalCount();
 
@@ -107,12 +107,12 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->getTotalCount()->shouldBe(42);
     }
 
-    public function it_cant_set_total_count_to_negative_value()
+    public function it_cant_set_total_count_to_negative_value() : void
     {
         $this->shouldThrow(\InvalidArgumentException::class)->duringSetTotalCount(-1);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(Ticket $ticket)
+    public function it_cant_set_or_unset_entries_from_collection(Ticket $ticket) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticket);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

@@ -9,7 +9,7 @@ use PhpSpec\ObjectBehavior;
 
 class UserCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(User $user1, User $user2)
+    public function it_is_initializable(User $user1, User $user2) : void
     {
         $email1 = EmailAddressValue::get('one@mail.com');
         $email2 = EmailAddressValue::get('two@mail.com');
@@ -25,7 +25,7 @@ class UserCollectionSpec extends ObjectBehavior
         $this->offsetGet($email2->toString())->shouldReturn($user2);
     }
 
-    public function it_can_push_items(User $user1, User $user2, User $user3)
+    public function it_can_push_items(User $user1, User $user2, User $user3) : void
     {
         $email1 = EmailAddressValue::get('one@mail.com');
         $email2 = EmailAddressValue::get('two@mail.com');
@@ -43,7 +43,7 @@ class UserCollectionSpec extends ObjectBehavior
         $this->offsetGet($email3->toString())->shouldReturn($user3);
     }
 
-    public function it_is_iterable(User $user1, User $user2, User $user3)
+    public function it_is_iterable(User $user1, User $user2, User $user3) : void
     {
         $email1 = EmailAddressValue::get('one@mail.com');
         $email2 = EmailAddressValue::get('two@mail.com');
@@ -67,7 +67,7 @@ class UserCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($user1);
     }
 
-    public function it_is_countable(User $user1, User $user2, User $user3)
+    public function it_is_countable(User $user1, User $user2, User $user3) : void
     {
         $email1 = EmailAddressValue::get('one@mail.com');
         $email2 = EmailAddressValue::get('two@mail.com');
@@ -82,7 +82,7 @@ class UserCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(User $user1, User $user2, User $user3)
+    public function it_can_return_array(User $user1, User $user2, User $user3) : void
     {
         $email1 = EmailAddressValue::get('one@mail.com');
         $email2 = EmailAddressValue::get('two@mail.com');
@@ -99,7 +99,7 @@ class UserCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(User $user)
+    public function it_cant_set_or_unset_entries_from_collection(User $user) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $user);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

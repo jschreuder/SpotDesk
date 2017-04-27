@@ -14,7 +14,7 @@ class StatusSpec extends ObjectBehavior
     /** @var  StatusTypeValue */
     private $type;
 
-    public function let()
+    public function let() : void
     {
         $this->beConstructedWith(
             $this->name = 'status',
@@ -22,25 +22,25 @@ class StatusSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(Status::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getName()->shouldReturn($this->name);
         $this->getType()->shouldReturn($this->type);
     }
 
-    public function it_can_change_some_properties()
+    public function it_can_change_some_properties() : void
     {
         $name = 'newstatus';
         $this->setName($name);
         $this->getName()->shouldReturn($name);
     }
 
-    public function it_can_tell_when_its_open()
+    public function it_can_tell_when_its_open() : void
     {
         $this->beConstructedWith($this->name, StatusTypeValue::get(StatusTypeValue::TYPE_OPEN));
         $this->isOpen()->shouldReturn(true);
@@ -48,7 +48,7 @@ class StatusSpec extends ObjectBehavior
         $this->isPaused()->shouldReturn(false);
     }
 
-    public function it_can_tell_when_its_paused()
+    public function it_can_tell_when_its_paused() : void
     {
         $this->beConstructedWith($this->name, StatusTypeValue::get(StatusTypeValue::TYPE_PAUSED));
         $this->isOpen()->shouldReturn(false);
@@ -56,7 +56,7 @@ class StatusSpec extends ObjectBehavior
         $this->isPaused()->shouldReturn(true);
     }
 
-    public function it_can_tell_when_its_closed()
+    public function it_can_tell_when_its_closed() : void
     {
         $this->beConstructedWith($this->name, StatusTypeValue::get(StatusTypeValue::TYPE_CLOSED));
         $this->isOpen()->shouldReturn(false);

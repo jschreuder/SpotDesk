@@ -8,7 +8,7 @@ use PhpSpec\ObjectBehavior;
 
 class StatusCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(Status $status1, Status $status2)
+    public function it_is_initializable(Status $status1, Status $status2) : void
     {
         $statusName1 = 's1';
         $statusName2 = 's2';
@@ -24,7 +24,7 @@ class StatusCollectionSpec extends ObjectBehavior
         $this->offsetGet($statusName2)->shouldReturn($status2);
     }
 
-    public function it_can_push_items(Status $status1, Status $status2, Status $status3)
+    public function it_can_push_items(Status $status1, Status $status2, Status $status3) : void
     {
         $statusName1 = 's1';
         $statusName2 = 's2';
@@ -42,7 +42,7 @@ class StatusCollectionSpec extends ObjectBehavior
         $this->offsetGet($statusName3)->shouldReturn($status3);
     }
 
-    public function it_is_iterable(Status $status1, Status $status2, Status $status3)
+    public function it_is_iterable(Status $status1, Status $status2, Status $status3) : void
     {
         $statusName1 = 's1';
         $statusName2 = 's2';
@@ -66,7 +66,7 @@ class StatusCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($status1);
     }
 
-    public function it_is_countable(Status $status1, Status $status2, Status $status3)
+    public function it_is_countable(Status $status1, Status $status2, Status $status3) : void
     {
         $statusName1 = 's1';
         $statusName2 = 's2';
@@ -81,7 +81,7 @@ class StatusCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(Status $status1, Status $status2, Status $status3)
+    public function it_can_return_array(Status $status1, Status $status2, Status $status3) : void
     {
         $statusName1 = 's1';
         $statusName2 = 's2';
@@ -98,7 +98,7 @@ class StatusCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(Status $status)
+    public function it_cant_set_or_unset_entries_from_collection(Status $status) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $status);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

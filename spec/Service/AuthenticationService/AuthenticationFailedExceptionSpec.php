@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 
 class AuthenticationFailedExceptionSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(AuthenticationFailedException::class);
     }

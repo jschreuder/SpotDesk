@@ -15,7 +15,7 @@ class MailTemplateFactorySpec extends ObjectBehavior
     /** @var  MailTemplateInterface */
     private $ticketUpdateMailTemplate;
 
-    public function let(MailTemplateInterface $newTicket, MailTemplateInterface $ticketUpdate)
+    public function let(MailTemplateInterface $newTicket, MailTemplateInterface $ticketUpdate) : void
     {
         $this->beConstructedWith(
             $this->newTicketMailTemplate = $newTicket,
@@ -23,12 +23,12 @@ class MailTemplateFactorySpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(MailTemplateFactory::class);
     }
 
-    public function it_can_create_a_mail_template()
+    public function it_can_create_a_mail_template() : void
     {
         $this->getMailTemplate(SendMailServiceInterface::TYPE_NEW_TICKET)
             ->shouldBeLike($this->newTicketMailTemplate);
@@ -36,7 +36,7 @@ class MailTemplateFactorySpec extends ObjectBehavior
             ->shouldBeLike($this->ticketUpdateMailTemplate);
     }
 
-    public function it_errors_on_unknown_template()
+    public function it_errors_on_unknown_template() : void
     {
         $this->shouldThrow(\OutOfBoundsException::class)->duringGetMailTemplate('nonsense');
     }

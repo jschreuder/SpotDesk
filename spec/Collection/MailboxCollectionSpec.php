@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class MailboxCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(Mailbox $mailbox1, Mailbox $mailbox2)
+    public function it_is_initializable(Mailbox $mailbox1, Mailbox $mailbox2) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -25,7 +25,7 @@ class MailboxCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($mailbox2);
     }
 
-    public function it_can_push_items(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3)
+    public function it_can_push_items(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -43,7 +43,7 @@ class MailboxCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($mailbox3);
     }
 
-    public function it_is_iterable(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3)
+    public function it_is_iterable(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -67,7 +67,7 @@ class MailboxCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($mailbox1);
     }
 
-    public function it_is_countable(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3)
+    public function it_is_countable(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -82,7 +82,7 @@ class MailboxCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3)
+    public function it_can_return_array(Mailbox $mailbox1, Mailbox $mailbox2, Mailbox $mailbox3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -99,7 +99,7 @@ class MailboxCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(Mailbox $mailbox)
+    public function it_cant_set_or_unset_entries_from_collection(Mailbox $mailbox) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $mailbox);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

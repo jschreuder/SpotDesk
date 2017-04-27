@@ -28,7 +28,7 @@ class TicketUpdateSpec extends ObjectBehavior
     /** @var  bool */
     private $internal;
 
-    public function let(UuidInterface $id, Ticket $ticket)
+    public function let(UuidInterface $id, Ticket $ticket) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -40,12 +40,12 @@ class TicketUpdateSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(TicketUpdate::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getTicket()->shouldReturn($this->ticket);

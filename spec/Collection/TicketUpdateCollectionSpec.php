@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class TicketUpdateCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2)
+    public function it_is_initializable(TicketUpdate $ticketUpdate1, TicketUpdate $ticketUpdate2) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -29,7 +29,8 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         TicketUpdate $ticketUpdate1,
         TicketUpdate $ticketUpdate2,
         TicketUpdate $ticketUpdate3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -50,7 +51,8 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         TicketUpdate $ticketUpdate1,
         TicketUpdate $ticketUpdate2,
         TicketUpdate $ticketUpdate3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -77,7 +79,8 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         TicketUpdate $ticketUpdate1,
         TicketUpdate $ticketUpdate2,
         TicketUpdate $ticketUpdate3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -95,7 +98,8 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         TicketUpdate $ticketUpdate1,
         TicketUpdate $ticketUpdate2,
         TicketUpdate $ticketUpdate3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -111,7 +115,7 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(TicketUpdate $ticketUpdate)
+    public function it_cant_set_or_unset_entries_from_collection(TicketUpdate $ticketUpdate) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticketUpdate);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

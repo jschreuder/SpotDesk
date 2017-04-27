@@ -16,7 +16,7 @@ class TwigMailTemplateSpec extends ObjectBehavior
     /** @var  string */
     private $subject;
 
-    public function let(\Twig_Environment $twig)
+    public function let(\Twig_Environment $twig) : void
     {
         $this->beConstructedWith(
             $this->twig = $twig,
@@ -25,12 +25,12 @@ class TwigMailTemplateSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(TwigMailTemplate::class);
     }
 
-    public function it_can_render()
+    public function it_can_render() : void
     {
         $rendered = 'rendered content';
         $context = ['var' => 'value'];

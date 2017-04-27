@@ -37,7 +37,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         \Swift_Mailer $swiftMailer,
         MailTemplateFactoryInterface $templateFactory,
         TicketMailingRepository $repository
-    ) {
+    ) : void {
         $this->beConstructedWith(
             $this->ticketMailingRepository = $repository,
             $this->swiftMailer = $swiftMailer,
@@ -47,19 +47,19 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(SmtpSendMailService::class);
     }
 
-    public function it_can_create_a_mailing(Ticket $ticket, TicketUpdate $ticketUpdate)
+    public function it_can_create_a_mailing(Ticket $ticket, TicketUpdate $ticketUpdate) : void
     {
         $type = 'mailing.type';
         $this->ticketMailingRepository->createTicketMailing($ticket, $type, $ticketUpdate);
         $this->addTicketMailing($ticket, $type, $ticketUpdate);
     }
 
-    public function it_can_create_a_mailing_without_update(Ticket $ticket)
+    public function it_can_create_a_mailing_without_update(Ticket $ticket) : void
     {
         $type = 'mailing.type';
         $this->ticketMailingRepository->createTicketMailing($ticket, $type, null);
@@ -71,7 +71,8 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Ticket $ticket,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    ) {
+    ) : void
+    {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
@@ -101,7 +102,8 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Department $department,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    ) {
+    ) : void
+    {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
@@ -135,7 +137,8 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         Ticket $ticket,
         TicketUpdate $ticketUpdate,
         MailTemplateInterface $mailTemplate
-    ) {
+    ) : void
+    {
         $type = 'mailing.type';
         $ticketMailing->getTicket()->willReturn($ticket);
         $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);

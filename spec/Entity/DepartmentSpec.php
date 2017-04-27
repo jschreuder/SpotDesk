@@ -21,7 +21,7 @@ class DepartmentSpec extends ObjectBehavior
     /** @var  EmailAddressValue */
     private $email;
 
-    public function let(UuidInterface $id, Department $parent)
+    public function let(UuidInterface $id, Department $parent) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -31,12 +31,12 @@ class DepartmentSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(Department::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getName()->shouldReturn($this->name);
@@ -44,13 +44,13 @@ class DepartmentSpec extends ObjectBehavior
         $this->getEmail()->shouldReturn($this->email);
     }
 
-    public function it_can_instantiate_without_parent()
+    public function it_can_instantiate_without_parent() : void
     {
         $this->beConstructedWith($this->id, $this->name, null, $this->email);
         $this->getParent()->shouldReturn(null);
     }
 
-    public function it_can_change_some_properties(Department $parent)
+    public function it_can_change_some_properties(Department $parent) : void
     {
         $name2 = 'two';
         $email = EmailAddressValue::get('some@thing.else');

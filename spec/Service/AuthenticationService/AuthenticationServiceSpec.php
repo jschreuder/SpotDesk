@@ -33,7 +33,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
     /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
     private $sessionRefreshAfter;
 
-    public function let(UserRepository $userRepository, SessionStorageInterface $sessionStorage)
+    public function let(UserRepository $userRepository, SessionStorageInterface $sessionStorage) : void
     {
         $this->beConstructedWith(
             $this->userRepository = $userRepository,
@@ -45,12 +45,12 @@ class AuthenticationServiceSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(AuthenticationService::class);
     }
 
-    public function it_can_create_a_user()
+    public function it_can_create_a_user() : void
     {
         $userMail = 'user@test.dev';
         $displayName = 'Username';
@@ -61,7 +61,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->createUser($userMail, $displayName, $password);
     }
 
-    public function it_can_login(User $user)
+    public function it_can_login(User $user) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -83,7 +83,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->shouldBe($sessionToken);
     }
 
-    public function it_fails_login_on_invalid_emailaddress()
+    public function it_fails_login_on_invalid_emailaddress() : void
     {
         $userEmail = 'not an e-mailaddress';
         $response = $this->login($userEmail, 'pass');
@@ -91,7 +91,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(401);
     }
 
-    public function it_fails_when_user_is_not_found()
+    public function it_fails_when_user_is_not_found() : void
     {
         $userMail = 'user@test.dev';
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
@@ -101,7 +101,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(401);
     }
 
-    public function it_fails_login_on_incorrect_password(User $user)
+    public function it_fails_login_on_incorrect_password(User $user) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -119,7 +119,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(401);
     }
 
-    public function it_regenerates_password_when_necessary(User $user)
+    public function it_regenerates_password_when_necessary(User $user) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -141,7 +141,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(201);
     }
 
-    public function it_can_retrieve_a_session(ServerRequestInterface $request, SessionInterface $session)
+    public function it_can_retrieve_a_session(ServerRequestInterface $request, SessionInterface $session) : void
     {
         $sessionData = 'data';
         $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
@@ -151,13 +151,13 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->getSession($request)->shouldReturn($session);
     }
 
-    public function it_returns_empty_when_there_is_no_session_data(ServerRequestInterface $request)
+    public function it_returns_empty_when_there_is_no_session_data(ServerRequestInterface $request) : void
     {
         $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn(null);
         $this->getSession($request)->shouldReturn(null);
     }
 
-    public function it_returns_empty_when_there_is_no_valid_session(ServerRequestInterface $request)
+    public function it_returns_empty_when_there_is_no_valid_session(ServerRequestInterface $request) : void
     {
         $sessionData = 'nope';
         $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
@@ -171,7 +171,8 @@ class AuthenticationServiceSpec extends ObjectBehavior
         ResponseInterface $response,
         ResponseInterface $responseWithSession,
         SessionInterface $session
-    ) {
+    ) : void
+    {
         $this->sessionStorage->needsRefresh($session, 3600)->willReturn(true);
 
         $userMail = 'user@test.dev';
@@ -187,7 +188,8 @@ class AuthenticationServiceSpec extends ObjectBehavior
     public function it_will_do_nothing_when_no_session_refresh_is_necessary(
         ResponseInterface $response,
         SessionInterface $session
-    ) {
+    ) : void
+    {
         $this->sessionStorage->needsRefresh($session, 3600)->willReturn(false);
         $this->attachSession($response, $session)->shouldReturn($response);
     }

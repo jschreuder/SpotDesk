@@ -18,7 +18,7 @@ class JwtSessionStorageSpec extends ObjectBehavior
     /** @var  mixed */
     private $jwtKey;
 
-    public function let()
+    public function let() : void
     {
         $this->beConstructedWith(
             $this->siteUrl = 'http://localhost/',
@@ -27,12 +27,12 @@ class JwtSessionStorageSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(JwtSessionStorage::class);
     }
 
-    public function it_can_create_a_token_and_load_it_into_a_session()
+    public function it_can_create_a_token_and_load_it_into_a_session() : void
     {
         $user = 'user@id.me';
 
@@ -44,14 +44,14 @@ class JwtSessionStorageSpec extends ObjectBehavior
         $session->get('user')->shouldBe($user);
     }
 
-    public function it_returns_null_when_loading_bogus_session()
+    public function it_returns_null_when_loading_bogus_session() : void
     {
         $this->load('bogus')->shouldBeNull();
     }
 
     // @todo add specs for invalid signature and non-matching claims
 
-    public function it_can_tell_when_session_needs_a_refresh(SessionInterface $session)
+    public function it_can_tell_when_session_needs_a_refresh(SessionInterface $session) : void
     {
         // Set expiration of session 25 seconds into the future
         $session->get('expires')->willReturn(time() + 25);

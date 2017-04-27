@@ -12,7 +12,8 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
     public function it_is_initializable(
         TicketSubscription $ticketSubscription1,
         TicketSubscription $ticketSubscription2
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $ticketSubscription1->getId()->willReturn($uuid1);
@@ -31,7 +32,8 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         TicketSubscription $ticketSubscription1,
         TicketSubscription $ticketSubscription2,
         TicketSubscription $ticketSubscription3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -52,7 +54,8 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         TicketSubscription $ticketSubscription1,
         TicketSubscription $ticketSubscription2,
         TicketSubscription $ticketSubscription3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -83,7 +86,8 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         TicketSubscription $ticketSubscription1,
         TicketSubscription $ticketSubscription2,
         TicketSubscription $ticketSubscription3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -101,7 +105,8 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         TicketSubscription $ticketSubscription1,
         TicketSubscription $ticketSubscription2,
         TicketSubscription $ticketSubscription3
-    ) {
+    ) : void
+    {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
         $uuid3 = Uuid::uuid4();
@@ -117,7 +122,7 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(TicketSubscription $ticketSubscription)
+    public function it_cant_set_or_unset_entries_from_collection(TicketSubscription $ticketSubscription) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticketSubscription);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

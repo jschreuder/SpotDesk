@@ -41,7 +41,7 @@ class TicketSpec extends ObjectBehavior
     /** @var  ?Department */
     private $department;
 
-    public function let(UuidInterface $id, Status $status, Department $department)
+    public function let(UuidInterface $id, Status $status, Department $department) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -57,12 +57,12 @@ class TicketSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(Ticket::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getSecretKey()->shouldReturn($this->secretKey);
@@ -76,7 +76,7 @@ class TicketSpec extends ObjectBehavior
         $this->getDepartment()->shouldReturn($this->department);
     }
 
-    public function it_can_instantiate_without_department()
+    public function it_can_instantiate_without_department() : void
     {
         $this->beConstructedWith(
             $this->id,
@@ -93,7 +93,7 @@ class TicketSpec extends ObjectBehavior
         $this->getDepartment()->shouldReturn(null);
     }
 
-    public function it_can_change_some_properties(Status $status, Department $department)
+    public function it_can_change_some_properties(Status $status, Department $department) : void
     {
         $updates = 42;
         $this->setUpdates($updates);

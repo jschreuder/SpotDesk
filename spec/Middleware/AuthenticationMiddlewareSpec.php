@@ -7,7 +7,6 @@ use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -17,14 +16,14 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
-    public function let(AuthenticationServiceInterface $authenticationService)
+    public function let(AuthenticationServiceInterface $authenticationService) : void
     {
         $this->beConstructedWith(
             $this->authenticationService = $authenticationService
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(AuthenticationMiddleware::class);
     }
@@ -34,7 +33,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         UriInterface $uri,
         DelegateInterface $delegate,
         ResponseInterface $response
-    )
+    ) : void
     {
         $request->getMethod()->willReturn('GET');
         $request->getUri()->willReturn($uri);
@@ -50,7 +49,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         UriInterface $uri,
         DelegateInterface $delegate,
         ResponseInterface $response
-    )
+    ) : void
     {
         $username = 'user@name.email';
         $password = 'i-ll-never-tell';
@@ -69,7 +68,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         ServerRequestInterface $request,
         UriInterface $uri,
         DelegateInterface $delegate
-    )
+    ) : void
     {
         $request->getMethod()->willReturn('GET');
         $request->getUri()->willReturn($uri);
@@ -89,7 +88,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         SessionInterface $session,
         ResponseInterface $response1,
         ResponseInterface $response2
-    )
+    ) : void
     {
         $request1->getMethod()->willReturn('GET');
         $request1->getUri()->willReturn($uri);

@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 
 class DepartmentCollectionSpec extends ObjectBehavior
 {
-    public function it_is_initializable(Department $department1, Department $department2)
+    public function it_is_initializable(Department $department1, Department $department2) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -25,7 +25,7 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid2->toString())->shouldReturn($department2);
     }
 
-    public function it_can_push_items(Department $department1, Department $department2, Department $department3)
+    public function it_can_push_items(Department $department1, Department $department2, Department $department3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -43,7 +43,7 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $this->offsetGet($uuid3->toString())->shouldReturn($department3);
     }
 
-    public function it_is_iterable(Department $department1, Department $department2, Department $department3)
+    public function it_is_iterable(Department $department1, Department $department2, Department $department3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -67,7 +67,7 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $this->current()->shouldReturn($department1);
     }
 
-    public function it_is_countable(Department $department1, Department $department2, Department $department3)
+    public function it_is_countable(Department $department1, Department $department2, Department $department3) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -82,7 +82,11 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $this->count()->shouldBe(3);
     }
 
-    public function it_can_return_array(Department $department1, Department $department2, Department $department3)
+    public function it_can_return_array(
+        Department $department1,
+        Department $department2,
+        Department $department3
+    ) : void
     {
         $uuid1 = Uuid::uuid4();
         $uuid2 = Uuid::uuid4();
@@ -99,7 +103,7 @@ class DepartmentCollectionSpec extends ObjectBehavior
         ]);
     }
 
-    public function it_cant_set_or_unset_entries_from_collection(Department $department)
+    public function it_cant_set_or_unset_entries_from_collection(Department $department) : void
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $department);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');

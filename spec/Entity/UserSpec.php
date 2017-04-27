@@ -20,7 +20,7 @@ class UserSpec extends ObjectBehavior
     /** @var  ?string */
     private $totpSecret;
 
-    public function let()
+    public function let() : void
     {
         $this->beConstructedWith(
             $this->email = EmailAddressValue::get('another@address.email'),
@@ -30,12 +30,12 @@ class UserSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(User::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getEmail()->shouldReturn($this->email);
         $this->getDisplayName()->shouldReturn($this->displayName);
@@ -44,14 +44,14 @@ class UserSpec extends ObjectBehavior
         $this->getTotpSecret()->shouldReturn($this->totpSecret);
     }
 
-    public function it_can_instantiate_without_totp_secret()
+    public function it_can_instantiate_without_totp_secret() : void
     {
         $this->beConstructedWith($this->email, $this->displayName, $this->password, null);
         $this->hasTotpSecret()->shouldBe(false);
         $this->getTotpSecret()->shouldBe(null);
     }
 
-    public function it_can_change_some_properties()
+    public function it_can_change_some_properties() : void
     {
         $displayName = 'MyNickname';
         $this->setDisplayName($displayName);

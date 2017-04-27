@@ -25,7 +25,7 @@ class TicketMailingSpec extends ObjectBehavior
     /** @var  ?\DateTimeInterface */
     private $sentAt;
 
-    public function let(UuidInterface $id, Ticket $ticket, TicketUpdate $ticketUpdate)
+    public function let(UuidInterface $id, Ticket $ticket, TicketUpdate $ticketUpdate) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -36,12 +36,12 @@ class TicketMailingSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(TicketMailing::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getTicket()->shouldReturn($this->ticket);
@@ -50,13 +50,13 @@ class TicketMailingSpec extends ObjectBehavior
         $this->getSentAt()->shouldReturn($this->sentAt);
     }
 
-    public function it_can_instantiate_without_sent_at()
+    public function it_can_instantiate_without_sent_at() : void
     {
         $this->beConstructedWith($this->id, $this->ticket, $this->ticketUpdate, $this->type, null);
         $this->getSentAt()->shouldReturn(null);
     }
 
-    public function it_can_change_some_properties()
+    public function it_can_change_some_properties() : void
     {
         $sentAt = new \DateTimeImmutable();
         $this->setSentAt($sentAt);

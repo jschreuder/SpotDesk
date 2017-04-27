@@ -7,7 +7,7 @@ use PhpSpec\ObjectBehavior;
 
 class EmailAddressValueSpec extends ObjectBehavior
 {
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $email = 'some@mail.address';
         $this->beConstructedThrough('get', [$email]);
@@ -17,7 +17,7 @@ class EmailAddressValueSpec extends ObjectBehavior
         $this->getDomain()->shouldBe('mail.address');
     }
 
-    public function it_is_not_initializable_without_valid_email()
+    public function it_is_not_initializable_without_valid_email() : void
     {
         $email = 'not-an-email-address';
         $this->beConstructedThrough('get', [$email]);

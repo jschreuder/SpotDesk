@@ -37,7 +37,7 @@ class MailboxSpec extends ObjectBehavior
     /** @var  \DateTimeInterface */
     private $lastCheck;
 
-    public function let(UuidInterface $id, Department $department)
+    public function let(UuidInterface $id, Department $department) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -52,12 +52,12 @@ class MailboxSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(Mailbox::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getName()->shouldReturn($this->name);
@@ -70,7 +70,7 @@ class MailboxSpec extends ObjectBehavior
         $this->getLastCheck()->shouldReturn($this->lastCheck);
     }
 
-    public function it_can_instantiate_without_department()
+    public function it_can_instantiate_without_department() : void
     {
         $this->beConstructedWith(
             $this->id,
@@ -86,7 +86,7 @@ class MailboxSpec extends ObjectBehavior
         $this->getDepartment()->shouldReturn(null);
     }
 
-    public function it_can_change_some_properties(Department $department)
+    public function it_can_change_some_properties(Department $department) : void
     {
         $name = 'new';
         $this->setName($name);

@@ -19,7 +19,7 @@ class TicketSubscriptionSpec extends ObjectBehavior
     /** @var  EmailAddressValue */
     private $email;
 
-    public function let(UuidInterface $id, Ticket $ticket)
+    public function let(UuidInterface $id, Ticket $ticket) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
@@ -28,12 +28,12 @@ class TicketSubscriptionSpec extends ObjectBehavior
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(TicketSubscription::class);
     }
 
-    public function it_can_access_its_properties()
+    public function it_can_access_its_properties() : void
     {
         $this->getId()->shouldReturn($this->id);
         $this->getTicket()->shouldReturn($this->ticket);

@@ -14,14 +14,14 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
     /** @var  string */
     private $siteUrl;
 
-    public function let()
+    public function let() : void
     {
         $this->beConstructedWith(
             $this->siteUrl = 'http://localhost'
         );
     }
 
-    public function it_is_initializable()
+    public function it_is_initializable() : void
     {
         $this->shouldHaveType(SecurityHeadersMiddleware::class);
     }
@@ -34,7 +34,7 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
         ResponseInterface $response3,
         ResponseInterface $response4,
         ResponseInterface $response5
-    )
+    ) : void
     {
         $delegate->process($request)->willReturn($response1);
 
@@ -59,7 +59,7 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
         ResponseInterface $response4,
         ResponseInterface $response5,
         ResponseInterface $response6
-    )
+    ) : void
     {
         $this->beConstructedWith('https://secure.site');
 

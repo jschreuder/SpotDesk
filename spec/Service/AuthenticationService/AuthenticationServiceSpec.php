@@ -61,6 +61,20 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->createUser($userMail, $displayName, $password);
     }
 
+    public function it_can_change_a_user_password(User $user)
+    {
+        $this->userRepository->updatePassword($user, new Argument\Token\TypeToken('string'))->shouldBeCalled();
+        $this->changePassword($user, 'new-password');
+    }
+
+    public function it_can_verify_a_user_password(User $user)
+    {
+        $password = 'password';
+        $user->getPassword()->willReturn(password_hash($password, PASSWORD_DEFAULT));
+        $this->checkPassword($user, $password)->shouldBe(true);
+        $this->checkPassword($user, 'nope')->shouldBe(false);
+    }
+
     public function it_can_login(User $user) : void
     {
         $userMail = 'user@test.dev';

@@ -48,16 +48,31 @@ final class AuthenticationService implements AuthenticationServiceInterface
         $this->sessionRefreshAfter = $sessionRefreshAfter;
     }
 
+    private function hashPassword(string $password) : string
+    {
+        return password_hash($password, $this->passwordAlgorithm, $this->passwordOptions);
+    }
+
     public function createUser(string $email, string $displayName, string $password) : User
     {
         $user = new User(
             EmailAddressValue::get($email),
             $displayName,
-            password_hash($password, $this->passwordAlgorithm, $this->passwordOptions),
+            $this->hashPassword($password),
             null
         );
         $this->userRepository->createUser($user);
         return $user;
+    }
+
+    public function changePassword(User $user, string $newPassword) : void
+    {
+        $this->userRepository->updatePassword($user, $this->hashPassword($newPassword));
+    }
+
+    public function checkPassword(User $user, string $password) : bool
+    {
+        return password_verify($password, $user->getPassword());
     }
 
     public function login(string $email, string $password) : ResponseInterface
@@ -68,7 +83,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
             return new JsonResponse(['message' => 'Login failed'], 401);
         }
 
-        if (!password_verify($password, $user->getPassword())) {
+        if (!$this->checkPassword($user, $password)) {
             return new JsonResponse(['message' => 'Login failed'], 401);
         }
 

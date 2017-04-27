@@ -15,6 +15,16 @@ interface AuthenticationServiceInterface
     public function createUser(string $email, string $displayName, string $password) : User;
 
     /**
+     * Modifies the given user's password
+     */
+    public function changePassword(User $user, string $newPassword) : void;
+
+    /**
+     * Returns if the password matches the user's hash
+     */
+    public function checkPassword(User $user, string $password) : bool;
+
+    /**
      * Generates response based on the success of the login.
      */
     public function login(string $email, string $password) : ResponseInterface;

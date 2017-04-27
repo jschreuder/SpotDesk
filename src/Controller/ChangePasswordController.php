@@ -6,20 +6,26 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class CreateUserController implements ControllerInterface, RequestValidatorInterface, RequestFilterInterface
+class ChangePasswordController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
+    /** @var  UserRepository */
+    private $userRepository;
+
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(UserRepository $userRepository, AuthenticationServiceInterface $authenticationService)
     {
+        $this->userRepository = $userRepository;
         $this->authenticationService = $authenticationService;
     }
 
@@ -27,9 +33,8 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
     {
         $body = (array) $request->getParsedBody();
         $filter = new Filter();
-        $filter->value('email')->string()->trim();
-        $filter->value('display_name')->string()->trim();
-        $filter->value('password')->string();
+        $filter->value('old_password')->string();
+        $filter->value('new_password')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -37,9 +42,8 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
     public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
-        $validator->required('email')->string()->email()->lengthBetween(6, 123);
-        $validator->optional('display_name')->string()->lengthBetween(2, 63);
-        $validator->required('password')->string()->lengthBetween(12, null);
+        $validator->required('old_password')->string()->lengthBetween(1, null);
+        $validator->required('new_password')->string()->lengthBetween(12, null);
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -50,18 +54,14 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array) $request->getParsedBody();
+        $session = $request->getAttribute('session');
 
-        $user = $this->authenticationService->createUser(
-            $body['email'],
-            $body['display_name'],
-            $body['password']
-        );
+        $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($session->get('user')));
+        if (!$this->authenticationService->checkPassword($user, $body['old_password'])) {
+            return new JsonResponse(['message' => 'Invalid old password'], 400);
+        }
 
-        return new JsonResponse([
-            'user' => [
-                'email' => $user->getEmail(),
-                'display_name' => $user->getDisplayName(),
-            ]
-        ], 201);
+        $this->authenticationService->changePassword($user, $body['new_password']);
+        return new JsonResponse(['message' => 'Password changed'], 200);
     }
 }

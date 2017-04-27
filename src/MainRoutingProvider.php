@@ -7,6 +7,7 @@ use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
+use jschreuder\SpotDesk\Controller\ChangePasswordController;
 use jschreuder\SpotDesk\Controller\DeleteTicketController;
 use jschreuder\SpotDesk\Controller\DeleteUserController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
@@ -42,6 +43,12 @@ class MainRoutingProvider implements RoutingProviderInterface
 
         $router->get('homepage', '/', function () {
             return CallableController::fromCallable($this->container['site.template']);
+        });
+        $router->put('change_password', '/change_password', function () {
+            return new ChangePasswordController(
+                $this->container['repository.users'],
+                $this->container['service.authentication']
+            );
         });
 
         // Tickets

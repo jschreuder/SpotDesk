@@ -149,6 +149,31 @@
                     }
                 };
             }
+        ])
+
+        .controller("changePasswordController", ["$sdAuth", "$sdAlert",
+            function ($sdAuth, $sdAlert) {
+                var ctrl = this;
+
+                ctrl.changePassword = function () {
+                    if (ctrl.new_password !== ctrl.confirm_new_password) {
+                        $sdAlert.error("Password fields do not match.");
+                        return;
+                    }
+                    if (ctrl.new_password.length < 12) {
+                        $sdAlert.error("Password must be at least 12 characters.");
+                        return;
+                    }
+
+                    $sdAuth.changePassword(ctrl.old_password, ctrl.new_password).then(function () {
+                        ctrl.old_password = null;
+                        ctrl.new_password = null;
+                        $sdAlert.success("Password changed");
+                    }, function () {
+                        $sdAlert.error("Password change failed");
+                    });
+                };
+            }
         ]);
 
 })();

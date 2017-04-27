@@ -95,6 +95,13 @@
                     });
                 };
 
+                srvc.changePassword = function (old_password, new_password) {
+                    return $http.put("/change_password", {
+                        old_password: old_password,
+                        new_password: new_password
+                    });
+                };
+
                 srvc.logout = function () {
                     srvc.persistToken = false;
                     srvc.updateToken(null);

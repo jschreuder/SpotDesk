@@ -37,6 +37,15 @@
             });
 
             $stateProvider.state({
+                name: "change_password",
+                url: "/change_password",
+                templateUrl: "assets/templates/change_password.html",
+                controller: "changePasswordController",
+                controllerAs: "ctrl",
+                onEnter: ["$sdTitle", function($title) { $title.change("Change password") } ]
+            });
+
+            $stateProvider.state({
                 name: "users",
                 url: "/users",
                 templateUrl: "assets/templates/users/list.html",

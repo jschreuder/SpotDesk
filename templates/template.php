@@ -153,8 +153,12 @@
 <script src="./src/spotdesk.js"></script>
 <script src="./src/routing.js"></script>
 <script src="./src/services.js"></script>
+<script src="./src/services/auth.js"></script>
+<script src="./src/services/tickets.js"></script>
+<script src="./src/services/users.js"></script>
 <script src="./src/controllers/departments.js"></script>
 <script src="./src/controllers/mailboxes.js"></script>
+<script src="./src/controllers/main.js"></script>
 <script src="./src/controllers/statuses.js"></script>
 <script src="./src/controllers/tickets.js"></script>
 <script src="./src/controllers/users.js"></script>

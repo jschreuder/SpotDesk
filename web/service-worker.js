@@ -43,11 +43,15 @@ var urlsToCache = [
     // js sources
     "./src/controllers/departments.js",
     "./src/controllers/mailboxes.js",
+    "./src/controllers/main.js",
     "./src/controllers/statuses.js",
     "./src/controllers/tickets.js",
     "./src/controllers/users.js",
     "./src/routing.js",
     "./src/services.js",
+    "./src/services/auth.js",
+    "./src/services/tickets.js",
+    "./src/services/users.js",
     "./src/spotdesk.js"
 ];
 

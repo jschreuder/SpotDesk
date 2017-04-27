@@ -8,16 +8,16 @@ use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
-final class SmtpSendSendMailService implements SendMailServiceInterface
+final class SmtpSendMailService implements SendMailServiceInterface
 {
+    /** @var  TicketMailingRepository */
+    private $ticketMailingRepository;
+
     /** @var  \Swift_Mailer */
     private $swiftMailer;
 
-    /** @var  MailTemplateFactory */
+    /** @var  MailTemplateFactoryInterface */
     private $mailTemplateFactory;
-
-    /** @var  TicketMailingRepository */
-    private $ticketMailingRepository;
 
     /** @var  EmailAddressValue */
     private $defaultFrom;
@@ -28,7 +28,7 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
     public function __construct(
         TicketMailingRepository $ticketMailingRepository,
         \Swift_Mailer $swiftMailer,
-        MailTemplateFactory $mailTemplateFactory,
+        MailTemplateFactoryInterface $mailTemplateFactory,
         EmailAddressValue $defaultFrom,
         string $siteName
     ) {
@@ -39,7 +39,7 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
         $this->siteName = $siteName;
     }
 
-    public function addMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate = null) : void
+    public function addTicketMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate = null) : void
     {
         $this->ticketMailingRepository->createTicketMailing($ticket, $type, $ticketUpdate);
     }
@@ -47,11 +47,8 @@ final class SmtpSendSendMailService implements SendMailServiceInterface
     public function send(TicketMailing $ticketMailing) : void
     {
         $ticket = $ticketMailing->getTicket();
-        $mail = $this->mailTemplateFactory->getMail(
-            $ticket,
-            $ticketMailing->getTicketUpdate(),
-            $ticketMailing->getType()
-        );
+        $mail = $this->mailTemplateFactory->getMailTemplate($ticketMailing->getType());
+        $mail->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketMailing->getTicketUpdate()]);
 
         $message = $this->createMessage($ticket, $mail);
         $sent = $this->swiftMailer->send($message);

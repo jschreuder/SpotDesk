@@ -24,7 +24,7 @@ use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
 use jschreuder\SpotDesk\Service\AuthenticationService\JwtSessionStorage;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
-use jschreuder\SpotDesk\Service\SendMailService\SmtpSendSendMailService;
+use jschreuder\SpotDesk\Service\SendMailService\SmtpSendMailService;
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
@@ -164,7 +164,7 @@ class MainServiceProvider implements ServiceProviderInterface
         };
 
         $container['service.mail'] = function () use ($container) {
-            return new SmtpSendSendMailService(
+            return new SmtpSendMailService(
                 $container['repository.ticket_mailings'],
                 $container['mail.swiftmailer'],
                 $container['mail.template_factory'],

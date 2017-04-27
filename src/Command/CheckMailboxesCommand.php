@@ -98,7 +98,7 @@ class CheckMailboxesCommand extends Command
                     $ticket = $this->ticketRepository->createTicket(
                         $email, $subject, $message, $department, $createdAt
                     );
-                    $this->mailService->addMailing($ticket, SendMailServiceInterface::TYPE_NEW_TICKET);
+                    $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_NEW_TICKET);
                 }
 
                 // Mark e-mail as read once the ticket has been created or duplicate was detected

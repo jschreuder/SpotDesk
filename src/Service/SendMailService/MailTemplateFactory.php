@@ -7,31 +7,22 @@ use jschreuder\SpotDesk\Entity\TicketUpdate;
 
 final class MailTemplateFactory implements MailTemplateFactoryInterface
 {
-    /** @var  MailTemplateInterface */
-    private $newTicket;
-
-    /** @var  MailTemplateInterface */
-    private $updateTicket;
+    /** @var  MailTemplateInterface[] */
+    private $templates;
 
     public function __construct(MailTemplateInterface $newTicket, MailTemplateInterface $updateTicket)
     {
-        $this->newTicket = $newTicket;
-        $this->updateTicket = $updateTicket;
+        $this->templates = [
+            SendMailServiceInterface::TYPE_NEW_TICKET => $newTicket,
+            SendMailServiceInterface::TYPE_UPDATE_TICKET => $updateTicket,
+        ];
     }
 
-    public function getMail(Ticket $ticket, ?TicketUpdate $ticketUpdate, string $type) : MailTemplateInterface
+    public function getMailTemplate(string $type) : MailTemplateInterface
     {
-        switch ($type) {
-            case SendMailServiceInterface::TYPE_NEW_TICKET:
-                $mail = clone $this->newTicket;
-                break;
-            case SendMailServiceInterface::TYPE_UPDATE_TICKET:
-                $mail = clone $this->updateTicket;
-                break;
-            default:
-                throw new \InvalidArgumentException('Invalid mail type: ' . $type);
+        if (!isset($this->templates[$type])) {
+            throw new \OutOfBoundsException('No such mail template: ' . $type);
         }
-        $mail->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate]);
-        return $mail;
+        return clone $this->templates[$type];
     }
 }

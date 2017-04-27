@@ -81,6 +81,29 @@
                     $sdAlert.error("departments_load_failed");
                 });
 
+                ctrl.editUser = function(ev) {
+                    $mdDialog.show({
+                        contentElement: "#editUser",
+                        parent: angular.element(document.body),
+                        targetEvent: ev
+                    });
+                };
+                ctrl.cancelEditUser = function () {
+                    $mdDialog.cancel();
+                };
+                ctrl.submitEditUser = function () {
+                    $sdUsers.update(
+                        ctrl.user.email, ctrl.user.display_name
+                    ).then(function () {
+                        $mdDialog.hide();
+                        ctrl.fetchUser();
+                    }, function () {
+                        // @todo handle validation errors differently
+                        $sdAlert.error("user_edit_failed");
+                        ctrl.fetchUser();
+                    });
+                };
+
                 ctrl.deleteUser = function () {
                     $mdDialog.show(
                         $mdDialog.confirm()

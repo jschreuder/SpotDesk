@@ -23,6 +23,7 @@ use jschreuder\SpotDesk\Controller\GetUsersController;
 use jschreuder\SpotDesk\Controller\UpdateDepartmentController;
 use jschreuder\SpotDesk\Controller\UpdateTicketDepartmentController;
 use jschreuder\SpotDesk\Controller\UpdateTicketStatusController;
+use jschreuder\SpotDesk\Controller\UpdateUserController;
 use jschreuder\SpotDesk\Controller\UpdateUserDepartmentsController;
 use Pimple\Container;
 use Ramsey\Uuid\Uuid;
@@ -115,6 +116,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         });
         $router->post('users.create', '/users', function () {
             return new CreateUserController($this->container['service.authentication']);
+        });
+        $router->put('users.update', '/users/{email}', function () {
+            return new UpdateUserController($this->container['repository.users']);
         });
         $router->put('users.departments', '/users/{email}/departments', function () {
             return new UpdateUserDepartmentsController(

@@ -6,6 +6,34 @@
             </div>
         </md-card-title-media>
         <md-card-title-text>
+            <md-fab-speed-dial md-direction="left" class="md-scale md-fab-top-right">
+                <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab md-primary">
+                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Ticket actions</md-tooltip>
+                        <i class="fa fa-cog"></i>
+                    </md-button>
+                </md-fab-trigger>
+
+                <md-fab-actions>
+                    <div>
+                        <md-button aria-label="Delete user" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.deleteUser()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Delete user
+                            </md-tooltip>
+                            <i class="fa fa-trash md-warn" aria-label="Delete user"></i>
+                        </md-button>
+                        <md-button aria-label="Edit user" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.editUser()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Edit user
+                            </md-tooltip>
+                            <i class="fa fa-edit" aria-label="Edit user"></i>
+                        </md-button>
+                    </div>
+                </md-fab-actions>
+            </md-fab-speed-dial>
+
             <span class="md-headline">{{ ctrl.user.display_name }}</span>
             <span class="md-subhead description">
                 E-mail: {{ ctrl.user.email }}
@@ -53,16 +81,43 @@
     </md-card-content>
 </md-card>
 
-<md-card>
-    <md-card-header>
-        <md-card-header-text>
-            <span class="md-title">
-                <i class="fa fa-warning" aria-hidden="true"></i>
-                Danger zone
-            </span>
-        </md-card-header-text>
-    </md-card-header>
-    <md-card-content>
-        <md-button class="md-raised md-warn" ng-click="ctrl.deleteUser()">Delete user</md-button>
-    </md-card-content>
-</md-card>
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="editUser">
+        <md-dialog aria-label="Edit user">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Edit user</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelEditUser()">
+                            <i class="fa fa-close" aria-label="Cancel edit user"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="user_name">User e-mail</label>
+                            <input id="user_name" ng-model="ctrl.user.email" type="email" readonly>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="display_name">Display name</label>
+                            <input id="display_name" ng-model="ctrl.user.display_name" type="text">
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelEditUser()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitEditUser()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>

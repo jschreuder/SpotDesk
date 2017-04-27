@@ -20,6 +20,12 @@
                     });
                 },
 
+                update: function (email, display_name) {
+                    return $http.put("/users/" + btoa(email), {
+                        display_name: display_name
+                    });
+                },
+
                 saveDepartments: function (email, departmentIds) {
                     var departments = [];
                     departmentIds.forEach(function (departmentId) {
@@ -27,7 +33,6 @@
                     });
 
                     return $http.put("/users/" + btoa(email) + "/departments", {
-                        email: email,
                         departments: departments
                     });
                 },

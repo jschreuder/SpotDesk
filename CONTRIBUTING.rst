@@ -14,7 +14,7 @@ and `PSR-2 <http://www.php-fig.org/psr/psr-2/>`_. The `PSR-4 <http://www.php-fig
 standard must be followed for autoloading. While these lay the groundwork,
 there are some additional project-specific guidelines:
 
-* All contributions MUST be properly tested with `phpspec <http://www.phpspec.net/en/stable/>`_.
+* All contributions MUST be properly tested with `phpspec <http://www.phpspec.net/>`_.
 * Third party dependencies MUST be required using Composer.
 * All PHP files MUST start with ``<?php declare(strict_types = 1);`` on their
   first line.
@@ -50,6 +50,7 @@ there are some additional project-specific guidelines:
 Javascript coding style
 -----------------------
 
+* All contributions MUST be properly tested with `Jasmine <https://jasmine.github.io/>`_.
 * Methods MUST use ``camelCasing``.
 * Properties MUST use ``snake_casing``.
 * Angular scope is not used, always use the ControllerAs functionality and use

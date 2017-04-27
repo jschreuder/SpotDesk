@@ -2,12 +2,9 @@
 
 namespace jschreuder\SpotDesk\Service\SendMailService;
 
-use jschreuder\SpotDesk\Entity\Ticket;
-use jschreuder\SpotDesk\Entity\TicketUpdate;
-
 final class MailTemplateFactory implements MailTemplateFactoryInterface
 {
-    /** @var  MailTemplateInterface[] */
+    /** @var  array  MailTemplateInterface instances indexed by their type */
     private $templates;
 
     public function __construct(MailTemplateInterface $newTicket, MailTemplateInterface $updateTicket)

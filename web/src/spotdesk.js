@@ -67,7 +67,7 @@
                     }
                 };
 
-                srvc.login = function (username, password, persist) {
+                srvc.login = function (username, password, persist, successCallback) {
                     srvc.persistToken = persist && true;
                     $http.post("/login", {
                         user: username,
@@ -77,6 +77,7 @@
                             $adminMessage.error("auth_login_failed");
                         }
                         $state.reload();
+                        successCallback();
                     }, function errorCallback() {
                         $adminMessage.error("auth_login_failed");
                     });
@@ -135,7 +136,11 @@
                         return;
                     }
 
-                    $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist);
+                    $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist, function () {
+                        ctrl.user.name = null;
+                        ctrl.user.pass = null;
+                        ctrl.user.persist = false;
+                    });
                 };
 
                 ctrl.showTitle = function () {

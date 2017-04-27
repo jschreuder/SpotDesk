@@ -98,4 +98,10 @@ class DepartmentCollectionSpec extends ObjectBehavior
             $uuid3->toString() => $department3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(Department $department)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $department);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

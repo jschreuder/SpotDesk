@@ -110,4 +110,10 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
             $uuid3->toString() => $ticketUpdate3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(TicketUpdate $ticketUpdate)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticketUpdate);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

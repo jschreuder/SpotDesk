@@ -116,4 +116,10 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
             $uuid3->toString() => $ticketSubscription3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(TicketSubscription $ticketSubscription)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticketSubscription);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

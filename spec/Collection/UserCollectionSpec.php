@@ -98,4 +98,10 @@ class UserCollectionSpec extends ObjectBehavior
             $email3->toString() => $user3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(User $user)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $user);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

@@ -106,4 +106,15 @@ class TicketCollectionSpec extends ObjectBehavior
         $this->setTotalCount(42);
         $this->getTotalCount()->shouldBe(42);
     }
+
+    public function it_cant_set_total_count_to_negative_value()
+    {
+        $this->shouldThrow(\InvalidArgumentException::class)->duringSetTotalCount(-1);
+    }
+
+    public function it_cant_set_or_unset_entries_from_collection(Ticket $ticket)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticket);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

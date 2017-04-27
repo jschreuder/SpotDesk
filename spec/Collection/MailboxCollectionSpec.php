@@ -98,4 +98,10 @@ class MailboxCollectionSpec extends ObjectBehavior
             $uuid3->toString() => $mailbox3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(Mailbox $mailbox)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $mailbox);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

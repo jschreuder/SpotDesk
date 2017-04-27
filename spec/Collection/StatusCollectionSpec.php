@@ -97,4 +97,10 @@ class StatusCollectionSpec extends ObjectBehavior
             $statusName3 => $status3,
         ]);
     }
+
+    public function it_cant_set_or_unset_entries_from_collection(Status $status)
+    {
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $status);
+        $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
 }

@@ -87,7 +87,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
 
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
+        $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
 
@@ -123,7 +123,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $department->getEmail()->willReturn(EmailAddressValue::get($departmentMail));
 
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
+        $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
 
@@ -153,7 +153,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
 
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
-        $mailTemplate->render(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->willReturn('mail contents');
+        $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
         $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(0);
 

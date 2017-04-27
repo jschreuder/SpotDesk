@@ -2,6 +2,7 @@
 
 namespace spec\jschreuder\SpotDesk\Service\SendMailService;
 
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
@@ -80,6 +81,41 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $ticketEmail = 'ticker@user.email';
         $ticket->getDepartment()->willReturn(null);
         $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
+
+        $mailTemplate->getSubject()->willReturn('Some subject');
+        $mailTemplate->render()->willReturn('mail contents');
+
+        $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
+        $mailTemplate->setVariables(['ticket' => $ticket, 'ticketUpdate' => $ticketUpdate])->shouldBeCalled();
+
+        $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
+
+        $this->ticketMailingRepository->setSent($ticketMailing)->shouldBeCalled();
+
+        $this->send($ticketMailing);
+    }
+
+    public function it_can_send_mailings_with_department(
+        TicketMailing $ticketMailing,
+        Ticket $ticket,
+        Department $department,
+        TicketUpdate $ticketUpdate,
+        MailTemplateInterface $mailTemplate
+    )
+    {
+        $type = 'mailing.type';
+        $ticketMailing->getTicket()->willReturn($ticket);
+        $ticketMailing->getTicketUpdate()->willReturn($ticketUpdate);
+        $ticketMailing->getType()->willReturn($type);
+
+        $ticketEmail = 'ticker@user.email';
+        $ticket->getDepartment()->willReturn($department);
+        $ticket->getEmail()->willReturn(EmailAddressValue::get($ticketEmail));
+
+        $departmentName = 'Dep.Art.Ment';
+        $departmentMail = 'department@company.biz';
+        $department->getName()->willReturn($departmentName);
+        $department->getEmail()->willReturn(EmailAddressValue::get($departmentMail));
 
         $mailTemplate->getSubject()->willReturn('Some subject');
         $mailTemplate->render()->willReturn('mail contents');

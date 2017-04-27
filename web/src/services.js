@@ -3,7 +3,7 @@
 
     angular.module("spotdesk")
 
-        .factory("$title", function () {
+        .factory("$sdTitle", function () {
             return {
                 _current: null,
 
@@ -17,7 +17,7 @@
             };
         })
 
-        .factory("$tickets", ["$http", function ($http) {
+        .factory("$sdTickets", ["$http", function ($http) {
             return {
                 fetch: function (status_type, limit, page, sort_by, sort_direction) {
                     return $http.get("/tickets", { params: {
@@ -55,7 +55,7 @@
             };
         }])
 
-        .factory("$users", ["$http", function ($http) {
+        .factory("$sdUsers", ["$http", function ($http) {
             return {
                 fetch: function () {
                     return $http.get("/users");
@@ -91,7 +91,7 @@
             };
         }])
 
-        .factory("$departments", ["$http", function ($http) {
+        .factory("$sdDepartments", ["$http", function ($http) {
             return {
                 fetch: function () {
                     return $http.get("/departments");
@@ -99,7 +99,7 @@
             };
         }])
 
-        .factory("$mailboxes", ["$http", function ($http) {
+        .factory("$sdMailboxes", ["$http", function ($http) {
             return {
                 fetch: function () {
                     return $http.get("/mailboxes");
@@ -107,7 +107,7 @@
             };
         }])
 
-        .factory("$statuses", ["$http", function ($http) {
+        .factory("$sdStatuses", ["$http", function ($http) {
             return {
                 fetch: function () {
                     return $http.get("/statuses");

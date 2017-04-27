@@ -3,7 +3,7 @@
 
     angular.module("spotdesk")
 
-        .controller("ticketsController", ["$tickets", "$stateParams", function ($tickets, $stateParams) {
+        .controller("ticketsController", ["$sdTickets", "$stateParams", function ($sdTickets, $stateParams) {
             var ctrl = this;
             ctrl.order = "-last_update";
             ctrl.promise = null;
@@ -24,7 +24,7 @@
                     sort_direction = "desc";
                 }
 
-                ctrl.promise = $tickets.fetch(
+                ctrl.promise = $sdTickets.fetch(
                     ctrl.query.status_type, ctrl.query.limit, ctrl.query.page, sort_by, sort_direction
                 ).then(function (response) {
                     ctrl.tickets = [];
@@ -38,8 +38,8 @@
         }])
 
         .controller("viewTicketController",
-            ["$tickets", "$statuses", "$departments", "$state", "$stateParams", "$mdDialog", "$adminMessage",
-            function ($tickets, $statuses, $departments, $state, $stateParams, $mdDialog, $adminMessage) {
+            ["$sdTickets", "$sdStatuses", "$sdDepartments", "$state", "$stateParams", "$mdDialog", "$sdAlert",
+            function ($sdTickets, $sdStatuses, $sdDepartments, $state, $stateParams, $mdDialog, $sdAlert) {
                 var ctrl = this;
                 ctrl.ticket = null;
                 ctrl.updates = [];
@@ -55,20 +55,20 @@
                 ctrl.change_department_id = null;
 
                 ctrl.fetchTicket = function () {
-                    $tickets.fetchOne($stateParams.ticket_id).then(function (response) {
+                    $sdTickets.fetchOne($stateParams.ticket_id).then(function (response) {
                         ctrl.ticket = response.data.ticket;
                         ctrl.updates = response.data.ticket_updates;
                     }, function () {
-                        $adminMessage.error("ticket_load_failed");
+                        $sdAlert.error("ticket_load_failed");
                     });
                 };
                 ctrl.fetchTicket();
 
-                $departments.fetch().then(function (response) {
+                $sdDepartments.fetch().then(function (response) {
                     angular.forEach(response.data.departments, function (department) {
                         ctrl.departments.push(department);
                     }, function () {
-                        $adminMessage.error("departments_load_failed");
+                        $sdAlert.error("departments_load_failed");
                     });
                 });
                 ctrl.getDepartment = function (departmentId) {
@@ -81,11 +81,11 @@
                     return found;
                 };
 
-                $statuses.fetch().then(function (response) {
+                $sdStatuses.fetch().then(function (response) {
                     angular.forEach(response.data.statuses, function (status) {
                         ctrl.statuses.push(status);
                     }, function () {
-                        $adminMessage.error("statuses_load_failed");
+                        $sdAlert.error("statuses_load_failed");
                     });
                 });
                 ctrl.getStatus = function (statusName) {
@@ -110,14 +110,14 @@
                     $mdDialog.cancel();
                 };
                 ctrl.submitDepartmentChange = function () {
-                    $tickets.changeDepartment(
+                    $sdTickets.changeDepartment(
                         ctrl.ticket.ticket_id, ctrl.change_department_id
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchTicket();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error("ticket_change_department_failed");
+                        $sdAlert.error("ticket_change_department_failed");
                     });
                 };
 
@@ -133,14 +133,14 @@
                     $mdDialog.cancel();
                 };
                 ctrl.submitStatusChange = function () {
-                    $tickets.changeStatus(
+                    $sdTickets.changeStatus(
                         ctrl.ticket.ticket_id, ctrl.change_status
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchTicket();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error("ticket_change_status_failed");
+                        $sdAlert.error("ticket_change_status_failed");
                     });
                 };
 
@@ -153,10 +153,10 @@
                             .ok('Yes')
                             .cancel('No')
                     ).then(function () {
-                        $tickets.delete(ctrl.ticket.ticket_id).then(function () {
+                        $sdTickets.delete(ctrl.ticket.ticket_id).then(function () {
                             $state.go("tickets");
                         }, function () {
-                            $adminMessage.error("ticket_delete_failed");
+                            $sdAlert.error("ticket_delete_failed");
                         });
                     });
                 };
@@ -177,14 +177,14 @@
                     $mdDialog.cancel();
                 };
                 ctrl.submitReply = function () {
-                    $tickets.addReply(
+                    $sdTickets.addReply(
                         ctrl.ticket.ticket_id, ctrl.reply.message, ctrl.reply.internal, ctrl.reply.status_update
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchTicket();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error("ticket_update_failed");
+                        $sdAlert.error("ticket_update_failed");
                     });
                 };
             }

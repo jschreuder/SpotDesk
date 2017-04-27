@@ -47,6 +47,8 @@ there are some additional project-specific guidelines:
   immutable. Modifications should always cause a new instance to be created for
   the modified value.
 * Anything stored in a database SHOULD be encapsulated Entity class.
+* MUST use single quotes for all strings, except for SQL queries which MUST use
+  double quotes.
 * Working with a database MUST be encapsulated in a Repository class.
 * All database structure modifications must be done in Phinx migrations.
 * When returning multiple objects they MUST be in a collection class to allow
@@ -66,7 +68,8 @@ Javascript guidelines
   ``ctrl`` as the controller variable name. Any variables and methods should be
   defined as properties and methods on the controller.
 * Controller names are suffixed with ``Controller``.
-* Services are prefixed with ``$``.
+* Services are prefixed with ``$sd``.
+* Always use double quotes for strings.
 
 -------------
 Documentation

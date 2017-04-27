@@ -11,7 +11,7 @@
                 templateUrl: "assets/templates/tickets/list.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", function($title) { $title.change("Open tickets") } ]
+                onEnter: ["$sdTitle", function($title) { $title.change("Open tickets") } ]
             });
 
             $stateProvider.state({
@@ -20,7 +20,7 @@
                 templateUrl: "assets/templates/tickets/list.html",
                 controller: "ticketsController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", "$stateParams", function($title, $stateParams) {
+                onEnter: ["$sdTitle", "$stateParams", function($title, $stateParams) {
                     $title.change($stateParams.status_type + " tickets")
                 }]
             });
@@ -31,7 +31,7 @@
                 templateUrl: "assets/templates/tickets/view.html",
                 controller: "viewTicketController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", "$stateParams", function($title) {
+                onEnter: ["$sdTitle", "$stateParams", function($title) {
                     $title.change("View ticket")
                 }]
             });
@@ -42,7 +42,7 @@
                 templateUrl: "assets/templates/users/list.html",
                 controller: "usersController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", function($title) { $title.change("Manage users") } ]
+                onEnter: ["$sdTitle", function($title) { $title.change("Manage users") } ]
             });
 
             $stateProvider.state({
@@ -51,7 +51,7 @@
                 templateUrl: "assets/templates/users/view.html",
                 controller: "viewUserController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", "$stateParams", function($title) {
+                onEnter: ["$sdTitle", "$stateParams", function($title) {
                     $title.change("View user")
                 }]
             });
@@ -62,7 +62,7 @@
                 templateUrl: "assets/templates/departments/list.html",
                 controller: "departmentsController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", function($title) { $title.change("Manage departments") } ]
+                onEnter: ["$sdTitle", function($title) { $title.change("Manage departments") } ]
             });
 
             $stateProvider.state({
@@ -71,7 +71,7 @@
                 templateUrl: "assets/templates/mailboxes/list.html",
                 controller: "mailboxesController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", function($title) { $title.change("Manage mailboxes") } ]
+                onEnter: ["$sdTitle", function($title) { $title.change("Manage mailboxes") } ]
             });
 
             $stateProvider.state({
@@ -80,7 +80,7 @@
                 templateUrl: "assets/templates/statuses/list.html",
                 controller: "statusesController",
                 controllerAs: "ctrl",
-                onEnter: ["$title", function($title) { $title.change("Manage statuses") } ]
+                onEnter: ["$sdTitle", function($title) { $title.change("Manage statuses") } ]
             });
         }]);
 })();

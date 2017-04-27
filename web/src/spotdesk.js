@@ -4,8 +4,8 @@
     angular.module("spotdesk", ["ngMaterial", "ngCookies", "ui.router", "md.data.table"])
 
         // Main configuration
-        .config(["$httpProvider", "$mdThemingProvider",
-            function($httpProvider , $mdThemingProvider){
+        .config(["$httpProvider", "$mdThemingProvider", "$mdToastProvider",
+            function($httpProvider , $mdThemingProvider, $mdToastProvider) {
                 $httpProvider.interceptors.push("authInterceptor");
 
                 $mdThemingProvider.theme("default")
@@ -14,17 +14,29 @@
             }
         ])
 
-        .factory("$adminMessage", ["$mdDialog", function ($mdDialog) {
+        .factory("$sdAlert", ["$mdDialog", "$mdToast", function ($mdDialog, $mdToast) {
             var srvc = this;
 
-            srvc.error = function (errorMessage) {
+            srvc.success = function (message) {
+                $mdToast.show(
+                    $mdToast.simple()
+                        .parent(angular.element(document.getElementById("content")))
+                        .textContent(message)
+                        .position('top right')
+                );
+            };
+
+            srvc.error = function (message, title) {
+                if (title === undefined) {
+                    title = "Error";
+                }
                 $mdDialog.show(
                     $mdDialog.alert()
                         .parent(angular.element(document.getElementById("content")))
                         .clickOutsideToClose(true)
-                        .title('error')
-                        .textContent(errorMessage)
-                        .ariaLabel('Error')
+                        .title(title)
+                        .textContent(message)
+                        .ariaLabel(title)
                         .ok('OK')
                 );
             };
@@ -33,8 +45,8 @@
         }])
 
         // Authentication service
-        .factory("$auth", ["$http", "$cookies", "$state", "$adminMessage", "authInterceptor",
-            function ($http, $cookies, $state, $adminMessage, authInterceptor) {
+        .factory("$sdAuth", ["$http", "$cookies", "$state", "$sdAlert", "authInterceptor",
+            function ($http, $cookies, $state, $sdAlert, authInterceptor) {
                 var srvc = this;
 
                 srvc.persistToken = false;
@@ -74,12 +86,12 @@
                         pass: password
                     }).then(function () {
                         if (!srvc.loggedIn()) {
-                            $adminMessage.error("auth_login_failed");
+                            $sdAlert.error("auth_login_failed");
                         }
                         $state.reload();
                         successCallback();
                     }, function () {
-                        $adminMessage.error("auth_login_failed");
+                        $sdAlert.error("auth_login_failed");
                     });
                 };
 
@@ -124,11 +136,11 @@
         }])
 
         // Controller for the entire layout
-        .controller("mainController", ["$mdSidenav", "$mdDialog", "$auth", "$title", "$adminMessage",
-            function ($mdSidenav, $mdDialog, $auth, $title, $adminMessage) {
+        .controller("mainController", ["$mdSidenav", "$mdDialog", "$sdAuth", "$sdTitle", "$sdAlert",
+            function ($mdSidenav, $mdDialog, $sdAuth, $sdTitle, $sdAlert) {
                 var ctrl = this;
 
-                ctrl.loggedIn = $auth.loggedIn;
+                ctrl.loggedIn = $sdAuth.loggedIn;
                 ctrl.user = {
                     name: null,
                     pass: null,
@@ -137,11 +149,11 @@
 
                 ctrl.login = function () {
                     if (!ctrl.user.name || !ctrl.user.pass) {
-                        $adminMessage.error("auth_missing_field");
+                        $sdAlert.error("auth_missing_field");
                         return;
                     }
 
-                    $auth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist, function () {
+                    $sdAuth.login(ctrl.user.name, ctrl.user.pass, ctrl.user.persist, function () {
                         ctrl.user.name = null;
                         ctrl.user.pass = null;
                         ctrl.user.persist = false;
@@ -157,13 +169,13 @@
                             .ok('Yes')
                             .cancel('No')
                     ).then(function () {
-                        $auth.logout();
+                        $sdAuth.logout();
                     });
                 };
 
                 ctrl.showTitle = function () {
-                    if ($auth.loggedIn()) {
-                        return $title.get();
+                    if ($sdAuth.loggedIn()) {
+                        return $sdTitle.get();
                     }
                     return "Login";
                 };

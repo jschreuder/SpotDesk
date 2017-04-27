@@ -3,19 +3,19 @@
 
     angular.module("spotdesk")
 
-        .controller("departmentsController", ["$departments", "$adminMessage", function ($departments, $adminMessage) {
+        .controller("departmentsController", ["$sdDepartments", "$sdAlert", function ($sdDepartments, $sdAlert) {
             var ctrl = this;
             ctrl.order = "name";
             ctrl.selected = [];
             ctrl.departments = [];
 
-            $departments.fetch().then(function (response) {
+            $sdDepartments.fetch().then(function (response) {
                 ctrl.departments = [];
                 angular.forEach(response.data.departments, function (department) {
                     ctrl.departments.push(department);
                 });
             }, function () {
-                $adminMessage.error("departments_load_failed");
+                $sdAlert.error("departments_load_failed");
             });
 
             ctrl.getDepartment = function (departmentId) {

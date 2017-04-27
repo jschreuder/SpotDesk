@@ -3,21 +3,21 @@
 
     angular.module("spotdesk")
 
-        .controller("usersController", ["$users", "$adminMessage", "$mdDialog",
-            function ($users, $adminMessage, $mdDialog) {
+        .controller("usersController", ["$sdUsers", "$sdAlert", "$mdDialog",
+            function ($sdUsers, $sdAlert, $mdDialog) {
                 var ctrl = this;
                 ctrl.order = "email";
                 ctrl.selected = [];
                 ctrl.users = [];
 
                 ctrl.fetchUsers = function () {
-                    $users.fetch().then(function (response) {
+                    $sdUsers.fetch().then(function (response) {
                         ctrl.users = [];
                         angular.forEach(response.data.users, function (user) {
                             ctrl.users.push(user);
                         });
                     }, function () {
-                        $adminMessage.error("users_load_failed");
+                        $sdAlert.error("users_load_failed");
                     });
                 };
                 ctrl.fetchUsers();
@@ -38,47 +38,47 @@
                     $mdDialog.cancel();
                 };
                 ctrl.submitUser = function () {
-                    $users.create(
+                    $sdUsers.create(
                         ctrl.user.email, ctrl.user.display_name, ctrl.user.password
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchUsers();
                     }, function () {
                         // @todo handle validation errors differently
-                        $adminMessage.error("user_create_failed");
+                        $sdAlert.error("user_create_failed");
                     });
                 };
             }
         ])
 
         .controller("viewUserController",
-            ["$users", "$departments", "$state", "$stateParams", "$adminMessage", "$mdDialog",
-            function ($users, $departments, $state, $stateParams, $adminMessage, $mdDialog) {
+            ["$sdUsers", "$sdDepartments", "$state", "$stateParams", "$sdAlert", "$mdDialog",
+            function ($sdUsers, $sdDepartments, $state, $stateParams, $sdAlert, $mdDialog) {
                 var ctrl = this;
                 ctrl.user = null;
                 ctrl.user_departments = [];
                 ctrl.departments = [];
 
                 ctrl.fetchUser = function () {
-                    $users.fetchOne($stateParams.email).then(function (response) {
+                    $sdUsers.fetchOne($stateParams.email).then(function (response) {
                         ctrl.user = response.data.user;
                         ctrl.user_departments = [];
                         angular.forEach(response.data.departments, function (department) {
                             ctrl.user_departments.push(department.department_id);
                         });
                     }, function () {
-                        $adminMessage.error("user_load_failed");
+                        $sdAlert.error("user_load_failed");
                     });
                 };
                 ctrl.fetchUser();
 
-                $departments.fetch().then(function (response) {
+                $sdDepartments.fetch().then(function (response) {
                     ctrl.departments = [];
                     angular.forEach(response.data.departments, function (department) {
                         ctrl.departments.push(department);
                     });
                 }, function () {
-                    $adminMessage.error("departments_load_failed");
+                    $sdAlert.error("departments_load_failed");
                 });
 
                 ctrl.deleteUser = function () {
@@ -91,22 +91,23 @@
                             .ok('Yes')
                             .cancel('No')
                     ).then(function () {
-                        $users.delete(ctrl.user.email).then(function () {
+                        $sdUsers.delete(ctrl.user.email).then(function () {
                             $state.go("users");
                         }, function () {
-                            $adminMessage.error("user_delete_failed");
+                            $sdAlert.error("user_delete_failed");
                         });
                     });
                 };
 
                 ctrl.saveDepartments = function () {
-                    $users.saveDepartments(ctrl.user.email, ctrl.user_departments).then(function (response) {
+                    $sdUsers.saveDepartments(ctrl.user.email, ctrl.user_departments).then(function (response) {
                         ctrl.user_departments = [];
                         angular.forEach(response.data.user_departments, function (department) {
                             ctrl.user_departments.push(department.department_id);
                         });
+                        $sdAlert.success('Department assignments saved');
                     }, function () {
-                        $adminMessage.error("user_departments_saving_failed");
+                        $sdAlert.error("user_departments_saving_failed");
                     });
                 };
 

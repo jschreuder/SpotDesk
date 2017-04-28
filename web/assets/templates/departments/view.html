@@ -57,11 +57,9 @@
             <md-list-item class="secondary-button-padding" ng-repeat="u in ctrl.department_users" flex-gt-md="50"
                           ui-sref="users_view({ email: u.email })">
                 <p>{{ u.display_name }}</p>
-                <md-button class="md-secondary">
-                    Edit
-                </md-button>
             </md-list-item>
         </md-list>
+        <p ng-hide="ctrl.department_users.length > 0">No users in department</p>
     </md-card-content>
 </md-card>
 
@@ -79,10 +77,8 @@
             <md-list-item class="secondary-button-padding" ng-repeat="m in ctrl.department_mailboxes" flex-gt-md="50"
                           ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id })">
                 <p>{{ m.name }}</p>
-                <md-button class="md-secondary">
-                    Edit
-                </md-button>
             </md-list-item>
         </md-list>
+        <p ng-hide="ctrl.department_mailboxes.length > 0">No mailboxes fetched for department</p>
     </md-card-content>
 </md-card>

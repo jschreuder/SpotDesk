@@ -85,6 +85,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
             $password,
             $this->passwordAlgorithm, $this->passwordOptions
         ));
+        $user->isActive()->willReturn(true);
 
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
@@ -115,6 +116,21 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(401);
     }
 
+    public function it_fails_login_on_disabled_user(User $user) : void
+    {
+        $userMail = 'user@test.dev';
+        $password = 'my-secret';
+        $user->getEmail()->willReturn(EmailAddressValue::get($userMail));
+        $user->isActive()->willReturn(false);
+
+        $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
+            ->willReturn($user);
+
+        $response = $this->login($userMail, $password);
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(401);
+    }
+
     public function it_fails_login_on_incorrect_password(User $user) : void
     {
         $userMail = 'user@test.dev';
@@ -124,6 +140,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
             $password,
             $this->passwordAlgorithm, $this->passwordOptions
         ));
+        $user->isActive()->willReturn(true);
 
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
@@ -142,6 +159,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
             $password,
             $this->passwordAlgorithm, ['cost' => 5]
         ));
+        $user->isActive()->willReturn(true);
 
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);

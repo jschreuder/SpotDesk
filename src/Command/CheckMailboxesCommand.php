@@ -3,6 +3,7 @@
 namespace jschreuder\SpotDesk\Command;
 
 use jschreuder\SpotDesk\Entity\Mailbox;
+use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
@@ -86,19 +87,11 @@ class CheckMailboxesCommand extends Command
                 $subject = $mail->subject;
                 $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
                 $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
-                $department = $mailbox->getDepartment();
 
-                if ($this->ticketRepository->isDuplicate($email, $subject, $message, $createdAt, $department)) {
-                    // Skip duplicate
-                    $output->writeln(
-                        'DUPLICATE: Exact same ticket has been created within 24 hours of this one'
-                    );
+                if ($ticket = $this->getTicketFromSubject($subject)) {
+                    $this->processTicketUpdate($ticket, $email, $message, $createdAt);
                 } else {
-                    // Create new ticket
-                    $ticket = $this->ticketRepository->createTicket(
-                        $email, $subject, $message, $department, $createdAt
-                    );
-                    $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_NEW_TICKET);
+                    $this->processTicket($mailbox, $email, $subject, $message, $createdAt);
                 }
 
                 // Mark e-mail as read once the ticket has been created or duplicate was detected
@@ -114,6 +107,53 @@ class CheckMailboxesCommand extends Command
 
         // Update last check date-time
         $this->mailboxRepository->updateLastCheck($mailbox);
+    }
+
+    private function getTicketFromSubject(string $subject) : ?Ticket
+    {
+        $pattern = '#\[(?P<uuid>' . trim(Uuid::VALID_PATTERN, '^$') . ')\]#';
+        if (preg_match($pattern, $subject, $matches) < 1) {
+            return null;
+        }
+
+        $id = Uuid::fromString($matches['uuid']);
+        try {
+            return $this->ticketRepository->getTicket($id);
+        } catch (\OutOfBoundsException $exception) {
+            return null;
+        }
+    }
+
+    private function processTicket(
+        Mailbox $mailbox,
+        EmailAddressValue $email,
+        string $subject,
+        string $message,
+        \DateTimeInterface $createdAt
+    )
+    {
+        $department = $mailbox->getDepartment();
+        if ($this->ticketRepository->isDuplicate($email, $subject, $message, $createdAt, $department)) {
+            return;
+        }
+
+        $ticket = $this->ticketRepository->createTicket(
+            $email, $subject, $message, $department, $createdAt
+        );
+        $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_NEW_TICKET);
+    }
+
+    private function processTicketUpdate(
+        Ticket $ticket,
+        EmailAddressValue $email,
+        string $message,
+        \DateTimeInterface $createdAt
+    )
+    {
+        $ticketUpdate = $this->ticketRepository->createTicketUpdate(
+            $ticket, $email, $message, false, $createdAt
+        );
+        $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
     }
 
     private function stripHtml(string $message) : string

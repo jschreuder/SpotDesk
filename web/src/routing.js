@@ -95,6 +95,15 @@
             });
 
             $stateProvider.state({
+                name: "mailboxes_view",
+                url: "/mailboxes/view/{mailbox_id}",
+                templateUrl: "assets/templates/mailboxes/view.html",
+                controller: "viewMailboxController",
+                controllerAs: "ctrl",
+                onEnter: ["$sdTitle", function($title) { $title.change("View mailbox") } ]
+            });
+
+            $stateProvider.state({
                 name: "statuses",
                 url: "/statuses",
                 templateUrl: "assets/templates/statuses/list.html",

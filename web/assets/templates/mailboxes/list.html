@@ -11,7 +11,7 @@
             <tbody md-body>
                 <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select ng-repeat="m in ctrl.mailboxes">
                     <td md-cell>
-                        <strong>{{ m.name }}</strong>
+                        <a ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id})">{{ m.name }}</a>
                     </td>
                     <td md-cell>
                         {{ m.department_name }}

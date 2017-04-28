@@ -48,14 +48,20 @@
         <md-card-header-text>
             <span class="md-headline">
                 <i class="fa fa-users" aria-hidden="true"></i>
-                Users
+                Users in department
             </span>
         </md-card-header-text>
     </md-card-header>
     <md-card-content>
-        <ul>
-            <li ng-repeat="u in ctrl.department_users">{{ u.display_name }}</li>
-        </ul>
+        <md-list ng-cloak layout="row">
+            <md-list-item class="secondary-button-padding" ng-repeat="u in ctrl.department_users" flex-gt-md="50"
+                          ui-sref="users_view({ email: u.email })">
+                <p>{{ u.display_name }}</p>
+                <md-button class="md-secondary">
+                    Edit
+                </md-button>
+            </md-list-item>
+        </md-list>
     </md-card-content>
 </md-card>
 
@@ -64,13 +70,19 @@
         <md-card-header-text>
             <span class="md-headline">
                 <i class="fa fa-folder-open" aria-hidden="true"></i>
-                Mailboxes
+                Mailboxes fetched for department
             </span>
         </md-card-header-text>
     </md-card-header>
     <md-card-content>
-        <ul>
-            <li ng-repeat="m in ctrl.department_mailboxes">{{ m.name }}</li>
-        </ul>
+        <md-list ng-cloak layout="row">
+            <md-list-item class="secondary-button-padding" ng-repeat="m in ctrl.department_mailboxes" flex-gt-md="50"
+                          ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id })">
+                <p>{{ m.name }}</p>
+                <md-button class="md-secondary">
+                    Edit
+                </md-button>
+            </md-list-item>
+        </md-list>
     </md-card-content>
 </md-card>

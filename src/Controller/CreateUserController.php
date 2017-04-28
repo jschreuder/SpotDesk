@@ -61,6 +61,7 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
             'user' => [
                 'email' => $user->getEmail(),
                 'display_name' => $user->getDisplayName(),
+                'active' => $user->isActive(),
             ]
         ], 201);
     }

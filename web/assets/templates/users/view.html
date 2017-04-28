@@ -2,7 +2,8 @@
     <md-card-title>
         <md-card-title-media>
             <div class="md-media-sm card-media" layout>
-                <i class="fa fa-user" aria-hidden="true"></i>
+                <i class="fa fa-user" aria-hidden="true" ng-hide="!ctrl.user.active"></i>
+                <i class="fa fa-user-times" aria-hidden="true" ng-hide="ctrl.user.active"></i>
             </div>
         </md-card-title-media>
         <md-card-title-text>
@@ -104,6 +105,12 @@
                         <md-input-container class="md-block">
                             <label for="display_name">Display name</label>
                             <input id="display_name" ng-model="ctrl.user.display_name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <md-switch class="md-primary" ng-model="ctrl.user.active">
+                                Active user
+                            </md-switch>
                         </md-input-container>
                     </div>
                 </md-dialog-content>

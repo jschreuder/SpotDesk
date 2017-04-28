@@ -49,8 +49,8 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $this->db->query(new Argument\Token\TypeToken('string'))->willReturn($statement);
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
-            ['email' => 'one@domain.com', 'display_name' => 'One', 'password' => '...', 'totp_secret' => null],
-            ['email' => 'two@domain.com', 'display_name' => 'Two', 'password' => '...', 'totp_secret' => null],
+            ['email' => 'one@domain.com', 'display_name' => 'One', 'password' => '...', 'active' => true],
+            ['email' => 'two@domain.com', 'display_name' => 'Two', 'password' => '...', 'active' => false],
             null
         );
 
@@ -59,9 +59,11 @@ class UserRepositorySpec extends ObjectBehavior
         $users['one@domain.com']->shouldBeAnInstanceOf(User::class);
         $users['one@domain.com']->getDisplayName()->shouldBe('One');
         $users['one@domain.com']->getPassword()->shouldBe('...');
+        $users['one@domain.com']->isActive()->shouldBe(true);
         $users['two@domain.com']->shouldBeAnInstanceOf(User::class);
         $users['two@domain.com']->getDisplayName()->shouldBe('Two');
         $users['two@domain.com']->getPassword()->shouldBe('...');
+        $users['two@domain.com']->isActive()->shouldBe(false);
     }
 
     public function it_can_get_one_user(\PDOStatement $statement) : void
@@ -71,7 +73,7 @@ class UserRepositorySpec extends ObjectBehavior
         $statement->execute(['email' => $email])->shouldBeCalled();
         $statement->rowCount()->willReturn(1);
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
-            ['email' => $email, 'display_name' => 'One', 'password' => '...', 'totp_secret' => null],
+            ['email' => $email, 'display_name' => 'One', 'password' => '...', 'active' => true],
             null
         );
 
@@ -80,6 +82,7 @@ class UserRepositorySpec extends ObjectBehavior
         $user->getEmail()->toString()->shouldBeLike($email);
         $user->getDisplayName()->shouldBe('One');
         $user->getPassword()->shouldBe('...');
+        $user->isActive()->shouldBe(true);
     }
 
     public function it_errors_when_user_doesnt_exist(\PDOStatement $statement) : void

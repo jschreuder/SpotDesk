@@ -20,8 +20,8 @@ class UserRepository
     public function createUser(User $user) : void
     {
         $query = $this->db->prepare("
-            INSERT INTO `users` (`email`, `display_name`, `password`)
-            VALUES (:email, :display_name, :password)
+            INSERT INTO `users` (`email`, `display_name`, `password`, `active`)
+            VALUES (:email, :display_name, :password, TRUE)
         ");
         $query->execute([
             'email' => $user->getEmail()->toString(),
@@ -36,7 +36,7 @@ class UserRepository
             EmailAddressValue::get($row['email']),
             $row['display_name'],
             $row['password'],
-            $row['totp_secret']
+            boolval($row['active'])
         );
     }
 
@@ -66,10 +66,14 @@ class UserRepository
     {
         $query = $this->db->prepare("
             UPDATE `users`
-            SET `display_name` = :display_name
+            SET `display_name` = :display_name, active = :active
             WHERE `email` = :email
         ");
-        $query->execute(['display_name' => $user->getDisplayName(), 'email' => $user->getEmail()->toString()]);
+        $query->execute([
+            'display_name' => $user->getDisplayName(),
+            'email' => $user->getEmail()->toString(),
+            'active' => intval($user->isActive()),
+        ]);
 
         if ($query->rowCount() !== 1) {
             throw new \RuntimeException('Failed to update user: ' . $user->getEmail()->toString());

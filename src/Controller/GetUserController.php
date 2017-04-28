@@ -35,6 +35,7 @@ class GetUserController implements ControllerInterface
             'user' => [
                 'email' => $user->getEmail()->toString(),
                 'display_name' => $user->getDisplayName(),
+                'active' => $user->isActive(),
             ],
             'departments' => array_map(function (Department $department) : array {
                 return [

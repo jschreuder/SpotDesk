@@ -93,7 +93,7 @@
                 };
                 ctrl.submitEditUser = function () {
                     $sdUsers.update(
-                        ctrl.user.email, ctrl.user.display_name
+                        ctrl.user.email, ctrl.user.display_name, ctrl.user.active
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchUser();

@@ -8,10 +8,11 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="u" md-select-id="email" md-auto-select
-                ng-repeat="u in ctrl.users | orderBy: ctrl.order">
+            <tr class="sd-selectable" md-row md-select="u" md-select-id="email" md-auto-select
+                ng-repeat="u in ctrl.users | orderBy: ctrl.order" ng-class="{ 'sd-warn-row': !u.active }">
                 <td md-cell>
                     <a ui-sref="users_view({ email: u.email })">{{ u.email }}</a>
+                    <em ng-show="!u.active">[disabled]</em>
                 </td>
                 <td md-cell>
                     {{ u.display_name }}
@@ -70,5 +71,5 @@
 
 <md-button class="md-fab md-fab-bottom-right" aria-label="Create user" ng-click="ctrl.createUser()">
     <md-tooltip md-direction="top">Create user</md-tooltip>
-    <i class="fa fa-user" aria-hidden="true"></i>
+    <i class="fa fa-user-plus" aria-hidden="true"></i>
 </md-button>

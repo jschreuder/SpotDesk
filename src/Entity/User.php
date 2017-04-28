@@ -15,19 +15,19 @@ class User
     /** @var  string */
     private $password;
 
-    /** @var  ?string */
-    private $totpSecret;
+    /** @var  bool */
+    private $active;
 
     public function __construct(
         EmailAddressValue $email,
         string $displayName,
         string $password,
-        ?string $totpSecret
+        bool $active = true
     ) {
         $this->email = $email;
         $this->displayName = $displayName;
         $this->password = $password;
-        $this->totpSecret = $totpSecret;
+        $this->active = $active;
     }
 
     public function getEmail() : EmailAddressValue
@@ -55,18 +55,13 @@ class User
         $this->password = $password;
     }
 
-    public function hasTotpSecret() : bool
+    public function isActive() : bool
     {
-        return $this->totpSecret !== null;
+        return $this->active;
     }
 
-    public function getTotpSecret() : ?string
+    public function setActive(bool $active) : void
     {
-        return $this->totpSecret;
-    }
-
-    public function setTotpSecret(?string $totpSecret) : void
-    {
-        $this->totpSecret = $totpSecret;
+        $this->active = $active;
     }
 }

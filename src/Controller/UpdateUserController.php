@@ -31,6 +31,7 @@ class UpdateUserController implements ControllerInterface, RequestFilterInterfac
 
         $filter = new Filter();
         $filter->value('email')->string()->trim();
+        $filter->value('active')->bool();
         $filter->value('display_name')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
@@ -40,7 +41,8 @@ class UpdateUserController implements ControllerInterface, RequestFilterInterfac
     {
         $validator = new Validator();
         $validator->required('email')->string()->email();
-        $validator->optional('display_name')->string()->lengthBetween(2, 63);
+        $validator->required('active')->bool();
+        $validator->required('display_name')->string()->lengthBetween(2, 63);
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -54,12 +56,14 @@ class UpdateUserController implements ControllerInterface, RequestFilterInterfac
         $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($body['email']));
 
         $user->setDisplayName($body['display_name']);
+        $user->setActive($body['active']);
         $this->userRepository->updateUser($user);
 
         return new JsonResponse([
             'user' => [
                 'email' => $user->getEmail(),
                 'display_name' => $user->getDisplayName(),
+                'active' => $user->isActive(),
             ]
         ], 200);
     }

@@ -20,9 +20,10 @@
                     });
                 },
 
-                update: function (email, display_name) {
+                update: function (email, display_name, active) {
                     return $http.put("/users/" + btoa(email), {
-                        display_name: display_name
+                        display_name: display_name,
+                        active: active
                     });
                 },
 

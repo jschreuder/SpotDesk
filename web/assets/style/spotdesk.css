@@ -170,3 +170,12 @@ md-sidenav md-list {
 .user-department-select-all {
     padding-top: 1em;
 }
+
+tr.sd-selectable {
+    cursor: pointer;
+}
+
+table.md-table tr.sd-warn-row td.md-cell {
+    background-color: #eee;
+    color: #888;
+}

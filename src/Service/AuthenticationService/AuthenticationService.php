@@ -58,8 +58,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
         $user = new User(
             EmailAddressValue::get($email),
             $displayName,
-            $this->hashPassword($password),
-            null
+            $this->hashPassword($password)
         );
         $this->userRepository->createUser($user);
         return $user;
@@ -83,7 +82,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
             return new JsonResponse(['message' => 'Login failed'], 401);
         }
 
-        if (!$this->checkPassword($user, $password)) {
+        if (!$user->isActive() || !$this->checkPassword($user, $password)) {
             return new JsonResponse(['message' => 'Login failed'], 401);
         }
 
@@ -116,6 +115,8 @@ final class AuthenticationService implements AuthenticationServiceInterface
         if (!$this->sessionStorage->needsRefresh($session, $refreshTimeframe)) {
             return $response;
         };
+
+        // @todo verify if user has been deactivated when doing a session refresh
 
         return $response->withHeader(
             self::AUTHORIZATION_HEADER,

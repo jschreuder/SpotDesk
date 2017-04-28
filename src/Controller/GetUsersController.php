@@ -28,6 +28,7 @@ class GetUsersController implements ControllerInterface
                 return [
                     'email' => $user->getEmail()->toString(),
                     'display_name' => $user->getDisplayName(),
+                    'active' => $user->isActive(),
                 ];
             }, $users->toArray())
         ], 200);

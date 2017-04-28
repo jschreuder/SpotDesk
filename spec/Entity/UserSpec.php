@@ -17,8 +17,8 @@ class UserSpec extends ObjectBehavior
     /** @var  string */
     private $password;
 
-    /** @var  ?string */
-    private $totpSecret;
+    /** @var  bool */
+    private $active;
 
     public function let() : void
     {
@@ -26,7 +26,7 @@ class UserSpec extends ObjectBehavior
             $this->email = EmailAddressValue::get('another@address.email'),
             $this->displayName = 'Display Moi',
             $this->password = password_hash('my-super-duper-secret-phrase', PASSWORD_DEFAULT),
-            $this->totpSecret = sha1(uniqid())
+            $this->active = true
         );
     }
 
@@ -40,15 +40,13 @@ class UserSpec extends ObjectBehavior
         $this->getEmail()->shouldReturn($this->email);
         $this->getDisplayName()->shouldReturn($this->displayName);
         $this->getPassword()->shouldReturn($this->password);
-        $this->hasTotpSecret()->shouldBe(true);
-        $this->getTotpSecret()->shouldReturn($this->totpSecret);
+        $this->isActive()->shouldBe(true);
     }
 
-    public function it_can_instantiate_without_totp_secret() : void
+    public function it_can_instantiate_without_setting_user_active() : void
     {
-        $this->beConstructedWith($this->email, $this->displayName, $this->password, null);
-        $this->hasTotpSecret()->shouldBe(false);
-        $this->getTotpSecret()->shouldBe(null);
+        $this->beConstructedWith($this->email, $this->displayName, $this->password);
+        $this->isActive()->shouldBe(true);
     }
 
     public function it_can_change_some_properties() : void
@@ -61,11 +59,7 @@ class UserSpec extends ObjectBehavior
         $this->setPassword($password);
         $this->getPassword()->shouldBe($password);
 
-        $totpSecret = sha1(uniqid());
-        $this->setTotpSecret($totpSecret);
-        $this->getTotpSecret()->shouldBe($totpSecret);
-
-        $this->setTotpSecret(null);
-        $this->getTotpSecret()->shouldBe(null);
+        $this->setActive(false);
+        $this->isActive()->shouldBe(false);
     }
 }

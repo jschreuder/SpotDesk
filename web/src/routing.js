@@ -75,6 +75,17 @@
             });
 
             $stateProvider.state({
+                name: "departments_view",
+                url: "/departments/view/{department_id}",
+                templateUrl: "assets/templates/departments/view.html",
+                controller: "viewDepartmentController",
+                controllerAs: "ctrl",
+                onEnter: ["$sdTitle", "$stateParams", function($title) {
+                    $title.change("View department")
+                }]
+            });
+
+            $stateProvider.state({
                 name: "mailboxes",
                 url: "/mailboxes",
                 templateUrl: "assets/templates/mailboxes/list.html",

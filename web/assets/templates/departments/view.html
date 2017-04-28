@@ -1,0 +1,76 @@
+<md-card id="{{ ctrl.department.department_id }}">
+    <md-card-title>
+        <md-card-title-media>
+            <div class="md-media-sm card-media" layout>
+                <i class="fa fa-building" aria-hidden="true"></i>
+            </div>
+        </md-card-title-media>
+        <md-card-title-text>
+            <md-fab-speed-dial md-direction="left" class="md-scale md-fab-top-right">
+                <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab md-primary">
+                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Ticket actions</md-tooltip>
+                        <i class="fa fa-cog"></i>
+                    </md-button>
+                </md-fab-trigger>
+
+                <md-fab-actions>
+                    <div>
+                        <md-button aria-label="Delete department" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.deleteDepartment()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Delete department
+                            </md-tooltip>
+                            <i class="fa fa-trash md-warn" aria-label="Delete department"></i>
+                        </md-button>
+                        <md-button aria-label="Edit user" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.editDepartment()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Edit department
+                            </md-tooltip>
+                            <i class="fa fa-edit" aria-label="Edit department"></i>
+                        </md-button>
+                    </div>
+                </md-fab-actions>
+            </md-fab-speed-dial>
+
+            <span class="md-headline">{{ ctrl.department.name }}</span>
+            <span class="md-subhead description">
+                E-mail: {{ ctrl.department.email }}
+                <span ng-show="ctrl.department.parent_name"> | Parent: {{ ctrl.department.parent_name }}</span>
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+</md-card>
+
+<md-card>
+    <md-card-header>
+        <md-card-header-text>
+            <span class="md-headline">
+                <i class="fa fa-users" aria-hidden="true"></i>
+                Users
+            </span>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <ul>
+            <li ng-repeat="u in ctrl.department_users">{{ u.display_name }}</li>
+        </ul>
+    </md-card-content>
+</md-card>
+
+<md-card>
+    <md-card-header>
+        <md-card-header-text>
+            <span class="md-headline">
+                <i class="fa fa-folder-open" aria-hidden="true"></i>
+                Mailboxes
+            </span>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <ul>
+            <li ng-repeat="m in ctrl.department_mailboxes">{{ m.name }}</li>
+        </ul>
+    </md-card-content>
+</md-card>

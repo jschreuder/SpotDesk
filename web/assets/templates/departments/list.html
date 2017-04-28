@@ -10,7 +10,7 @@
             <tbody md-body>
             <tr md-row md-select="d" md-select-id="d.department_id" md-auto-select ng-repeat="d in ctrl.departments">
                 <td md-cell>
-                    <strong>{{ d.name }}</strong>
+                    <a ui-sref="departments_view({ department_id: d.department_id })">{{ d.name }}</a>
                 </td>
                 <td md-cell>
                     {{ d.parent_name }}

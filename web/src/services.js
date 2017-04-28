@@ -6,6 +6,10 @@
             return {
                 fetch: function () {
                     return $http.get("/departments");
+                },
+
+                fetchOne: function (department_id) {
+                    return $http.get("/departments/" + department_id);
                 }
             };
         }])

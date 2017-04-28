@@ -114,6 +114,22 @@ class MailboxRepository
         return $mailboxCollection;
     }
 
+    public function getMailboxesForDepartment(Department $department) : MailboxCollection
+    {
+        $query = $this->db->prepare("
+            SELECT * 
+            FROM `mailboxes`
+            WHERE `department_id` = :department_id
+        ");
+        $query->execute(['department_id' => $department->getId()->getBytes()]);
+
+        $mailboxCollection = new MailboxCollection();
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+            $mailboxCollection->push($this->arrayToMailbox($row));
+        }
+        return $mailboxCollection;
+    }
+
     public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null) : void
     {
         $checkTime = $checkTime ?? new \DateTimeImmutable('now');

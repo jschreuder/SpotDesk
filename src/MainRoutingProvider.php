@@ -13,6 +13,7 @@ use jschreuder\SpotDesk\Controller\DeleteUserController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
 use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\CreateUserController;
+use jschreuder\SpotDesk\Controller\GetDepartmentController;
 use jschreuder\SpotDesk\Controller\GetDepartmentsController;
 use jschreuder\SpotDesk\Controller\GetMailboxesController;
 use jschreuder\SpotDesk\Controller\GetStatusesController;
@@ -85,6 +86,13 @@ class MainRoutingProvider implements RoutingProviderInterface
         // Departments
         $router->get('departments.list', '/departments', function () {
             return new GetDepartmentsController($this->container['repository.departments']);
+        });
+        $router->get('departments.get_one', '/departments/{department_id}', function () {
+            return new GetDepartmentController(
+                $this->container['repository.departments'],
+                $this->container['repository.users'],
+                $this->container['repository.mailboxes']
+            );
         });
         $router->post('departments.create', '/departments', function () {
             return new CreateDepartmentController($this->container['repository.departments']);

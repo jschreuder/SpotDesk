@@ -50,6 +50,23 @@ class UserRepository
         return $users;
     }
 
+    public function getUsersForDepartment(Department $department) : UserCollection
+    {
+        $query = $this->db->prepare("
+            SELECT u.*
+            FROM `users` u
+            INNER JOIN `users_departments` ud ON u.`email` = ud.`email` AND ud.department_id = :department_id
+            WHERE u.`active` IS TRUE
+        ");
+        $query->execute(['department_id' => $department->getId()->getBytes()]);
+
+        $userCollection = new UserCollection();
+        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+            $userCollection->push($this->arrayToUser($row));
+        }
+        return $userCollection;
+    }
+
     public function getUserByEmail(EmailAddressValue $email) : User
     {
         $query = $this->db->prepare("SELECT * FROM `users` WHERE `email` = :email");

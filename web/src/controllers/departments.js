@@ -27,6 +27,34 @@
                 });
                 return found;
             };
-        }]);
+        }])
+
+        .controller("viewDepartmentController", ["$sdDepartments", "$stateParams", "$sdAlert",
+            function ($sdDepartments, $stateParams, $sdAlert) {
+                var ctrl = this;
+                ctrl.department = null;
+                ctrl.department_users = [];
+                ctrl.department_mailboxes = [];
+
+                ctrl.fetchDepartment = function () {
+                    $sdDepartments.fetchOne($stateParams.department_id).then(function (response) {
+                        ctrl.department = response.data.department;
+
+                        ctrl.department_users = [];
+                        angular.forEach(response.data.users, function (user) {
+                            ctrl.department_users.push(user);
+                        });
+
+                        ctrl.department_mailboxes = [];
+                        angular.forEach(response.data.mailboxes, function (mailbox) {
+                            ctrl.department_mailboxes.push(mailbox);
+                        });
+                    }, function () {
+                        $sdAlert.error("department_load_failed");
+                    });
+                };
+                ctrl.fetchDepartment();
+            }
+        ]);
 
 })();

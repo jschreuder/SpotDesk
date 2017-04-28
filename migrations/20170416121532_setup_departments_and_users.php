@@ -4,7 +4,7 @@ use Phinx\Migration\AbstractMigration;
 
 class SetupDepartmentsAndUsers extends AbstractMigration
 {
-    public function up()
+    public function up() : void
     {
         $this->execute("
             CREATE TABLE `departments` (
@@ -53,7 +53,7 @@ class SetupDepartmentsAndUsers extends AbstractMigration
         ");
     }
 
-    public function down()
+    public function down() : void
     {
         $this->execute("DROP TABLE `users_departments`");
         $this->execute("DROP TABLE `users`");

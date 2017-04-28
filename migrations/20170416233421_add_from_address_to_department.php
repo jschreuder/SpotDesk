@@ -4,7 +4,7 @@ use Phinx\Migration\AbstractMigration;
 
 class AddFromAddressToDepartment extends AbstractMigration
 {
-    public function up()
+    public function up() : void
     {
         $this->execute("
             ALTER TABLE `departments`
@@ -13,7 +13,7 @@ class AddFromAddressToDepartment extends AbstractMigration
         ");
     }
 
-    public function down()
+    public function down() : void
     {
         $this->execute("
             ALTER TABLE `departments`

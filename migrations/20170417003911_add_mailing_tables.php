@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types = 1);
 
 use Phinx\Migration\AbstractMigration;
 
 class AddMailingTables extends AbstractMigration
 {
-    public function up()
+    public function up() : void
     {
         $this->execute("
             CREATE TABLE `ticket_mailings` (
@@ -29,7 +29,7 @@ class AddMailingTables extends AbstractMigration
         ");
     }
 
-    public function down()
+    public function down() : void
     {
         $this->execute("DROP TABLE `ticket_mailings`");
     }

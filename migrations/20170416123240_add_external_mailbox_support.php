@@ -4,7 +4,7 @@ use Phinx\Migration\AbstractMigration;
 
 class AddExternalMailboxSupport extends AbstractMigration
 {
-    public function up()
+    public function up() : void
     {
         $this->execute("
             CREATE TABLE `mailboxes` (
@@ -28,7 +28,7 @@ class AddExternalMailboxSupport extends AbstractMigration
         ");
     }
 
-    public function down()
+    public function down() : void
     {
         $this->execute("DROP TABLE `mailboxes`");
     }

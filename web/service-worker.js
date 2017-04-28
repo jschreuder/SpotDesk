@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_NAME = 'spotdesk';
+var CACHE_NAME = 'spotdesk-v1-dev';
 
 var urlsToCache = [
     // main file

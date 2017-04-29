@@ -9,7 +9,8 @@
                 </tr>
             </thead>
             <tbody md-body>
-                <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select ng-repeat="m in ctrl.mailboxes">
+                <tr md-row md-select="m" md-select-id="mailbox_id" md-auto-select
+                    ng-repeat="m in ctrl.mailboxes | orderBy: ctrl.order">
                     <td md-cell>
                         <a ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id})">{{ m.name }}</a>
                     </td>

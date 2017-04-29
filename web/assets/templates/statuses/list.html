@@ -8,9 +8,10 @@
                 </tr>
             </thead>
             <tbody md-body>
-                <tr md-row md-select="s" md-select-id="name" md-auto-select ng-repeat="s in ctrl.statuses">
+                <tr md-row md-select="s" md-select-id="name" md-auto-select
+                    ng-repeat="s in ctrl.statuses | orderBy: ctrl.order">
                     <td md-cell>
-                        <strong>{{ s.name }}</strong>
+                        <a ui-sref="statuses_view({ status: s.name })">{{ s.name }}</a>
                     </td>
                     <td md-cell>
                         {{ s.status_type }}

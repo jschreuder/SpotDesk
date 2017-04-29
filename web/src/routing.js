@@ -111,5 +111,14 @@
                 controllerAs: "ctrl",
                 onEnter: ["$sdTitle", function($title) { $title.change("Manage statuses") } ]
             });
+
+            $stateProvider.state({
+                name: "statuses_view",
+                url: "/statuses/view/{status}",
+                templateUrl: "assets/templates/statuses/view.html",
+                controller: "viewStatusController",
+                controllerAs: "ctrl",
+                onEnter: ["$sdTitle", function($title) { $title.change("View status") } ]
+            });
         }]);
 })();

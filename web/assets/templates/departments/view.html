@@ -34,10 +34,12 @@
                 </md-fab-actions>
             </md-fab-speed-dial>
 
-            <span class="md-headline">{{ ctrl.department.name }}</span>
+            <span class="md-headline">
+                <span class="sd-muted-text">{{ ctrl.department.path }}</span>
+                {{ ctrl.department.name }}
+            </span>
             <span class="md-subhead description">
                 E-mail: {{ ctrl.department.email }}
-                <span ng-show="ctrl.department.parent_name"> | Parent: {{ ctrl.department.parent_name }}</span>
             </span>
         </md-card-title-text>
     </md-card-title>
@@ -90,6 +92,49 @@
 </md-card>
 
 <div style="visibility: hidden">
+    <div class="md-dialog-container" id="deleteDepartment">
+        <md-dialog aria-label="Delete department">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Delete department</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelDeleteDepartment()">
+                            <i class="fa fa-close" aria-label="Cancel delete department"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label>Move tickets in department to:</label>
+                            <md-select ng-model="ctrl.delete_new_ticket_department">
+                                <md-option value="">[no department]</md-option>
+                                <md-option value="DELETE" class="sd-warn-text">[delete all]</md-option>
+                                <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
+                                    {{ department.name }}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelDeleteDepartment()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitDeleteDepartment()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+<div style="visibility: hidden">
     <div class="md-dialog-container" id="editDepartment">
         <md-dialog aria-label="Edit department">
             <form ng-cloak>
@@ -112,6 +157,18 @@
                         <md-input-container class="md-block">
                             <label for="department_email">Department e-mail</label>
                             <input id="department_email" ng-model="ctrl.department.email" type="email">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label>Parent</label>
+                            <md-select ng-model="ctrl.department.parent_id">
+                                <md-option value="">[none]</md-option>
+                                <md-option ng-repeat="department in ctrl.all_departments | orderBy: 'full_name'"
+                                           value="{{ department.department_id }}">
+                                    <span class="sd-muted-text">{{ department.path }}</span>
+                                    <strong>{{ department.name }}</strong>
+                                </md-option>
+                            </md-select>
                         </md-input-container>
                     </div>
                 </md-dialog-content>

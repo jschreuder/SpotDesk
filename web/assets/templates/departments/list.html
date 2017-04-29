@@ -3,22 +3,19 @@
         <table md-table md-row-select multiple ng-model="ctrl.selected">
             <thead md-head md-order="ctrl.order">
             <tr md-row>
-                <th md-column md-order-by="name"><span>Department</span></th>
+                <th md-column md-order-by="full_name"><span>Department</span></th>
                 <th md-column md-order-by="email"><span>E-mail</span></th>
-                <th md-column md-order-by="parent_name"><span>Parent</span></th>
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="d" md-select-id="d.department_id" md-auto-select ng-repeat="d in ctrl.departments">
+            <tr md-row md-select="d" md-select-id="d.department_id" md-auto-select
+                ng-repeat="d in ctrl.departments | orderBy: ctrl.order">
                 <td md-cell>
+                    <span class="sd-muted-text">{{ d.path }}</span>
                     <a ui-sref="departments_view({ department_id: d.department_id })">{{ d.name }}</a>
                 </td>
                 <td md-cell>
                     {{ d.email }}
-                </td>
-                <td md-cell>
-                    {{ d.parent_name }}
-                    <em ng-hide="d.parent_name">[none]</em>
                 </td>
             </tr>
             </tbody>
@@ -47,18 +44,20 @@
                         </md-input-container>
 
                         <md-input-container class="md-block">
-                            <label>Parent</label>
-                            <md-select ng-model="ctrl.department.parent_id">
-                                <md-option value="">[none]</md-option>
-                                <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
-                                    {{ department.name }}
-                                </md-option>
-                            </md-select>
+                            <label for="department_email">Email</label>
+                            <input id="department_email" ng-model="ctrl.department.email" type="email">
                         </md-input-container>
 
                         <md-input-container class="md-block">
-                            <label for="department_email">Email</label>
-                            <input id="department_email" ng-model="ctrl.department.email" type="email">
+                            <label>Parent</label>
+                            <md-select ng-model="ctrl.department.parent_id">
+                                <md-option value="">[none]</md-option>
+                                <md-option ng-repeat="department in ctrl.departments | orderBy: 'full_name'"
+                                           value="{{ department.department_id }}">
+                                    <span class="sd-muted-text">{{ department.path }}</span>
+                                    <strong>{{ department.name }}</strong>
+                                </md-option>
+                            </md-select>
                         </md-input-container>
                     </div>
                 </md-dialog-content>

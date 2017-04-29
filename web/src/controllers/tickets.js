@@ -64,13 +64,7 @@
                 };
                 ctrl.fetchTicket();
 
-                $sdDepartments.fetch().then(function (response) {
-                    angular.forEach(response.data.departments, function (department) {
-                        ctrl.departments.push(department);
-                    }, function () {
-                        $sdAlert.error("departments_load_failed");
-                    });
-                });
+                ctrl.departments = $sdDepartments.all();
                 ctrl.getDepartment = function (departmentId) {
                     var found = null;
                     ctrl.departments.forEach(function (department) {

@@ -72,14 +72,7 @@
                 };
                 ctrl.fetchUser();
 
-                $sdDepartments.fetch().then(function (response) {
-                    ctrl.departments = [];
-                    angular.forEach(response.data.departments, function (department) {
-                        ctrl.departments.push(department);
-                    });
-                }, function () {
-                    $sdAlert.error("departments_load_failed");
-                });
+                ctrl.departments = $sdDepartments.all();
 
                 ctrl.editUser = function(ev) {
                     $mdDialog.show({

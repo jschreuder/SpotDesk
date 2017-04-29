@@ -6,31 +6,9 @@
         .controller("departmentsController", ["$sdDepartments", "$sdAlert", "$mdDialog",
             function ($sdDepartments, $sdAlert, $mdDialog) {
                 var ctrl = this;
-                ctrl.order = "name";
+                ctrl.order = "full_name";
                 ctrl.selected = [];
-                ctrl.departments = [];
-
-                ctrl.fetchDepartments = function () {
-                    $sdDepartments.fetch().then(function (response) {
-                        ctrl.departments = [];
-                        angular.forEach(response.data.departments, function (department) {
-                            ctrl.departments.push(department);
-                        });
-                    }, function () {
-                        $sdAlert.error("departments_load_failed");
-                    });
-                };
-                ctrl.fetchDepartments();
-
-                ctrl.getDepartment = function (departmentId) {
-                    var found = null;
-                    ctrl.departments.forEach(function (department) {
-                        if (department.department_id === departmentId) {
-                            found = department;
-                        }
-                    });
-                    return found;
-                };
+                ctrl.departments = $sdDepartments.all();
 
                 ctrl.createDepartment = function(ev) {
                     ctrl.department = {
@@ -52,7 +30,7 @@
                         ctrl.department.name, ctrl.department.parent_id, ctrl.department.email
                     ).then(function () {
                         $mdDialog.hide();
-                        ctrl.fetchDepartments();
+                        ctrl.departments = $sdDepartments.all(true); // refresh departments
                     }, function () {
                         // @todo handle validation errors differently
                         $sdAlert.error("department_create_failed");
@@ -61,16 +39,18 @@
             }
         ])
 
-        .controller("viewDepartmentController", ["$sdDepartments", "$stateParams", "$sdAlert", "$mdDialog",
-            function ($sdDepartments, $stateParams, $sdAlert, $mdDialog) {
+        .controller("viewDepartmentController", ["$sdDepartments", "$stateParams", "$sdAlert", "$mdDialog", "$state",
+            function ($sdDepartments, $stateParams, $sdAlert, $mdDialog, $state) {
                 var ctrl = this;
                 ctrl.department = null;
+                ctrl.all_departments = $sdDepartments.all();
                 ctrl.department_users = [];
                 ctrl.department_mailboxes = [];
 
                 ctrl.fetchDepartment = function () {
                     $sdDepartments.fetchOne($stateParams.department_id).then(function (response) {
                         ctrl.department = response.data.department;
+                        ctrl.all_departments.updateOne(ctrl.department); // updates departments cache
 
                         ctrl.department_users = [];
                         angular.forEach(response.data.users, function (user) {
@@ -106,6 +86,30 @@
                     }, function () {
                         // @todo handle validation errors differently
                         $sdAlert.error("department_edit_failed");
+                        ctrl.fetchDepartment();
+                    });
+                };
+
+                ctrl.deleteDepartment = function(ev) {
+                    $mdDialog.show({
+                        contentElement: "#deleteDepartment",
+                        parent: angular.element(document.body),
+                        targetEvent: ev
+                    });
+                };
+                ctrl.cancelDeleteDepartment = function () {
+                    $mdDialog.cancel();
+                };
+                ctrl.submitDeleteDepartment = function () {
+                    $sdDepartments.delete(
+                        ctrl.department.department_id, ctrl.delete_new_ticket_department
+                    ).then(function () {
+                        $mdDialog.hide();
+                        $sdDepartments.all(true); // refresh departments cache
+                        $state.go("departments");
+                    }, function () {
+                        // @todo handle validation errors differently
+                        $sdAlert.error("department_delete_failed");
                         ctrl.fetchDepartment();
                     });
                 };

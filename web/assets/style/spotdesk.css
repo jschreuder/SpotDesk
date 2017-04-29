@@ -167,6 +167,14 @@ md-sidenav md-list {
     position: relative;
 }
 
+.sd-muted-text {
+    color: #aaa;
+}
+
+.sd-warn-text {
+    color: #ff5a41;
+}
+
 .user-department-select-all {
     padding-top: 1em;
 }

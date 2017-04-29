@@ -206,7 +206,7 @@ class TicketRepository
         $ticket->setDepartment($department);
     }
 
-    public function moveTicketsFromDepartmentToDepartment(Department $oldDepartment, Department $newDepartment)
+    public function moveTicketsFromDepartmentToDepartment(Department $oldDepartment, ?Department $newDepartment)
     {
         $query = $this->db->prepare("
             UPDATE `tickets`
@@ -214,7 +214,7 @@ class TicketRepository
             WHERE `department_id` = :old_department_id
         ");
         $query->execute([
-            'new_department_id' => $newDepartment->getId()->getBytes(),
+            'new_department_id' => $newDepartment ? $newDepartment->getId()->getBytes() : null,
             'old_department_id' => $oldDepartment->getId()->getBytes(),
         ]);
     }

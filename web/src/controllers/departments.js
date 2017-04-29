@@ -130,8 +130,12 @@
                     if (ctrl.delete_new_ticket_department === "DELETE") {
                         promise = $sdDepartments.delete(ctrl.department.department_id, "delete", null);
                     } else {
+                        var new_department_id = ctrl.delete_new_ticket_department === "NONE"
+                            ? null
+                            : ctrl.delete_new_ticket_department;
+
                         promise = $sdDepartments.delete(
-                            ctrl.department.department_id, "move", ctrl.delete_new_ticket_department
+                            ctrl.department.department_id, "move", new_department_id
                         );
                     }
 

@@ -2,7 +2,7 @@
     "use strict";
 
     angular.module("spotdesk")
-        .factory("$sdDepartments", ["$http", function ($http) {
+        .factory("$sdDepartments", ["$http", "$sdAlert", function ($http, $sdAlert) {
             var srvc = {
                 /**
                  * Does runtime caching of all departments once loaded

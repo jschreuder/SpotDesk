@@ -98,6 +98,18 @@
                         email: email,
                         parent_id: parent_id || null
                     });
+                },
+
+                delete: function (department_id, action, new_department_id) {
+                    return $http.delete("/departments/" + department_id, {
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        data: {
+                            ticket_action: action,
+                            ticket_department_id: new_department_id || null
+                        }
+                    });
                 }
             };
             return srvc;

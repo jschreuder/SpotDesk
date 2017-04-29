@@ -47,6 +47,7 @@
                 ctrl.department_children = [];
                 ctrl.department_users = [];
                 ctrl.department_mailboxes = [];
+                ctrl.delete_new_ticket_department = null;
 
                 ctrl.fetchDepartment = function () {
                     $sdDepartments.fetchOne($stateParams.department_id).then(function (response) {
@@ -125,9 +126,16 @@
                     $mdDialog.cancel();
                 };
                 ctrl.submitDeleteDepartment = function () {
-                    $sdDepartments.delete(
-                        ctrl.department.department_id, ctrl.delete_new_ticket_department
-                    ).then(function () {
+                    var promise;
+                    if (ctrl.delete_new_ticket_department === "DELETE") {
+                        promise = $sdDepartments.delete(ctrl.department.department_id, "delete", null);
+                    } else {
+                        promise = $sdDepartments.delete(
+                            ctrl.department.department_id, "move", ctrl.delete_new_ticket_department
+                        );
+                    }
+
+                    promise.then(function () {
                         $mdDialog.hide();
                         $sdDepartments.all(true); // refresh departments cache
                         $state.go("departments");

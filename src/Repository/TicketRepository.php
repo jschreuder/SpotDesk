@@ -206,6 +206,19 @@ class TicketRepository
         $ticket->setDepartment($department);
     }
 
+    public function moveTicketsFromDepartmentToDepartment(Department $oldDepartment, Department $newDepartment)
+    {
+        $query = $this->db->prepare("
+            UPDATE `tickets`
+            SET `department_id` = :new_department_id
+            WHERE `department_id` = :old_department_id
+        ");
+        $query->execute([
+            'new_department_id' => $newDepartment->getId()->getBytes(),
+            'old_department_id' => $oldDepartment->getId()->getBytes(),
+        ]);
+    }
+
     public function deleteTicket(Ticket $ticket) : void
     {
         $query = $this->db->prepare("
@@ -214,6 +227,17 @@ class TicketRepository
         ");
         $query->execute([
             'ticket_id' => $ticket->getId()->getBytes(),
+        ]);
+    }
+
+    public function deleteTicketsFromDepartment(Department $department)
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `tickets`
+            WHERE `department_id` = :department_id
+        ");
+        $query->execute([
+            'department_id' => $department->getId()->getBytes(),
         ]);
     }
 

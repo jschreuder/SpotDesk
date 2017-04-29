@@ -8,6 +8,7 @@ use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
 use jschreuder\SpotDesk\Controller\ChangePasswordController;
+use jschreuder\SpotDesk\Controller\DeleteDepartmentController;
 use jschreuder\SpotDesk\Controller\DeleteTicketController;
 use jschreuder\SpotDesk\Controller\DeleteUserController;
 use jschreuder\SpotDesk\Controller\CreateDepartmentController;
@@ -99,6 +100,12 @@ class MainRoutingProvider implements RoutingProviderInterface
         });
         $router->put('departments.update', '/departments/{department_id}', function () {
             return new UpdateDepartmentController($this->container['repository.departments']);
+        })->setRequirement('department_id', Uuid::VALID_PATTERN);
+        $router->delete('departments.delete', '/departments/{department_id}', function () {
+            return new DeleteDepartmentController(
+                $this->container['repository.departments'],
+                $this->container['repository.tickets']
+            );
         })->setRequirement('department_id', Uuid::VALID_PATTERN);
 
         // Mailboxes

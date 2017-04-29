@@ -122,4 +122,13 @@ class DepartmentRepository
             throw new \RuntimeException('Failed to update department: ' . $department->getId()->toString());
         }
     }
+
+    public function deleteDepartment(Department $department)
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `departments`
+            WHERE `department_id` = :department_id
+        ");
+        $query->execute(['department_id' => $department->getId()->getBytes()]);
+    }
 }

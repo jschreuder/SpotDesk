@@ -127,13 +127,13 @@
 
                 <md-dialog-content>
 
-                    <div class="md-dialog-content" ng-show="ctrl.department_children">
+                    <div class="md-dialog-content" ng-show="ctrl.department_children.length > 0">
                         <p>
                             This department has child-departments, those need to be moved or deleted before this department
                             may be deleted.
                         </p>
                     </div>
-                    <div class="md-dialog-content" ng-hide="ctrl.department_children">
+                    <div class="md-dialog-content" ng-show="ctrl.department_children.length === 0">
                         <p>
                             The tickets currently belonging to this department have to be moved. Choose what should be
                             done with them.
@@ -154,7 +154,7 @@
                     </div>
                 </md-dialog-content>
 
-                <md-dialog-actions layout="row" ng-hide="ctrl.department_children">
+                <md-dialog-actions layout="row" ng-show="ctrl.department_children.length === 0">
                     <span flex></span>
                     <md-button ng-click="ctrl.cancelDeleteDepartment()">
                         Cancel

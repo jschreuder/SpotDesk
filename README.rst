@@ -27,7 +27,7 @@ Project status
    :target: https://scrutinizer-ci.com/g/jschreuder/SpotDesk/?branch=master
    :alt: Scrutinizer Build Status
 
-Early alpha or even more unfinished/unstable.
+Approaching beta status.
 
 -----------
 Screenshots
@@ -47,10 +47,12 @@ Features currently implemented
 
 * JSON REST API backend
 * Angular Material frontend
-* E-mails from mailbox automatically turned into tickets
+* E-mails from mailbox automatically turned into tickets or updates to existing
+  tickets
 * Ticket listing by status-type (open, paused or closed)
 * Ticket viewing adding notes (private) and updates (visible to client) to them
 * Tickets are categorized by department, and may be moved between them
 * Clients receive updates to their ticket by e-mail
 * User management: creating, deleting and changing their department assignments
+* Department management: creating, updating and deleting
 * **More to come...**

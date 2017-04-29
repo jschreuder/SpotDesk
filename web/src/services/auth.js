@@ -22,6 +22,7 @@
                     // Check cookie for persisted login status
                     var cookieToken = $cookies.get("spotdesk-authorization");
                     if (cookieToken) {
+                        srvc.persistToken = true;
                         srvc.token = cookieToken;
                         return true;
                     }

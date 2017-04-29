@@ -27,8 +27,8 @@ class DepartmentRepository
         $department = new Department(Uuid::uuid4(), $name, $parent, $email);
 
         $query = $this->db->prepare("
-            INSERT INTO `departments` (`department_id`, `name`, `parent_id`)
-            VALUES (:department_id, :name, :parent_id)
+            INSERT INTO `departments` (`department_id`, `name`, `parent_id`, `email`)
+            VALUES (:department_id, :name, :parent_id, :email)
         ");
         $query->execute([
             'department_id' => $department->getId()->getBytes(),

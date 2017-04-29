@@ -25,3 +25,59 @@
         </table>
     </md-table-container>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="createDepartment">
+        <md-dialog aria-label="Create department">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Create department</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelDepartment()">
+                            <i class="fa fa-close" aria-label="Cancel department"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="department_name">Name</label>
+                            <input id="department_name" ng-model="ctrl.department.name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label>Parent</label>
+                            <md-select ng-model="ctrl.department.parent_id">
+                                <md-option value="">[none]</md-option>
+                                <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
+                                    {{ department.name }}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="department_email">Email</label>
+                            <input id="department_email" ng-model="ctrl.department.email" type="email">
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelDepartment()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitDepartment()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" aria-label="Create department" ng-click="ctrl.createDepartment()">
+    <md-tooltip md-direction="top">Create department</md-tooltip>
+    <i class="fa fa-building" aria-hidden="true"></i>
+</md-button>

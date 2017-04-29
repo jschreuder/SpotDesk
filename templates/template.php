@@ -154,6 +154,7 @@
 <script src="./src/routing.js"></script>
 <script src="./src/services.js"></script>
 <script src="./src/services/auth.js"></script>
+<script src="./src/services/departments.js"></script>
 <script src="./src/services/tickets.js"></script>
 <script src="./src/services/users.js"></script>
 <script src="./src/controllers/departments.js"></script>

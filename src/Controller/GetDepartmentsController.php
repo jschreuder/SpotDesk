@@ -30,6 +30,7 @@ class GetDepartmentsController implements ControllerInterface
                     'name' => $department->getName(),
                     'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
                     'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
+                    'email' => $department->getEmail()->toString(),
                 ];
             }, $departments->toArray())
         ], 200);

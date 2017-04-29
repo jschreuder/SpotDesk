@@ -88,3 +88,44 @@
         <p ng-hide="ctrl.department_mailboxes.length > 0">No mailboxes fetched for department</p>
     </md-card-content>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="editDepartment">
+        <md-dialog aria-label="Edit department">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Edit department</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelEditDepartment()">
+                            <i class="fa fa-close" aria-label="Cancel edit department"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="department_name">Department name</label>
+                            <input id="department_name" ng-model="ctrl.department.name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="department_email">Department e-mail</label>
+                            <input id="department_email" ng-model="ctrl.department.email" type="email">
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelEditDepartment()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitEditDepartment()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>

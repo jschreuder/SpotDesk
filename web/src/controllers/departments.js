@@ -29,8 +29,8 @@
             };
         }])
 
-        .controller("viewDepartmentController", ["$sdDepartments", "$stateParams", "$sdAlert",
-            function ($sdDepartments, $stateParams, $sdAlert) {
+        .controller("viewDepartmentController", ["$sdDepartments", "$stateParams", "$sdAlert", "$mdDialog",
+            function ($sdDepartments, $stateParams, $sdAlert, $mdDialog) {
                 var ctrl = this;
                 ctrl.department = null;
                 ctrl.department_users = [];
@@ -54,6 +54,29 @@
                     });
                 };
                 ctrl.fetchDepartment();
+
+                ctrl.editDepartment = function(ev) {
+                    $mdDialog.show({
+                        contentElement: "#editDepartment",
+                        parent: angular.element(document.body),
+                        targetEvent: ev
+                    });
+                };
+                ctrl.cancelEditDepartment = function () {
+                    $mdDialog.cancel();
+                };
+                ctrl.submitEditDepartment = function () {
+                    $sdDepartments.update(
+                        ctrl.department.department_id, ctrl.department.name, ctrl.department.email
+                    ).then(function () {
+                        $mdDialog.hide();
+                        ctrl.fetchDepartment();
+                    }, function () {
+                        // @todo handle validation errors differently
+                        $sdAlert.error("department_edit_failed");
+                        ctrl.fetchDepartment();
+                    });
+                };
             }
         ]);
 

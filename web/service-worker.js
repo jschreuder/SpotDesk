@@ -50,6 +50,7 @@ var urlsToCache = [
     "./src/routing.js",
     "./src/services.js",
     "./src/services/auth.js",
+    "./src/services/departments.js",
     "./src/services/tickets.js",
     "./src/services/users.js",
     "./src/spotdesk.js"

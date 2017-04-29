@@ -45,7 +45,7 @@
     </md-card-title>
 </md-card>
 
-<md-card>
+<md-card ng-hide="ctrl.department_users.length === 0">
     <md-card-header>
         <md-card-header-text>
             <span class="md-headline">
@@ -64,11 +64,10 @@
                 <p>{{ u.display_name }}</p>
             </md-list-item>
         </md-list>
-        <p ng-hide="ctrl.department_users.length > 0">No users in department</p>
     </md-card-content>
 </md-card>
 
-<md-card>
+<md-card ng-hide="ctrl.department_mailboxes.length === 0">
     <md-card-header>
         <md-card-header-text>
             <span class="md-headline">
@@ -87,7 +86,28 @@
                 <p>{{ m.name }}</p>
             </md-list-item>
         </md-list>
-        <p ng-hide="ctrl.department_mailboxes.length > 0">No mailboxes fetched for department</p>
+    </md-card-content>
+</md-card>
+
+<md-card ng-hide="ctrl.department_children.length === 0">
+    <md-card-header>
+        <md-card-header-text>
+            <span class="md-headline">
+                <i class="fa fa-building" aria-hidden="true"></i>
+                Child-departments in department
+            </span>
+            <span class="md-subhead description">
+                <em>Click name to edit department</em>
+            </span>
+        </md-card-header-text>
+    </md-card-header>
+    <md-card-content>
+        <md-list ng-cloak layout="row">
+            <md-list-item class="secondary-button-padding" ng-repeat="c in ctrl.department_children" flex-gt-md="50"
+                          ui-sref="departments_view({ department_id: c.department_id })">
+                <p>{{ c.name }}</p>
+            </md-list-item>
+        </md-list>
     </md-card-content>
 </md-card>
 
@@ -106,27 +126,42 @@
                 </md-toolbar>
 
                 <md-dialog-content>
-                    <div class="md-dialog-content">
+
+                    <div class="md-dialog-content" ng-show="ctrl.department_children">
+                        <p>
+                            This department has child-departments, those need to be moved or deleted before this department
+                            may be deleted.
+                        </p>
+                    </div>
+                    <div class="md-dialog-content" ng-hide="ctrl.department_children">
+                        <p>
+                            The tickets currently belonging to this department have to be moved. Choose what should be
+                            done with them.
+                        </p>
+
                         <md-input-container class="md-block">
                             <label>Move tickets in department to:</label>
                             <md-select ng-model="ctrl.delete_new_ticket_department">
-                                <md-option value="">[no department]</md-option>
                                 <md-option value="DELETE" class="sd-warn-text">[delete all]</md-option>
-                                <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
-                                    {{ department.name }}
+                                <md-option value="NONE">[no department]</md-option>
+                                <md-option ng-repeat="department in ctrl.all_departments | orderBy: 'full_name' | filter: ctrl.possibleParents"
+                                           value="{{ department.department_id }}">
+                                    <span class="sd-muted-text">{{ department.path }}</span>
+                                    <strong>{{ department.name }}</strong>
                                 </md-option>
                             </md-select>
                         </md-input-container>
                     </div>
                 </md-dialog-content>
 
-                <md-dialog-actions layout="row">
+                <md-dialog-actions layout="row" ng-hide="ctrl.department_children">
                     <span flex></span>
                     <md-button ng-click="ctrl.cancelDeleteDepartment()">
                         Cancel
                     </md-button>
-                    <md-button class="md-primary" ng-click="ctrl.submitDeleteDepartment()">
-                        Submit
+                    <md-button class="md-warn" ng-click="ctrl.submitDeleteDepartment()">
+                        <i class="fa fa-warning" aria-label="Delete department"></i>
+                        Delete department
                     </md-button>
                 </md-dialog-actions>
             </form>
@@ -163,7 +198,7 @@
                             <label>Parent</label>
                             <md-select ng-model="ctrl.department.parent_id">
                                 <md-option value="">[none]</md-option>
-                                <md-option ng-repeat="department in ctrl.all_departments | orderBy: 'full_name'"
+                                <md-option ng-repeat="department in ctrl.all_departments | orderBy: 'full_name' | filter: ctrl.possibleParents"
                                            value="{{ department.department_id }}">
                                     <span class="sd-muted-text">{{ department.path }}</span>
                                     <strong>{{ department.name }}</strong>

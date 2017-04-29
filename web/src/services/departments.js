@@ -84,18 +84,19 @@
                     return $http.get("/departments/" + department_id);
                 },
 
-                create: function (name, parent_id, email) {
+                create: function (name, email, parent_id) {
                     return $http.post("/departments", {
                         name: name,
-                        parent_id: parent_id || null,
-                        email: email
+                        email: email,
+                        parent_id: parent_id || null
                     });
                 },
 
-                update: function (department_id, name, email) {
+                update: function (department_id, name, email, parent_id) {
                     return $http.put("/departments/" + department_id, {
                         name: name,
-                        email: email
+                        email: email,
+                        parent_id: parent_id || null
                     });
                 }
             };

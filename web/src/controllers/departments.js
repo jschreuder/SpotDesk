@@ -27,7 +27,7 @@
                 };
                 ctrl.submitDepartment = function () {
                     $sdDepartments.create(
-                        ctrl.department.name, ctrl.department.parent_id, ctrl.department.email
+                        ctrl.department.name, ctrl.department.email, ctrl.department.parent_id
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.departments = $sdDepartments.all(true); // refresh departments
@@ -44,6 +44,7 @@
                 var ctrl = this;
                 ctrl.department = null;
                 ctrl.all_departments = $sdDepartments.all();
+                ctrl.department_children = [];
                 ctrl.department_users = [];
                 ctrl.department_mailboxes = [];
 
@@ -51,6 +52,11 @@
                     $sdDepartments.fetchOne($stateParams.department_id).then(function (response) {
                         ctrl.department = response.data.department;
                         ctrl.all_departments.updateOne(ctrl.department); // updates departments cache
+
+                        ctrl.department_children = [];
+                        angular.forEach(response.data.children, function (child) {
+                            ctrl.department_children.push(child);
+                        });
 
                         ctrl.department_users = [];
                         angular.forEach(response.data.users, function (user) {
@@ -67,6 +73,21 @@
                 };
                 ctrl.fetchDepartment();
 
+                ctrl.possibleParents = function (department) {
+                    if (!department || !ctrl.department) {
+                        // for null or when department was not yet loaded
+                        return true;
+                    } else if (department.department_id === ctrl.department.department_id) {
+                        // Filter department itself as a possible parent
+                        return false;
+                    } else if (department.path.indexOf(ctrl.department.full_name + " /") === 0) {
+                        // Filter department's children as possible parents
+                        return false;
+                    }
+
+                    return true;
+                };
+
                 ctrl.editDepartment = function(ev) {
                     $mdDialog.show({
                         contentElement: "#editDepartment",
@@ -79,7 +100,10 @@
                 };
                 ctrl.submitEditDepartment = function () {
                     $sdDepartments.update(
-                        ctrl.department.department_id, ctrl.department.name, ctrl.department.email
+                        ctrl.department.department_id,
+                        ctrl.department.name,
+                        ctrl.department.email,
+                        ctrl.department.parent_id
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchDepartment();

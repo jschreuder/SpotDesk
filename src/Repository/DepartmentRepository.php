@@ -108,12 +108,13 @@ class DepartmentRepository
     {
         $query = $this->db->prepare("
             UPDATE `departments`
-            SET `name` = :name, `email` = :email
+            SET `name` = :name, `email` = :email, `parent_id` = :parent_id
             WHERE `department_id` = :department_id
         ");
         $query->execute([
             'name' => $department->getName(),
             'email' => $department->getEmail()->toString(),
+            'parent_id' => $department->getParent() ? $department->getParent()->getId()->getBytes() : null,
             'department_id' => $department->getId()->getBytes(),
         ]);
 

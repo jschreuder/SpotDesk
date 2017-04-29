@@ -6,6 +6,8 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\SpotDesk\Collection\DepartmentCollection;
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
@@ -65,6 +67,7 @@ class GetDepartmentController implements ControllerInterface, RequestFilterInter
         $body = (array) $request->getParsedBody();
         $departmentId = Uuid::fromString($body['department_id']);
         $department = $this->departmentRepository->getDepartment($departmentId);
+        $departmentChildren = $this->getDepartmentChildren($department);
         $departmentUsers = $this->userRepository->getUsersForDepartment($department);
         $departmentMailboxes = $this->mailboxRepository->getMailboxesForDepartment($department);
 
@@ -76,6 +79,15 @@ class GetDepartmentController implements ControllerInterface, RequestFilterInter
                 'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
                 'email' => $department->getEmail()->toString(),
             ],
+            'children' => array_map(function (Department $department) {
+                return [
+                    'department_id' => $department->getId()->toString(),
+                    'name' => $department->getName(),
+                    'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
+                    'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
+                    'email' => $department->getEmail()->toString(),
+                ];
+            }, $departmentChildren->toArray()),
             'users' => array_map(function (User $user) {
                 return [
                     'email' => $user->getEmail()->toString(),
@@ -90,5 +102,19 @@ class GetDepartmentController implements ControllerInterface, RequestFilterInter
                 ];
             }, $departmentMailboxes->toArray()),
         ]);
+    }
+
+    public function getDepartmentChildren(?Department $parent) : DepartmentCollection
+    {
+        $children = new DepartmentCollection();
+        $allDepartments = $this->departmentRepository->getDepartments();
+        foreach ($allDepartments as $department) {
+            if (!is_null($department->getParent()) && $department->getParent()->getId()->equals($parent->getId())) {
+                $children->push($department);
+            } elseif (is_null($department->getParent()) && is_null($parent)) {
+                $children->push($department);
+            }
+        }
+        return $children;
     }
 }

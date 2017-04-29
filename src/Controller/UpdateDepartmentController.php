@@ -6,6 +6,7 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
@@ -33,6 +34,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         $filter->value('department_id')->string()->trim();
         $filter->value('name')->string()->stripHtml()->trim();
         $filter->value('email')->string()->trim();
+        $filter->value('parent_id')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -43,6 +45,7 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         $validator->required('department_id')->uuid();
         $validator->required('name')->string();
         $validator->required('email')->email();
+        $validator->optional('parent_id')->uuid();
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -55,17 +58,33 @@ class UpdateDepartmentController implements ControllerInterface, RequestFilterIn
         $body = (array) $request->getParsedBody();
         $department = $this->departmentRepository->getDepartment(Uuid::fromString($body['department_id']));
 
+        $parent = $body['parent_id']
+            ? $this->departmentRepository->getDepartment(Uuid::fromString($body['parent_id']))
+            : null;
+        $this->checkParentage($department, $parent);
+
         $department->setName($body['name']);
         $department->setEmail(EmailAddressValue::get($body['email']));
+        $department->setParent($parent);
         $this->departmentRepository->updateDepartment($department);
 
         return new JsonResponse([
             'department' => [
                 'department_id' => $department->getId()->toString(),
                 'name' => $department->getName(),
-                'parent_id' => $department->getParent()->getId()->toString(),
+                'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
                 'email' => $department->getEmail()->toString(),
             ],
         ], 200);
+    }
+
+    private function checkParentage(Department $department, ?Department $parent)
+    {
+        while ($parent) {
+            if ($parent->getId()->equals($department->getId())) {
+                throw new \RuntimeException('Child cannot be a parent of its own parent.');
+            }
+            $parent = $parent->getParent();
+        }
     }
 }

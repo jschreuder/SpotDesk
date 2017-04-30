@@ -13,7 +13,6 @@ use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -45,10 +44,7 @@ class DepartmentGetOneController implements ControllerInterface, RequestFilterIn
     {
         $body = (array) $request->getParsedBody();
         $body['department_id'] = $request->getAttribute('department_id');
-        $filter = new Filter();
-        $filter->value('department_id')->string()->trim();
-
-        return $request->withParsedBody($filter->filter($body));
+        return $request->withParsedBody($body);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void

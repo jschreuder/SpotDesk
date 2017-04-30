@@ -35,12 +35,10 @@ class MailboxCreateController implements ControllerInterface, RequestFilterInter
         $body = (array) $request->getParsedBody();
         $filter = new Filter();
         $filter->value('name')->string()->stripHtml()->trim();
-        $filter->value('department_id')->string()->trim();
         $filter->value('imap_server')->string()->trim();
         $filter->value('imap_port')->int();
-        $filter->value('imap_security')->string()->trim();
-        $filter->value('imap_user')->string()->trim();
-        $filter->value('imap_pass')->string()->trim();
+        $filter->value('imap_user')->string();
+        $filter->value('imap_pass')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }

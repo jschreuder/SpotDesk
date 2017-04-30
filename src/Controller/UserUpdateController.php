@@ -30,7 +30,6 @@ class UserUpdateController implements ControllerInterface, RequestFilterInterfac
         $body['email'] = base64_decode($request->getAttribute('email'));
 
         $filter = new Filter();
-        $filter->value('email')->string()->trim();
         $filter->value('active')->bool();
         $filter->value('display_name')->string()->trim();
 

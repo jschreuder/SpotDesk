@@ -31,10 +31,8 @@ class DepartmentUpdateController implements ControllerInterface, RequestFilterIn
         $body = (array) $request->getParsedBody();
         $body['department_id'] = $request->getAttribute('department_id');
         $filter = new Filter();
-        $filter->value('department_id')->string()->trim();
         $filter->value('name')->string()->stripHtml()->trim();
         $filter->value('email')->string()->trim();
-        $filter->value('parent_id')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
     }

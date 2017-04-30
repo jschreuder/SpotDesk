@@ -30,7 +30,6 @@ class DepartmentCreateController implements ControllerInterface, RequestValidato
         $body = (array) $request->getParsedBody();
         $filter = new Filter();
         $filter->value('name')->string()->stripHtml()->trim();
-        $filter->value('parent_id')->string()->trim();
         $filter->value('email')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));

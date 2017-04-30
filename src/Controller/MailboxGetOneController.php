@@ -7,7 +7,6 @@ use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
-use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -28,10 +27,7 @@ class MailboxGetOneController implements ControllerInterface, RequestFilterInter
     {
         $body = (array) $request->getParsedBody();
         $body['mailbox_id'] = $request->getAttribute('mailbox_id');
-        $filter = new Filter();
-        $filter->value('mailbox_id')->string()->trim();
-
-        return $request->withParsedBody($filter->filter($body));
+        return $request->withParsedBody($body);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void

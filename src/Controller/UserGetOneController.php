@@ -10,7 +10,6 @@ use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,10 +33,7 @@ class UserGetOneController implements ControllerInterface, RequestFilterInterfac
     {
         $body = (array) $request->getParsedBody();
         $body['email'] = base64_decode($request->getAttribute('email'));
-        $filter = new Filter();
-        $filter->value('email')->string()->trim();
-
-        return $request->withParsedBody($filter->filter($body));
+        return $request->withParsedBody($body);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void

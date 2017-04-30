@@ -45,7 +45,6 @@ class TicketAddUpdateController implements ControllerInterface, RequestFilterInt
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $body['email'] = $request->getAttribute('session')->get('user');
         $filter = new Filter();
-        $filter->value('ticket_id')->string()->trim();
         $filter->value('email')->string();
         $filter->value('message')->string();
         $filter->value('internal')->bool();

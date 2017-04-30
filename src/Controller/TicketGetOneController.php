@@ -8,7 +8,6 @@ use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,10 +28,7 @@ class TicketGetOneController implements ControllerInterface, RequestFilterInterf
     {
         $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
-        $filter = new Filter();
-        $filter->value('ticket_id')->string()->trim();
-
-        return $request->withParsedBody($filter->filter($body));
+        return $request->withParsedBody($body);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void

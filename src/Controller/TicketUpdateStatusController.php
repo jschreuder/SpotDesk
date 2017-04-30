@@ -34,7 +34,6 @@ class TicketUpdateStatusController implements ControllerInterface, RequestFilter
         $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
-        $filter->value('ticket_id')->string()->trim();
         $filter->value('status')->string();
 
         return $request->withParsedBody($filter->filter($body));

@@ -36,12 +36,9 @@ class MailboxUpdateController implements ControllerInterface, RequestFilterInter
         $body['mailbox_id'] = $request->getAttribute('mailbox_id');
 
         $filter = new Filter();
-        $filter->value('mailbox_id')->string();
         $filter->value('name')->string()->trim();
-        $filter->value('department_id')->string();
         $filter->value('imap_server')->string()->trim();
         $filter->value('imap_port')->int();
-        $filter->value('imap_security')->string();
         $filter->value('imap_user')->string();
         $filter->value('imap_pass')->string();
 

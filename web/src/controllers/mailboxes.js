@@ -6,7 +6,6 @@
         .controller("mailboxesController", ["$sdMailboxes", "$sdAlert", function ($sdMailboxes, $sdAlert) {
             var ctrl = this;
             ctrl.order = "department_name";
-            ctrl.selected = [];
             ctrl.mailboxes = [];
 
             $sdMailboxes.fetch().then(function (response) {

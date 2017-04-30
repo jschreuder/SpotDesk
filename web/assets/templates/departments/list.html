@@ -1,6 +1,6 @@
 <md-card>
     <md-table-container>
-        <table md-table md-row-select multiple ng-model="ctrl.selected">
+        <table md-table>
             <thead md-head md-order="ctrl.order">
             <tr md-row>
                 <th md-column md-order-by="full_name"><span>Department</span></th>
@@ -8,8 +8,7 @@
             </tr>
             </thead>
             <tbody md-body>
-            <tr md-row md-select="d" md-select-id="d.department_id" md-auto-select
-                ng-repeat="d in ctrl.departments | orderBy: ctrl.order">
+            <tr md-row ng-repeat="d in ctrl.departments | orderBy: ctrl.order">
                 <td md-cell>
                     <span class="sd-muted-text">{{ d.path }}</span>
                     <a ui-sref="departments_view({ department_id: d.department_id })">{{ d.name }}</a>

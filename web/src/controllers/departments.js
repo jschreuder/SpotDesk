@@ -7,7 +7,6 @@
             function ($sdDepartments, $sdAlert, $mdDialog) {
                 var ctrl = this;
                 ctrl.order = "full_name";
-                ctrl.selected = [];
                 ctrl.departments = $sdDepartments.all();
 
                 ctrl.createDepartment = function(ev) {

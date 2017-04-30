@@ -7,7 +7,6 @@
             function ($sdUsers, $sdAlert, $mdDialog) {
                 var ctrl = this;
                 ctrl.order = "email";
-                ctrl.selected = [];
                 ctrl.users = [];
 
                 ctrl.fetchUsers = function () {

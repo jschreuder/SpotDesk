@@ -6,7 +6,6 @@
         .controller("statusesController", ["$sdStatuses", "$sdAlert", function ($sdStatuses, $sdAlert) {
             var ctrl = this;
             ctrl.order = "name";
-            ctrl.selected = [];
             ctrl.statuses = [];
 
             $sdStatuses.fetch().then(function (response) {

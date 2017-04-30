@@ -17,7 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetTicketsController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class TicketGetAllController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  TicketRepository */
     private $ticketRepository;

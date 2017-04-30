@@ -17,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class UpdateUserDepartmentsController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UserUpdateDepartmentsController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  UserRepository */
     private $userRepository;

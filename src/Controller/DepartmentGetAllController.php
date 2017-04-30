@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetDepartmentsController implements ControllerInterface
+class DepartmentGetAllController implements ControllerInterface
 {
     /** @var  DepartmentRepository */
     private $departmentRepository;

@@ -14,7 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class DeleteUserController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UserDeleteController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  UserRepository */
     private $userRepository;

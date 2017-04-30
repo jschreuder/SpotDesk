@@ -14,7 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetMailboxController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class MailboxGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  MailboxRepository */
     private $mailboxRepository;

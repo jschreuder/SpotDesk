@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetDepartmentController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class DepartmentGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  DepartmentRepository */
     private $departmentRepository;

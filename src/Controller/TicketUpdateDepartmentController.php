@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class UpdateTicketDepartmentController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class TicketUpdateDepartmentController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  TicketRepository */
     private $ticketRepository;

@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetStatusesController implements ControllerInterface
+class StatusesGetAllController implements ControllerInterface
 {
     /** @var  StatusRepository */
     private $statusRepository;

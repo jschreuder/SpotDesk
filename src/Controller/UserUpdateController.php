@@ -6,30 +6,33 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
-use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Repository\UserRepository;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class DeleteTicketController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UserUpdateController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
+    /** @var  UserRepository */
+    private $userRepository;
 
-    public function __construct(TicketRepository $ticketRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->ticketRepository = $ticketRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
-        $body['ticket_id'] = $request->getAttribute('ticket_id');
+        $body['email'] = base64_decode($request->getAttribute('email'));
+
         $filter = new Filter();
-        $filter->value('ticket_id')->string()->trim();
+        $filter->value('email')->string()->trim();
+        $filter->value('active')->bool();
+        $filter->value('display_name')->string()->trim();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -37,7 +40,9 @@ class DeleteTicketController implements ControllerInterface, RequestFilterInterf
     public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
+        $validator->required('email')->string()->email();
+        $validator->required('active')->bool();
+        $validator->required('display_name')->string()->lengthBetween(2, 63);
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -48,12 +53,17 @@ class DeleteTicketController implements ControllerInterface, RequestFilterInterf
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         $body = (array) $request->getParsedBody();
-        $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
-        $this->ticketRepository->deleteTicket($ticket);
+        $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($body['email']));
+
+        $user->setDisplayName($body['display_name']);
+        $user->setActive($body['active']);
+        $this->userRepository->updateUser($user);
 
         return new JsonResponse([
-            'ticket' => [
-                'ticket_id' => $ticket->getId()->toString(),
+            'user' => [
+                'email' => $user->getEmail(),
+                'display_name' => $user->getDisplayName(),
+                'active' => $user->isActive(),
             ]
         ], 200);
     }

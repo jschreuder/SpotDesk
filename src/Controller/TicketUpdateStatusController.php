@@ -6,7 +6,7 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
-use jschreuder\SpotDesk\Entity\TicketUpdate;
+use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
@@ -15,14 +15,18 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetTicketController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class TicketUpdateStatusController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  TicketRepository */
     private $ticketRepository;
 
-    public function __construct(TicketRepository $ticketRepository)
+    /** @var  StatusRepository */
+    private $statusRepository;
+
+    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
     {
         $this->ticketRepository = $ticketRepository;
+        $this->statusRepository = $statusRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -31,6 +35,7 @@ class GetTicketController implements ControllerInterface, RequestFilterInterface
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
         $filter->value('ticket_id')->string()->trim();
+        $filter->value('status')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -39,6 +44,7 @@ class GetTicketController implements ControllerInterface, RequestFilterInterface
     {
         $validator = new Validator();
         $validator->required('ticket_id')->uuid();
+        $validator->required('status')->string();
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -48,36 +54,17 @@ class GetTicketController implements ControllerInterface, RequestFilterInterface
 
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
-        $ticketId = Uuid::fromString($request->getAttribute('ticket_id'));
-        $ticket = $this->ticketRepository->getTicket($ticketId);
-        $ticketUpdates = $this->ticketRepository->getTicketUpdates($ticket);
+        $body = (array) $request->getParsedBody();
+
+        $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
+        $status = $this->statusRepository->getStatus($body['status']);
+        $this->ticketRepository->updateTicketStatus($ticket, $status);
 
         return new JsonResponse([
             'ticket' => [
                 'ticket_id' => $ticket->getId()->toString(),
-                'subject' => $ticket->getSubject(),
-                'message' => $ticket->getMessage(),
-                'created_at' => $ticket->getCreatedAt()->format('Y-m-d H:i:s'),
-                'created_by' => $ticket->getEmail()->toString(),
                 'status' => $ticket->getStatus()->getName(),
-                'department_id' => is_null($ticket->getDepartment())
-                    ? null
-                    : $ticket->getDepartment()->getId()->toString(),
-                'department_name' => is_null($ticket->getDepartment())
-                    ? null
-                    : $ticket->getDepartment()->getName(),
-                'updates' => $ticket->getUpdates(),
-                'last_update' => $ticket->getLastUpdate()->format('Y-m-d H:i:s'),
-            ],
-            'ticket_updates' => array_map(function (TicketUpdate $ticketUpdate) : array {
-                return [
-                    'ticket_update_id' => $ticketUpdate->getId()->toString(),
-                    'message' => $ticketUpdate->getMessage(),
-                    'created_at' => $ticketUpdate->getCreatedAt()->format('Y-m-d H:i:s'),
-                    'created_by' => $ticketUpdate->getEmail()->toString(),
-                    'internal' => $ticketUpdate->isInternal(),
-                ];
-            }, $ticketUpdates->toArray()),
+            ]
         ], 200);
     }
 }

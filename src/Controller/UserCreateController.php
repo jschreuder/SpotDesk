@@ -6,36 +6,30 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
-use jschreuder\SpotDesk\Repository\StatusRepository;
-use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class UpdateTicketStatusController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UserCreateController implements ControllerInterface, RequestValidatorInterface, RequestFilterInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
+    /** @var  AuthenticationServiceInterface */
+    private $authenticationService;
 
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
+    public function __construct(AuthenticationServiceInterface $authenticationService)
     {
-        $this->ticketRepository = $ticketRepository;
-        $this->statusRepository = $statusRepository;
+        $this->authenticationService = $authenticationService;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
-        $body['ticket_id'] = $request->getAttribute('ticket_id');
         $filter = new Filter();
-        $filter->value('ticket_id')->string()->trim();
-        $filter->value('status')->string();
+        $filter->value('email')->string()->trim();
+        $filter->value('display_name')->string()->trim();
+        $filter->value('password')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -43,8 +37,9 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
     public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
-        $validator->required('status')->string();
+        $validator->required('email')->string()->email()->lengthBetween(6, 123);
+        $validator->optional('display_name')->string()->lengthBetween(2, 63);
+        $validator->required('password')->string()->lengthBetween(12, null);
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -56,15 +51,18 @@ class UpdateTicketStatusController implements ControllerInterface, RequestFilter
     {
         $body = (array) $request->getParsedBody();
 
-        $ticket = $this->ticketRepository->getTicket(Uuid::fromString($body['ticket_id']));
-        $status = $this->statusRepository->getStatus($body['status']);
-        $this->ticketRepository->updateTicketStatus($ticket, $status);
+        $user = $this->authenticationService->createUser(
+            $body['email'],
+            $body['display_name'],
+            $body['password']
+        );
 
         return new JsonResponse([
-            'ticket' => [
-                'ticket_id' => $ticket->getId()->toString(),
-                'status' => $ticket->getStatus()->getName(),
+            'user' => [
+                'email' => $user->getEmail(),
+                'display_name' => $user->getDisplayName(),
+                'active' => $user->isActive(),
             ]
-        ], 200);
+        ], 201);
     }
 }

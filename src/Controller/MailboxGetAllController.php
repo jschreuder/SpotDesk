@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetMailboxesController implements ControllerInterface
+class MailboxGetAllController implements ControllerInterface
 {
     /** @var  MailboxRepository */
     private $mailboxRepository;

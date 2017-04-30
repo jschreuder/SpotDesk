@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetUsersController implements ControllerInterface
+class UserGetAllController implements ControllerInterface
 {
     /** @var  UserRepository */
     private $userRepository;

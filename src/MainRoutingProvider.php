@@ -6,28 +6,28 @@ use jschreuder\Middle\Controller\CallableController;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
-use jschreuder\SpotDesk\Controller\AddTicketUpdateController;
+use jschreuder\SpotDesk\Controller\TicketAddUpdateController;
 use jschreuder\SpotDesk\Controller\ChangePasswordController;
-use jschreuder\SpotDesk\Controller\DeleteDepartmentController;
-use jschreuder\SpotDesk\Controller\DeleteTicketController;
-use jschreuder\SpotDesk\Controller\DeleteUserController;
-use jschreuder\SpotDesk\Controller\CreateDepartmentController;
-use jschreuder\SpotDesk\Controller\CreateMailboxController;
-use jschreuder\SpotDesk\Controller\CreateUserController;
-use jschreuder\SpotDesk\Controller\GetDepartmentController;
-use jschreuder\SpotDesk\Controller\GetDepartmentsController;
-use jschreuder\SpotDesk\Controller\GetMailboxController;
-use jschreuder\SpotDesk\Controller\GetMailboxesController;
-use jschreuder\SpotDesk\Controller\GetStatusesController;
-use jschreuder\SpotDesk\Controller\GetTicketsController;
-use jschreuder\SpotDesk\Controller\GetTicketController;
-use jschreuder\SpotDesk\Controller\GetUserController;
-use jschreuder\SpotDesk\Controller\GetUsersController;
-use jschreuder\SpotDesk\Controller\UpdateDepartmentController;
-use jschreuder\SpotDesk\Controller\UpdateTicketDepartmentController;
-use jschreuder\SpotDesk\Controller\UpdateTicketStatusController;
-use jschreuder\SpotDesk\Controller\UpdateUserController;
-use jschreuder\SpotDesk\Controller\UpdateUserDepartmentsController;
+use jschreuder\SpotDesk\Controller\DepartmentDeleteController;
+use jschreuder\SpotDesk\Controller\TicketDeleteController;
+use jschreuder\SpotDesk\Controller\UserDeleteController;
+use jschreuder\SpotDesk\Controller\DepartmentCreateController;
+use jschreuder\SpotDesk\Controller\MailboxCreateController;
+use jschreuder\SpotDesk\Controller\UserCreateController;
+use jschreuder\SpotDesk\Controller\DepartmentGetOneController;
+use jschreuder\SpotDesk\Controller\DepartmentGetAllController;
+use jschreuder\SpotDesk\Controller\MailboxGetOneController;
+use jschreuder\SpotDesk\Controller\MailboxGetAllController;
+use jschreuder\SpotDesk\Controller\StatusesGetAllController;
+use jschreuder\SpotDesk\Controller\TicketGetAllController;
+use jschreuder\SpotDesk\Controller\TicketGetOneController;
+use jschreuder\SpotDesk\Controller\UserGetOneController;
+use jschreuder\SpotDesk\Controller\UserGetAllController;
+use jschreuder\SpotDesk\Controller\DepartmentUpdateController;
+use jschreuder\SpotDesk\Controller\TicketUpdateDepartmentController;
+use jschreuder\SpotDesk\Controller\TicketUpdateStatusController;
+use jschreuder\SpotDesk\Controller\UserUpdateController;
+use jschreuder\SpotDesk\Controller\UserUpdateDepartmentsController;
 use Pimple\Container;
 use Ramsey\Uuid\Uuid;
 
@@ -57,53 +57,53 @@ class MainRoutingProvider implements RoutingProviderInterface
 
         // Tickets
         $router->get('tickets.get_one', '/tickets/{ticket_id}', function () {
-            return new GetTicketController($this->container['repository.tickets']);
+            return new TicketGetOneController($this->container['repository.tickets']);
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
         $router->get('tickets.list', '/tickets', function () {
-            return new GetTicketsController($this->container['repository.tickets']);
+            return new TicketGetAllController($this->container['repository.tickets']);
         });
         $router->post('tickets.add_update', '/tickets/{ticket_id}', function () {
-            return new AddTicketUpdateController(
+            return new TicketAddUpdateController(
                 $this->container['repository.tickets'],
                 $this->container['repository.statuses'],
                 $this->container['service.mail']
             );
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
         $router->put('tickets.status_update', '/tickets/{ticket_id}/status', function () {
-            return new UpdateTicketStatusController(
+            return new TicketUpdateStatusController(
                 $this->container['repository.tickets'],
                 $this->container['repository.statuses']
             );
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
         $router->put('tickets.department_update', '/tickets/{ticket_id}/department', function () {
-            return new UpdateTicketDepartmentController(
+            return new TicketUpdateDepartmentController(
                 $this->container['repository.tickets'],
                 $this->container['repository.departments']
             );
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
         $router->delete('tickets.delete', '/tickets/{ticket_id}', function () {
-            return new DeleteTicketController($this->container['repository.tickets']);
+            return new TicketDeleteController($this->container['repository.tickets']);
         })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
 
         // Departments
         $router->get('departments.list', '/departments', function () {
-            return new GetDepartmentsController($this->container['repository.departments']);
+            return new DepartmentGetAllController($this->container['repository.departments']);
         });
         $router->get('departments.get_one', '/departments/{department_id}', function () {
-            return new GetDepartmentController(
+            return new DepartmentGetOneController(
                 $this->container['repository.departments'],
                 $this->container['repository.users'],
                 $this->container['repository.mailboxes']
             );
         });
         $router->post('departments.create', '/departments', function () {
-            return new CreateDepartmentController($this->container['repository.departments']);
+            return new DepartmentCreateController($this->container['repository.departments']);
         });
         $router->put('departments.update', '/departments/{department_id}', function () {
-            return new UpdateDepartmentController($this->container['repository.departments']);
+            return new DepartmentUpdateController($this->container['repository.departments']);
         })->setRequirement('department_id', Uuid::VALID_PATTERN);
         $router->delete('departments.delete', '/departments/{department_id}', function () {
-            return new DeleteDepartmentController(
+            return new DepartmentDeleteController(
                 $this->container['repository.departments'],
                 $this->container['repository.tickets']
             );
@@ -111,13 +111,13 @@ class MainRoutingProvider implements RoutingProviderInterface
 
         // Mailboxes
         $router->get('mailboxes.get_one', '/mailboxes/{mailbox_id}', function () {
-            return new GetMailboxController($this->container['repository.mailboxes']);
+            return new MailboxGetOneController($this->container['repository.mailboxes']);
         })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
         $router->get('mailboxes.list', '/mailboxes', function () {
-            return new GetMailboxesController($this->container['repository.mailboxes']);
+            return new MailboxGetAllController($this->container['repository.mailboxes']);
         });
         $router->post('mailboxes.create', '/mailboxes', function () {
-            return new CreateMailboxController(
+            return new MailboxCreateController(
                 $this->container['repository.mailboxes'],
                 $this->container['repository.departments']
             );
@@ -125,33 +125,33 @@ class MainRoutingProvider implements RoutingProviderInterface
 
         // Users
         $router->get('users.list', '/users', function () {
-            return new GetUsersController($this->container['repository.users']);
+            return new UserGetAllController($this->container['repository.users']);
         });
         $router->get('users.get_one', '/users/{email}', function () {
-            return new GetUserController(
+            return new UserGetOneController(
                 $this->container['repository.users'],
                 $this->container['repository.departments']
             );
         });
         $router->post('users.create', '/users', function () {
-            return new CreateUserController($this->container['service.authentication']);
+            return new UserCreateController($this->container['service.authentication']);
         });
         $router->put('users.update', '/users/{email}', function () {
-            return new UpdateUserController($this->container['repository.users']);
+            return new UserUpdateController($this->container['repository.users']);
         });
         $router->put('users.departments', '/users/{email}/departments', function () {
-            return new UpdateUserDepartmentsController(
+            return new UserUpdateDepartmentsController(
                 $this->container['repository.users'],
                 $this->container['repository.departments']
             );
         });
         $router->delete('users.delete', '/users/{email}', function () {
-            return new DeleteUserController($this->container['repository.users']);
+            return new UserDeleteController($this->container['repository.users']);
         });
 
         // Statuses
         $router->get('statuses.list', '/statuses', function () {
-            return new GetStatusesController($this->container['repository.statuses']);
+            return new StatusesGetAllController($this->container['repository.statuses']);
         });
     }
 }

@@ -6,30 +6,32 @@ use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
 use jschreuder\Middle\Controller\ValidationFailedException;
-use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Ramsey\Uuid\Uuid;
 use Zend\Diactoros\Response\JsonResponse;
 
-class CreateUserController implements ControllerInterface, RequestValidatorInterface, RequestFilterInterface
+class DepartmentCreateController implements ControllerInterface, RequestValidatorInterface, RequestFilterInterface
 {
-    /** @var  AuthenticationServiceInterface */
-    private $authenticationService;
+    /** @var  DepartmentRepository */
+    private $departmentRepository;
 
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(DepartmentRepository $departmentRepository)
     {
-        $this->authenticationService = $authenticationService;
+        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
         $filter = new Filter();
+        $filter->value('name')->string()->stripHtml()->trim();
+        $filter->value('parent_id')->string()->trim();
         $filter->value('email')->string()->trim();
-        $filter->value('display_name')->string()->trim();
-        $filter->value('password')->string();
 
         return $request->withParsedBody($filter->filter($body));
     }
@@ -37,9 +39,9 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
     public function validateRequest(ServerRequestInterface $request) : void
     {
         $validator = new Validator();
-        $validator->required('email')->string()->email()->lengthBetween(6, 123);
-        $validator->optional('display_name')->string()->lengthBetween(2, 63);
-        $validator->required('password')->string()->lengthBetween(12, null);
+        $validator->required('name')->string();
+        $validator->optional('parent_id')->uuid();
+        $validator->required('email')->email();
 
         $validationResult = $validator->validate((array) $request->getParsedBody());
         if (!$validationResult->isValid()) {
@@ -51,18 +53,14 @@ class CreateUserController implements ControllerInterface, RequestValidatorInter
     {
         $body = (array) $request->getParsedBody();
 
-        $user = $this->authenticationService->createUser(
-            $body['email'],
-            $body['display_name'],
-            $body['password']
+        $department = $this->departmentRepository->createDepartment(
+            $body['name'],
+            empty($body['parent_id'])
+                ? null
+                : $this->departmentRepository->getDepartment(Uuid::fromString($body['parent_id'])),
+            EmailAddressValue::get($body['email'])
         );
 
-        return new JsonResponse([
-            'user' => [
-                'email' => $user->getEmail(),
-                'display_name' => $user->getDisplayName(),
-                'active' => $user->isActive(),
-            ]
-        ], 201);
+        return new JsonResponse(['department_id' => $department->getId()->toString()], 201);
     }
 }

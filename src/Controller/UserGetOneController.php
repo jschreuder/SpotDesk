@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class GetUserController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
+class UserGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
     /** @var  UserRepository */
     private $userRepository;

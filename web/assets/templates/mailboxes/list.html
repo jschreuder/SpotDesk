@@ -14,7 +14,7 @@
                         <a ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id})">{{ m.name }}</a>
                     </td>
                     <td md-cell>
-                        {{ m.department_name }}
+                        {{ m.department_name }} <em ng-hide="m.department_name">[no department]</em>
                     </td>
                     <td md-cell>
                         {{ m.last_check }}

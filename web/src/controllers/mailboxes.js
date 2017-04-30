@@ -61,8 +61,9 @@
             }
         ])
 
-        .controller("viewMailboxController", ["$sdMailboxes", "$stateParams", "$sdDepartments", "$mdDialog", "$sdAlert",
-            function ($sdMailboxes, $stateParams, $sdDepartments, $mdDialog, $sdAlert) {
+        .controller("viewMailboxController",
+            ["$sdMailboxes", "$state", "$stateParams", "$sdDepartments", "$mdDialog", "$sdAlert",
+            function ($sdMailboxes, $state, $stateParams, $sdDepartments, $mdDialog, $sdAlert) {
                 var ctrl = this;
                 ctrl.mailbox = null;
                 ctrl.departments = $sdDepartments.all();
@@ -103,6 +104,23 @@
                         // @todo handle validation errors differently
                         $sdAlert.error("mailbox_edit_failed");
                         ctrl.fetchMailbox();
+                    });
+                };
+
+                ctrl.deleteMailbox = function () {
+                    $mdDialog.show(
+                        $mdDialog.confirm()
+                            .title("Delete mailbox")
+                            .textContent("Would you like to delete mailbox '" + ctrl.mailbox.name + "'?")
+                            .ariaLabel("Delete mailbox")
+                            .ok('Yes')
+                            .cancel('No')
+                    ).then(function () {
+                        $sdMailboxes.delete(ctrl.mailbox.mailbox_id).then(function () {
+                            $state.go("mailboxes");
+                        }, function () {
+                            $sdAlert.error("mailbox_delete_failed");
+                        });
                     });
                 };
             }

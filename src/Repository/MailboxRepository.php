@@ -171,4 +171,13 @@ class MailboxRepository
         }
         $mailbox->setLastCheck($checkTime);
     }
+
+    public function deleteMailbox(Mailbox $mailbox) : void
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `mailboxes`
+            WHERE `mailbox_id` = :mailbox_id
+        ");
+        $query->execute(['mailbox_id' => $mailbox->getId()->getBytes()]);
+    }
 }

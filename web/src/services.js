@@ -37,6 +37,10 @@
                         imap_user: imap_user,
                         imap_pass: imap_pass || null
                     });
+                },
+
+                delete: function (mailbox_id) {
+                    return $http.delete("/mailboxes/" + mailbox_id);
                 }
             };
         }])

@@ -361,13 +361,39 @@ class TicketRepository
             'email' => $email->toString(),
             'subject' => $subject,
             'message' => $message,
-            'duplicate_before' => date('Y-m-d H:i:s', strtotime('-1 day', $createdAt->getTimestamp())),
-            'duplicate_after' => date('Y-m-d H:i:s', strtotime('+1 day', $createdAt->getTimestamp())),
+            'duplicate_before' => date('Y-m-d H:i:s', strtotime('-1 hour', $createdAt->getTimestamp())),
+            'duplicate_after' => date('Y-m-d H:i:s', strtotime('+1 hour', $createdAt->getTimestamp())),
         ];
         if (!is_null($department)) {
             $args['department_id'] = $department->getId()->toString();
         }
         $query->execute($args);
+        return $query->fetchColumn() > 0;
+    }
+
+    public function isDuplicateUpdate(
+        Ticket $ticket,
+        EmailAddressValue $email,
+        string $message,
+        \DateTimeInterface $createdAt
+    ) : bool
+    {
+        $query = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM `ticket_updates`
+            WHERE `ticket_id` = :ticket_id
+                AND `email` = :email
+                AND `message` = :message
+                AND `created_at` > :duplicate_before
+                AND `created_at` < :duplicate_after
+        ");
+        $query->execute([
+            'ticket_id' => $ticket->getId()->getBytes(),
+            'email' => $email->toString(),
+            'message' => $message,
+            'duplicate_before' => date('Y-m-d H:i:s', strtotime('-1 hour', $createdAt->getTimestamp())),
+            'duplicate_after' => date('Y-m-d H:i:s', strtotime('+1 hour', $createdAt->getTimestamp())),
+        ]);
         return $query->fetchColumn() > 0;
     }
 }

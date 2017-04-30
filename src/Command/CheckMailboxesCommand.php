@@ -150,6 +150,9 @@ class CheckMailboxesCommand extends Command
         \DateTimeInterface $createdAt
     )
     {
+        if ($this->ticketRepository->isDuplicateUpdate($ticket, $email, $message, $createdAt)) {
+            return;
+        }
         $ticketUpdate = $this->ticketRepository->createTicketUpdate(
             $ticket, $email, $message, false, $createdAt
         );

@@ -6,6 +6,7 @@ use jschreuder\Middle\Controller\CallableController;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
+use jschreuder\SpotDesk\Controller\MailboxUpdateController;
 use jschreuder\SpotDesk\Controller\TicketAddUpdateController;
 use jschreuder\SpotDesk\Controller\ChangePasswordController;
 use jschreuder\SpotDesk\Controller\DepartmentDeleteController;
@@ -122,6 +123,12 @@ class MainRoutingProvider implements RoutingProviderInterface
                 $this->container['repository.departments']
             );
         });
+        $router->put('mailboxes.update', '/mailboxes/{mailbox_id}', function () {
+            return new MailboxUpdateController(
+                $this->container['repository.mailboxes'],
+                $this->container['repository.departments']
+            );
+        })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
 
         // Users
         $router->get('users.list', '/users', function () {

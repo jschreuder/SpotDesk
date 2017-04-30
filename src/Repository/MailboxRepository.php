@@ -130,6 +130,29 @@ class MailboxRepository
         return $mailboxCollection;
     }
 
+    public function updateMailbox(Mailbox $mailbox)
+    {
+        $query = $this->db->prepare("
+            UPDATE `mailboxes`
+            SET `name` = :name, `department_id` = :department_id, `imap_server` = :imap_server, 
+                `imap_port` = :imap_port, `imap_security` = :imap_security, `imap_user` = :imap_user, 
+                `imap_pass` = :imap_pass
+            WHERE `mailbox_id` = :mailbox_id
+        ");
+        $query->execute([
+            'mailbox_id' => $mailbox->getId()->getBytes(),
+            'name' => $mailbox->getName(),
+            'department_id' => is_null($mailbox->getDepartment())
+                ? null
+                : $mailbox->getDepartment()->getId()->getBytes(),
+            'imap_server' => $mailbox->getImapServer(),
+            'imap_port' => $mailbox->getImapPort(),
+            'imap_security' => $mailbox->getImapSecurity()->toString(),
+            'imap_user' => $mailbox->getImapUser(),
+            'imap_pass' => $mailbox->getImapPass(),
+        ]);
+    }
+
     public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null) : void
     {
         $checkTime = $checkTime ?? new \DateTimeImmutable('now');

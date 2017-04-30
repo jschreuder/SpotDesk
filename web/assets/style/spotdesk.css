@@ -163,6 +163,10 @@ md-sidenav md-list {
 
 /* Utils */
 
+md-dialog {
+    min-width: 50%;
+}
+
 .content-wrapper {
     position: relative;
 }

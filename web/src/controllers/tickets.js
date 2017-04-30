@@ -43,10 +43,7 @@
                 var ctrl = this;
                 ctrl.ticket = null;
                 ctrl.updates = [];
-                ctrl.statuses = [{
-                    name: "",
-                    type: null
-                }];
+                ctrl.statuses = [];
                 ctrl.departments = [{
                     department_id: "",
                     name: "no_department"

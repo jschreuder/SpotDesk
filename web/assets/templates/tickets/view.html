@@ -183,6 +183,7 @@
                             <md-input-container class="md-block" flex-gt-sm>
                                 <label>Change status to...</label>
                                 <md-select ng-model="ctrl.reply.status_update">
+                                    <md-option value="">[no change]</md-option>
                                     <md-option ng-repeat="status in ctrl.statuses" value="{{ status.name }}">
                                         {{ status.name }}
                                     </md-option>

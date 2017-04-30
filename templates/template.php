@@ -91,12 +91,6 @@
                     Statuses
                 </md-button>
             </md-list-item>
-            <md-list-item>
-                <md-button ui-sref="mailings" ui-sref-active="active">
-                    <i class="fa fa-bell menu-icon" aria-hidden="true"></i>
-                    E-mail notifications
-                </md-button>
-            </md-list-item>
         </md-list>
     </md-sidenav>
 

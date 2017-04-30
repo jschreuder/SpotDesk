@@ -16,6 +16,7 @@ use jschreuder\SpotDesk\Controller\CreateMailboxController;
 use jschreuder\SpotDesk\Controller\CreateUserController;
 use jschreuder\SpotDesk\Controller\GetDepartmentController;
 use jschreuder\SpotDesk\Controller\GetDepartmentsController;
+use jschreuder\SpotDesk\Controller\GetMailboxController;
 use jschreuder\SpotDesk\Controller\GetMailboxesController;
 use jschreuder\SpotDesk\Controller\GetStatusesController;
 use jschreuder\SpotDesk\Controller\GetTicketsController;
@@ -109,6 +110,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         })->setRequirement('department_id', Uuid::VALID_PATTERN);
 
         // Mailboxes
+        $router->get('mailboxes.get_one', '/mailboxes/{mailbox_id}', function () {
+            return new GetMailboxController($this->container['repository.mailboxes']);
+        })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
         $router->get('mailboxes.list', '/mailboxes', function () {
             return new GetMailboxesController($this->container['repository.mailboxes']);
         });

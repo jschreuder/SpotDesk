@@ -7,6 +7,10 @@
             return {
                 fetch: function () {
                     return $http.get("/mailboxes");
+                },
+
+                fetchOne: function (mailbox_id) {
+                    return $http.get("/mailboxes/" + mailbox_id);
                 }
             };
         }])

@@ -1,0 +1,80 @@
+<md-card id="{{ ctrl.mailbox.mailbox_id }}">
+    <md-card-title>
+        <md-card-title-media>
+            <div class="md-media-sm card-media" layout>
+                <i class="fa fa-folder-open" aria-hidden="true"></i>
+            </div>
+        </md-card-title-media>
+        <md-card-title-text>
+            <md-fab-speed-dial md-direction="left" class="md-scale md-fab-top-right">
+                <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab md-primary">
+                        <md-tooltip md-direction="top" md-visible="tooltipVisible">Mailbox actions</md-tooltip>
+                        <i class="fa fa-cog"></i>
+                    </md-button>
+                </md-fab-trigger>
+
+                <md-fab-actions>
+                    <div>
+                        <md-button aria-label="Delete mailbox" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.deleteMailbox()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Delete mailbox
+                            </md-tooltip>
+                            <i class="fa fa-trash md-warn" aria-label="Delete mailbox"></i>
+                        </md-button>
+                        <md-button aria-label="Edit mailbox" class="md-fab md-raised md-mini"
+                                   ng-click="ctrl.editMailbox()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Edit mailbox
+                            </md-tooltip>
+                            <i class="fa fa-edit" aria-label="Edit mailbox"></i>
+                        </md-button>
+                    </div>
+                </md-fab-actions>
+            </md-fab-speed-dial>
+
+            <span class="md-headline">
+                {{ ctrl.mailbox.name }}
+            </span>
+            <span class="md-subhead description">
+                Department: {{ ctrl.mailbox.department_name }} <em ng-show="!ctrl.mailbox.department_name">[none]</em>
+                | Last check: {{ ctrl.mailbox.last_check }}
+            </span>
+        </md-card-title-text>
+    </md-card-title>
+</md-card>
+
+<md-card>
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">IMAP instellingen</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-content>
+        <table class="sd-table" cellpadding="0" cellspacing="0">
+            <tbody>
+                <tr>
+                    <th>Server</th>
+                    <td>{{ ctrl.mailbox.imap_server }}</td>
+                </tr>
+                <tr>
+                    <th>Port</th>
+                    <td>{{ ctrl.mailbox.imap_port }}</td>
+                </tr>
+                <tr>
+                    <th>Security</th>
+                    <td>{{ ctrl.mailbox.imap_security }}</td>
+                </tr>
+                <tr>
+                    <th>Username</th>
+                    <td>{{ ctrl.mailbox.imap_user }}</td>
+                </tr>
+                <tr>
+                    <th>Password</th>
+                    <td><em>[hidden]</em></td>
+                </tr>
+            </tbody>
+        </table>
+    </md-card-content>
+</md-card>

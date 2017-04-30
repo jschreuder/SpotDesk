@@ -167,6 +167,24 @@ md-sidenav md-list {
     position: relative;
 }
 
+.sd-table {
+    border: 0;
+    width: 100%;
+    padding: 0;
+    margin: 1em 0;
+}
+
+.sd-table th, .sd-table td {
+    padding: 5px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.sd-table th {
+    text-align: left;
+}
+
 .sd-muted-text {
     color: #aaa;
 }

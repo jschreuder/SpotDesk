@@ -17,6 +17,20 @@
             }, function () {
                 $sdAlert.error("mailboxes_load_failed");
             });
+        }])
+
+        .controller("viewMailboxController", ["$sdMailboxes", "$stateParams", function ($sdMailboxes, $stateParams) {
+            var ctrl = this;
+            ctrl.mailbox = null;
+
+            ctrl.fetchMailbox = function () {
+                $sdMailboxes.fetchOne($stateParams.mailbox_id).then(function (response) {
+                    ctrl.mailbox = response.data.mailbox;
+                }, function () {
+                    $sdAlert.error("mailbox_load_failed");
+                });
+            };
+            ctrl.fetchMailbox();
         }]);
 
 })();

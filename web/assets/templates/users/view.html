@@ -54,10 +54,10 @@
     </md-card-header>
     <md-card-content>
         <div layout="row">
-            <div flex-xs flex="50" ng-repeat="d in ctrl.departments">
+            <div flex-xs flex="50" ng-repeat="d in ctrl.departments | orderBy: 'full_name'">
                 <md-checkbox ng-checked="ctrl.hasDepartment(d)"
                              ng-click="ctrl.toggleDepartment(d)">
-                    <strong>{{ d.name }}</strong> <span ng-if="d.parent_name">({{ d.parent_name }})</span>
+                    <span class="sd-muted-text">{{ d.path }}</span><strong>{{ d.name }}</strong>
                 </md-checkbox>
             </div>
         </div>

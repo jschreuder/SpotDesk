@@ -103,8 +103,10 @@
                             <label>Department</label>
                             <md-select ng-model="ctrl.mailbox.department_id">
                                 <md-option value="">[none]</md-option>
-                                <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
-                                    {{ department.name }}
+                                <md-option ng-repeat="department in ctrl.departments | orderBy: 'full_name'"
+                                           value="{{ department.department_id }}">
+                                    <span class="sd-muted-text">{{ department.path }}</span>
+                                    <strong>{{ department.name }}</strong>
                                 </md-option>
                             </md-select>
                         </md-input-container>

@@ -87,8 +87,11 @@
                             <md-input-container class="md-block" flex-gt-sm>
                                 <label>Change department to...</label>
                                 <md-select ng-model="ctrl.change_department_id">
-                                    <md-option ng-repeat="department in ctrl.departments" value="{{ department.department_id }}">
-                                        {{ department.name }}
+                                    <md-option value="">[no department]</md-option>
+                                    <md-option ng-repeat="department in ctrl.departments | orderBy: 'full_name'"
+                                               value="{{ department.department_id }}">
+                                        <span class="sd-muted-text">{{ department.path }}</span>
+                                        <strong>{{ department.name }}</strong>
                                     </md-option>
                                 </md-select>
                             </md-input-container>

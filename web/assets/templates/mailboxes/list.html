@@ -24,3 +24,85 @@
         </table>
     </md-table-container>
 </md-card>
+
+<div style="visibility: hidden">
+    <div class="md-dialog-container" id="createMailbox">
+        <md-dialog aria-label="Create mailbox">
+            <form ng-cloak>
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2>Create mailbox</h2>
+                        <span flex></span>
+                        <md-button class="md-icon-button" ng-click="ctrl.cancelCreateMailbox()">
+                            <i class="fa fa-close" aria-label="Cancel create mailbox"></i>
+                        </md-button>
+                    </div>
+                </md-toolbar>
+                <md-dialog-content>
+                    <div class="md-dialog-content">
+                        <md-input-container class="md-block">
+                            <label for="mailbox_name">Name</label>
+                            <input id="mailbox_name" ng-model="ctrl.mailbox.name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label>Department</label>
+                            <md-select ng-model="ctrl.mailbox.department_id">
+                                <md-option value="">[none]</md-option>
+                                <md-option ng-repeat="department in ctrl.departments | orderBy: 'full_name'"
+                                           value="{{ department.department_id }}">
+                                    <span class="sd-muted-text">{{ department.path }}</span>
+                                    <strong>{{ department.name }}</strong>
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="mailbox_imap_server">IMAP server</label>
+                            <input id="mailbox_imap_server" ng-model="ctrl.mailbox.imap_server" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="mailbox_imap_port">IMAP port</label>
+                            <input id="mailbox_imap_port" ng-model="ctrl.mailbox.imap_port" type="number">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label>IMAP security</label>
+                            <md-select ng-model="ctrl.mailbox.imap_security">
+                                <md-option value="none">[none]</md-option>
+                                <md-option value="ssl">SSL/TLS</md-option>
+                                <md-option value="tls">STARTTLS</md-option>
+                            </md-select>
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="mailbox_imap_user">IMAP username</label>
+                            <input id="mailbox_imap_user" ng-model="ctrl.mailbox.imap_user" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="mailbox_imap_pass">IMAP password</label>
+                            <input id="mailbox_imap_pass" ng-model="ctrl.mailbox.imap_pass" type="text">
+                        </md-input-container>
+                    </div>
+                </md-dialog-content>
+
+                <md-dialog-actions layout="row">
+                    <span flex></span>
+                    <md-button ng-click="ctrl.cancelCreateMailbox()">
+                        Cancel
+                    </md-button>
+                    <md-button class="md-primary" ng-click="ctrl.submitCreateMailbox()">
+                        Submit
+                    </md-button>
+                </md-dialog-actions>
+            </form>
+        </md-dialog>
+    </div>
+</div>
+
+<md-button class="md-fab md-fab-bottom-right" aria-label="Create mailbox" ng-click="ctrl.createMailbox()">
+    <md-tooltip md-direction="top">Create mailbox</md-tooltip>
+    <i class="fa fa-folder-open" aria-hidden="true"></i>
+</md-button>

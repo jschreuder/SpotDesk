@@ -77,7 +77,6 @@ class MailboxCreateController implements ControllerInterface, RequestFilterInter
             MailTransportSecurityValue::get($body['imap_security']),
             $body['imap_user'],
             $body['imap_pass']
-        // @todo add last_check?
         );
 
         return new JsonResponse(['mailbox_id' => $mailbox->getId()->toString()], 201);

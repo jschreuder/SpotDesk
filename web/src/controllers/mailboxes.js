@@ -3,20 +3,63 @@
 
     angular.module("spotdesk")
 
-        .controller("mailboxesController", ["$sdMailboxes", "$sdAlert", function ($sdMailboxes, $sdAlert) {
-            var ctrl = this;
-            ctrl.order = "department_name";
-            ctrl.mailboxes = [];
-
-            $sdMailboxes.fetch().then(function (response) {
+        .controller("mailboxesController", ["$sdMailboxes", "$sdDepartments", "$sdAlert", "$mdDialog",
+            function ($sdMailboxes, $sdDepartments, $sdAlert, $mdDialog) {
+                var ctrl = this;
+                ctrl.order = "department_name";
                 ctrl.mailboxes = [];
-                angular.forEach(response.data.mailboxes, function (mailbox) {
-                    ctrl.mailboxes.push(mailbox);
-                });
-            }, function () {
-                $sdAlert.error("mailboxes_load_failed");
-            });
-        }])
+                ctrl.departments = $sdDepartments.all();
+
+                ctrl.fetchMailboxes = function () {
+                    $sdMailboxes.fetch().then(function (response) {
+                        ctrl.mailboxes = [];
+                        angular.forEach(response.data.mailboxes, function (mailbox) {
+                            ctrl.mailboxes.push(mailbox);
+                        });
+                    }, function () {
+                        $sdAlert.error("mailboxes_load_failed");
+                    });
+                };
+                ctrl.fetchMailboxes();
+
+                ctrl.createMailbox = function(ev) {
+                    ctrl.mailbox = {
+                        name: null,
+                        department_id: null,
+                        imap_server: null,
+                        imap_port: null,
+                        imap_security: null,
+                        imap_user: null,
+                        imap_pass: null
+                    };
+                    $mdDialog.show({
+                        contentElement: "#createMailbox",
+                        parent: angular.element(document.body),
+                        targetEvent: ev
+                    });
+                };
+                ctrl.cancelCreateMailbox = function () {
+                    $mdDialog.cancel();
+                };
+                ctrl.submitCreateMailbox = function () {
+                    $sdMailboxes.create(
+                        ctrl.mailbox.name,
+                        ctrl.mailbox.department_id,
+                        ctrl.mailbox.imap_server,
+                        ctrl.mailbox.imap_port,
+                        ctrl.mailbox.imap_security,
+                        ctrl.mailbox.imap_user,
+                        ctrl.mailbox.imap_pass
+                    ).then(function () {
+                        $mdDialog.hide();
+                        ctrl.fetchMailboxes();
+                    }, function () {
+                        // @todo handle validation errors differently
+                        $sdAlert.error("mailbox_create_failed");
+                    });
+                };
+            }
+        ])
 
         .controller("viewMailboxController", ["$sdMailboxes", "$stateParams", "$sdDepartments", "$mdDialog", "$sdAlert",
             function ($sdMailboxes, $stateParams, $sdDepartments, $mdDialog, $sdAlert) {

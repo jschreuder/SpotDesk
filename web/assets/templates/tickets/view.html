@@ -19,6 +19,13 @@
 
                 <md-fab-actions>
                     <div>
+                        <md-button aria-label="Delete ticket" class="md-fab md-warn md-raised md-mini"
+                                   ng-click="ctrl.deleteTicket()">
+                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
+                                Delete ticket
+                            </md-tooltip>
+                            <i class="fa fa-trash" aria-label="Delete ticket"></i>
+                        </md-button>
                         <md-button aria-label="Change department" class="md-fab md-raised md-mini"
                                    ng-click="ctrl.changeDepartment()">
                             <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
@@ -32,13 +39,6 @@
                                 Change status
                             </md-tooltip>
                             <i class="fa fa-tag" aria-label="Change status"></i>
-                        </md-button>
-                        <md-button aria-label="Delete ticket" class="md-fab md-raised md-mini"
-                                   ng-click="ctrl.deleteTicket()">
-                            <md-tooltip md-direction="top" md-visible="tooltipVisible" md-autohide="true">
-                                Delete ticket
-                            </md-tooltip>
-                            <i class="fa fa-trash" aria-label="Delete ticket"></i>
                         </md-button>
                     </div>
                 </md-fab-actions>

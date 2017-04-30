@@ -55,4 +55,5 @@ Features currently implemented
 * Clients receive updates to their ticket by e-mail
 * User management: creating, deleting and changing their department assignments
 * Department management: creating, updating and deleting
+* Mailbox management: creating, updating and deleting
 * **More to come...**

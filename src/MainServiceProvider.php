@@ -91,7 +91,9 @@ class MainServiceProvider implements ServiceProviderInterface
             ValidationFailedException $validationFailedException
         ) : ResponseInterface {
             return new JsonResponse([
-                'errors' => $validationFailedException->getValidationErrors(),
+                'validation_errors' => array_map(function (array $errors) {
+                        return array_keys($errors);
+                    }, $validationFailedException->getValidationErrors()),
             ], 400);
         });
 

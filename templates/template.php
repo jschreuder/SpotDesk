@@ -111,22 +111,32 @@
 <div id="login" flex layout="row" ng-hide="main.loggedIn()">
     <md-content layout="column" flex>
         <md-card>
+            <md-card-title>
+                <md-card-title-text>
+                    <span class="md-headline">
+                        <i class="fa fa-lock" aria-label="Login"></i>
+                        Login
+                    </span>
+                </md-card-title-text>
+            </md-card-title>
             <md-card-content>
-                <md-input-container>
-                    <label for="user_name">Username</label>
-                    <input id="user_name" ng-model="main.user.name" type="email">
-                </md-input-container>
+                <div>
+                    <md-input-container class="md-block">
+                        <label for="user_name">Username</label>
+                        <input id="user_name" ng-model="main.user.name" type="email">
+                    </md-input-container>
 
-                <md-input-container>
-                    <label for="user_pass">Password</label>
-                    <input id="user_pass" ng-model="main.user.pass" type="password">
-                </md-input-container>
+                    <md-input-container class="md-block">
+                        <label for="user_pass">Password</label>
+                        <input id="user_pass" ng-model="main.user.pass" type="password">
+                    </md-input-container>
 
-                <md-input-container class="md-block">
-                    <md-switch class="md-primary" ng-model="main.user.persist">
-                        Persist login in cookie
-                    </md-switch>
-                </md-input-container>
+                    <md-input-container class="md-block">
+                        <md-switch class="md-primary" ng-model="main.user.persist">
+                            Persist login in cookie
+                        </md-switch>
+                    </md-input-container>
+                </div>
 
                 <div>
                     <md-button type="submit" md-no-ink class="md-primary" ng-click="main.login()">Login</md-button>

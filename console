@@ -14,7 +14,11 @@ $application->add(new \jschreuder\SpotDesk\Command\AssignUserToDepartmentCommand
 
 // mail: namespace
 $application->add(new \jschreuder\SpotDesk\Command\CheckMailboxesCommand(
-    $container['repository.mailboxes'], $container['repository.tickets'], $container['service.mail']
+    $container['repository.mailboxes'],
+    $container['repository.tickets'],
+    $container['repository.statuses'],
+    $container['service.mail'],
+    $container['repository.users']
 ));
 $application->add(new \jschreuder\SpotDesk\Command\SendMailingsCommand(
     $container['repository.ticket_mailings'], $container['service.mail']

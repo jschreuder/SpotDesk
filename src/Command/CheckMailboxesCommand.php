@@ -3,9 +3,12 @@
 namespace jschreuder\SpotDesk\Command;
 
 use jschreuder\SpotDesk\Entity\Mailbox;
+use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
+use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpImap\Mailbox as ImapConnection;
@@ -23,17 +26,27 @@ class CheckMailboxesCommand extends Command
     /** @var  TicketRepository */
     private $ticketRepository;
 
+    /** @var  StatusRepository */
+    private $statusRepository;
+
     /** @var  SendMailServiceInterface */
     private $mailService;
+
+    /** @var  UserRepository */
+    private $userRepository;
 
     public function __construct(
         MailboxRepository $mailboxRepository,
         TicketRepository $ticketRepository,
-        SendMailServiceInterface $mailService
+        StatusRepository $statusRepository,
+        SendMailServiceInterface $mailService,
+        UserRepository $userRepository
     ) {
         $this->mailboxRepository = $mailboxRepository;
         $this->ticketRepository = $ticketRepository;
+        $this->statusRepository = $statusRepository;
         $this->mailService = $mailService;
+        $this->userRepository = $userRepository;
         parent::__construct();
     }
 
@@ -73,6 +86,18 @@ class CheckMailboxesCommand extends Command
         return new ImapConnection($path, $mailbox->getImapUser(), $mailbox->getImapPass());
     }
 
+    private function isUser(EmailAddressValue $emailAddress) : bool
+    {
+        static $userEmailAddresses = null;
+        if (is_null($userEmailAddresses)) {
+            $users = $this->userRepository->getUsers();
+            foreach ($users as $user) {
+                $userEmailAddresses[] = $user->getEmail()->toString();
+            }
+        }
+        return in_array($emailAddress->toString(), $userEmailAddresses, true);
+    }
+
     private function checkMailbox(Mailbox $mailbox, OutputInterface $output)
     {
         $connection = $this->createConnection($mailbox);
@@ -88,7 +113,7 @@ class CheckMailboxesCommand extends Command
                 $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
                 $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
 
-                if ($ticket = $this->getTicketFromSubject($subject)) {
+                if ($ticket = $this->getTicketFromEmail($subject, $email)) {
                     $this->processTicketUpdate($ticket, $email, $message, $createdAt);
                 } else {
                     $this->processTicket($mailbox, $email, $subject, $message, $createdAt);
@@ -109,7 +134,7 @@ class CheckMailboxesCommand extends Command
         $this->mailboxRepository->updateLastCheck($mailbox);
     }
 
-    private function getTicketFromSubject(string $subject) : ?Ticket
+    private function getTicketFromEmail(string $subject, EmailAddressValue $fromEmailAddress) : ?Ticket
     {
         $pattern = '#\[(?P<uuid>' . trim(Uuid::VALID_PATTERN, '^$') . ')\]#';
         if (preg_match($pattern, $subject, $matches) < 1) {
@@ -118,10 +143,17 @@ class CheckMailboxesCommand extends Command
 
         $id = Uuid::fromString($matches['uuid']);
         try {
-            return $this->ticketRepository->getTicket($id);
+            $ticket = $this->ticketRepository->getTicket($id);
         } catch (\OutOfBoundsException $exception) {
             return null;
         }
+
+        // Only count as reply when sender matches either the original poster or a known user,
+        // otherwise process as new ticket.
+        if (!$ticket->getEmail()->isEqual($fromEmailAddress) && !$this->isUser($fromEmailAddress)) {
+            return null;
+        }
+        return $ticket;
     }
 
     private function processTicket(
@@ -157,6 +189,12 @@ class CheckMailboxesCommand extends Command
             $ticket, $email, $message, false, $createdAt
         );
         $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
+
+        // also reopen after processing reply
+        $this->ticketRepository->updateTicketStatus(
+            $ticket,
+            $this->statusRepository->getStatus(Status::STATUS_OPEN)
+        );
     }
 
     private function stripHtml(string $message) : string

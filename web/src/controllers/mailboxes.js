@@ -14,6 +14,9 @@
                     $sdMailboxes.fetch().then(function (response) {
                         ctrl.mailboxes = [];
                         angular.forEach(response.data.mailboxes, function (mailbox) {
+                            if (mailbox.department_id) {
+                                mailbox.department_full_name = ctrl.departments.getOne(mailbox.department_id).full_name;
+                            }
                             ctrl.mailboxes.push(mailbox);
                         });
                     }, function () {

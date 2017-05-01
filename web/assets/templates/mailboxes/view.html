@@ -38,7 +38,8 @@
                 {{ ctrl.mailbox.name }}
             </span>
             <span class="md-subhead description">
-                Department: {{ ctrl.mailbox.department_name }} <em ng-show="!ctrl.mailbox.department_name">[none]</em>
+                Department: {{ ctrl.departments.getOne(ctrl.mailbox.department_id).full_name }}
+                    <em ng-show="!ctrl.mailbox.department_id">[no department]</em>
                 | Last check: {{ ctrl.mailbox.last_check }}
             </span>
         </md-card-title-text>

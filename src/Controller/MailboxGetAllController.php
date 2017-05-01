@@ -31,9 +31,6 @@ class MailboxGetAllController implements ControllerInterface
                     'department_id' => $mailbox->getDepartment()
                         ? $mailbox->getDepartment()->getId()->toString()
                         : null,
-                    'department_name' => $mailbox->getDepartment()
-                        ? $mailbox->getDepartment()->getName()
-                        : null,
                     'last_check' => $mailbox->getLastCheck()->format('Y-m-d H:i:s'),
                 ];
             }, $mailboxes->toArray())

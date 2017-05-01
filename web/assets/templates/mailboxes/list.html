@@ -4,7 +4,7 @@
             <thead md-head md-order="ctrl.order">
                 <tr md-row>
                     <th md-column md-order-by="name"><span>Name</span></th>
-                    <th md-column md-order-by="department_name"><span>Department</span></th>
+                    <th md-column md-order-by="department_full_name"><span>Department</span></th>
                     <th md-column md-order-by="last_check"><span>Last check</span></th>
                 </tr>
             </thead>
@@ -14,7 +14,8 @@
                         <a ui-sref="mailboxes_view({ mailbox_id: m.mailbox_id})">{{ m.name }}</a>
                     </td>
                     <td md-cell>
-                        {{ m.department_name }} <em ng-hide="m.department_name">[no department]</em>
+                        {{ m.department_full_name }}
+                        <em ng-hide="m.department_full_name">[no department]</em>
                     </td>
                     <td md-cell>
                         {{ m.last_check }}

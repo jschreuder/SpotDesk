@@ -46,7 +46,8 @@
             <span class="md-headline has-top-right-icon">{{ ctrl.ticket.subject }}</span>
             <span class="md-subhead description">
                 By {{ ctrl.ticket.created_by }} on {{ ctrl.ticket.created_at }} in
-                {{ ctrl.ticket.department_name || "no_department" }}
+                {{ ctrl.departments.getOne(ctrl.ticket.department_id).full_name }}
+                <em ng-show="!ctrl.ticket.department_id">[no department]</em>
             </span>
         </md-card-title-text>
     </md-card-title>

@@ -72,7 +72,6 @@ class DepartmentGetOneController implements ControllerInterface, RequestFilterIn
                 'department_id' => $department->getId()->toString(),
                 'name' => $department->getName(),
                 'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
-                'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
                 'email' => $department->getEmail()->toString(),
             ],
             'children' => array_map(function (Department $department) {
@@ -80,7 +79,6 @@ class DepartmentGetOneController implements ControllerInterface, RequestFilterIn
                     'department_id' => $department->getId()->toString(),
                     'name' => $department->getName(),
                     'parent_id' => $department->getParent() ? $department->getParent()->getId()->toString() : null,
-                    'parent_name' => $department->getParent() ? $department->getParent()->getName() : null,
                     'email' => $department->getEmail()->toString(),
                 ];
             }, $departmentChildren->toArray()),

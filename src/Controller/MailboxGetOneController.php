@@ -51,7 +51,6 @@ class MailboxGetOneController implements ControllerInterface, RequestFilterInter
                 'mailbox_id' => $mailbox->getId()->toString(),
                 'name' => $mailbox->getName(),
                 'department_id' => $mailbox->getDepartment() ? $mailbox->getDepartment()->getId()->toString() : null,
-                'department_name' => $mailbox->getDepartment() ? $mailbox->getDepartment()->getName() : null,
                 'imap_server' => $mailbox->getImapServer(),
                 'imap_port' => $mailbox->getImapPort(),
                 'imap_security' => $mailbox->getImapSecurity()->toString(),

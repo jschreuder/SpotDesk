@@ -197,6 +197,10 @@ md-dialog {
     color: #ff5a41;
 }
 
+.sd-nl2br {
+    white-space: pre-wrap;
+}
+
 .user-department-select-all {
     padding-top: 1em;
 }

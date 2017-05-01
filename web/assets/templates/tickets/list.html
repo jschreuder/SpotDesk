@@ -23,11 +23,15 @@
                     ng-repeat="t in ctrl.tickets | orderBy: ctrl.query.sort">
                     <td md-cell>
                         <a ui-sref="tickets_view({ ticket_id: t.ticket_id })">{{ t.subject }}</a><br />
-                        By {{ t.created_by }} on {{ t.created_at }}
+                        <span ng-show="t.department_id">
+                            in {{ ctrl.departments.getOne(t.department_id).full_name }}
+                        </span>
+                        by {{ t.created_by }}
+                        on {{ t.created_at.replace(" ", "T") | date:"MMM d, H:mm" }}
                     </td>
                     <td md-cell>{{ t.updates }}</td>
                     <td md-cell>
-                        {{ t.last_update }}
+                        {{ t.last_update.replace(" ", "T") | date:"MMM d, H:mm" }}
                     </td>
                     <td md-cell>{{ t.status }}</td>
                 </tr>

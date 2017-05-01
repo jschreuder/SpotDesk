@@ -3,39 +3,42 @@
 
     angular.module("spotdesk")
 
-        .controller("ticketsController", ["$sdTickets", "$stateParams", function ($sdTickets, $stateParams) {
-            var ctrl = this;
-            ctrl.order = "-last_update";
-            ctrl.promise = null;
-            ctrl.query = {
-                status_type: $stateParams.status_type || "open",
-                limit: 15,
-                page: 1,
-                sort: "-last_update"
-            };
-            ctrl.tickets = [];
-            ctrl.selected = [];
+        .controller("ticketsController", ["$sdTickets", "$stateParams", "$sdDepartments",
+            function ($sdTickets, $stateParams, $sdDepartments) {
+                var ctrl = this;
+                ctrl.order = "-last_update";
+                ctrl.promise = null;
+                ctrl.query = {
+                    status_type: $stateParams.status_type || "open",
+                    limit: 15,
+                    page: 1,
+                    sort: "-last_update"
+                };
+                ctrl.tickets = [];
+                ctrl.selected = [];
+                ctrl.departments = $sdDepartments.all();
 
-            ctrl.getTickets = function () {
-                var sort_by = ctrl.query.sort,
-                    sort_direction = "asc";
-                if (sort_by[0] === "-") {
-                    sort_by = sort_by.substring(1);
-                    sort_direction = "desc";
-                }
+                ctrl.getTickets = function () {
+                    var sort_by = ctrl.query.sort,
+                        sort_direction = "asc";
+                    if (sort_by[0] === "-") {
+                        sort_by = sort_by.substring(1);
+                        sort_direction = "desc";
+                    }
 
-                ctrl.promise = $sdTickets.fetch(
-                    ctrl.query.status_type, ctrl.query.limit, ctrl.query.page, sort_by, sort_direction
-                ).then(function (response) {
-                    ctrl.tickets = [];
-                    angular.forEach(response.data.tickets, function (ticket) {
-                        ctrl.tickets.push(ticket);
+                    ctrl.promise = $sdTickets.fetch(
+                        ctrl.query.status_type, ctrl.query.limit, ctrl.query.page, sort_by, sort_direction
+                    ).then(function (response) {
+                        ctrl.tickets = [];
+                        angular.forEach(response.data.tickets, function (ticket) {
+                            ctrl.tickets.push(ticket);
+                        });
+                        ctrl.tickets.total_count = response.data.total_count;
                     });
-                    ctrl.tickets.total_count = response.data.total_count;
-                });
-            };
-            ctrl.getTickets();
-        }])
+                };
+                ctrl.getTickets();
+            }
+        ])
 
         .controller("viewTicketController",
             ["$sdTickets", "$sdStatuses", "$sdDepartments", "$state", "$stateParams", "$mdDialog", "$sdAlert",

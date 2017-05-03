@@ -48,26 +48,26 @@ final class JwtSessionStorage implements SessionStorageInterface
      * Parses the given JWT and returns any verified & validated claims, or
      * null when nothing did.
      */
-    public function load(string $sessionData) : ?SessionInterface
+    public function load(string $sessionData) : SessionInterface
     {
-        // Attempt to parse the Token, fail when it won't parse
+        // Attempt to parse the Token, return empty session when that fails
         try {
             $token = (new Parser())->parse($sessionData);
         } catch (\Throwable $exception) {
-            return null;
+            return new Session();
         }
 
-        // Check signature
+        // Check signature, return empty session when it's not valid
         if (!$token->verify($this->jwtSigner, $this->jwtKey)) {
-            return null;
+            return new Session();
         }
 
-        // Check claims
+        // Check claims, reject & return empty session when that fails
         $validation = new ValidationData();
         $validation->setIssuer($this->siteUrl);
         $validation->setAudience($this->siteUrl);
         if (!$token->validate($validation)) {
-            return null;
+            return new Session();
         }
 
         $data = $token->getClaims();

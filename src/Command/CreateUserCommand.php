@@ -35,6 +35,12 @@ class CreateUserCommand extends Command
                 'display_name',
                 InputArgument::REQUIRED,
                 'The name for the user which is displayed on the frontend'
+            )
+            ->addArgument(
+                'role',
+                InputArgument::OPTIONAL,
+                'The new user\'s role',
+                'admin'
             );
     }
 
@@ -43,7 +49,8 @@ class CreateUserCommand extends Command
         $this->authenticationService->createUser(
             $input->getArgument('email'),
             $input->getArgument('display_name'),
-            $input->getArgument('password')
+            $input->getArgument('password'),
+            $input->getArgument('role')
         );
     }
 }

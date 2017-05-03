@@ -28,6 +28,7 @@ class UserGetAllController implements ControllerInterface
                 return [
                     'email' => $user->getEmail()->toString(),
                     'display_name' => $user->getDisplayName(),
+                    'role' => $user->getRole()->getName(),
                     'active' => $user->isActive(),
                 ];
             }, $users->toArray())

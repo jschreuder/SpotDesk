@@ -57,6 +57,7 @@ class UserGetOneController implements ControllerInterface, RequestFilterInterfac
             'user' => [
                 'email' => $user->getEmail()->toString(),
                 'display_name' => $user->getDisplayName(),
+                'role' => $user->getRole()->getName(),
                 'active' => $user->isActive(),
             ],
             'departments' => array_map(function (Department $department) : array {

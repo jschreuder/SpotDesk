@@ -14,7 +14,7 @@ interface SessionStorageInterface
     /**
      * Load session based on sessionData
      */
-    public function load(string $sessionData) : ?SessionInterface;
+    public function load(string $sessionData) : SessionInterface;
 
     /**
      * Returns if the session is within the given timeframe of expiration, in

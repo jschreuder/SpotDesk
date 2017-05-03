@@ -145,10 +145,10 @@ class MainRoutingProvider implements RoutingProviderInterface
             );
         });
         $router->post('users.create', '/users', function () {
-            return new UserCreateController($this->container['service.authentication']);
+            return new UserCreateController($this->container['service.authentication'], $this->container['rbac']);
         });
         $router->put('users.update', '/users/{email}', function () {
-            return new UserUpdateController($this->container['repository.users']);
+            return new UserUpdateController($this->container['repository.users'], $this->container['rbac']);
         });
         $router->put('users.departments', '/users/{email}/departments', function () {
             return new UserUpdateDepartmentsController(

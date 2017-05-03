@@ -37,7 +37,7 @@
 
             <span class="md-headline">{{ ctrl.user.display_name }}</span>
             <span class="md-subhead description">
-                E-mail: {{ ctrl.user.email }}
+                E-mail: {{ ctrl.user.email }} | Role: {{ ctrl.user.role }}
             </span>
         </md-card-title-text>
     </md-card-title>
@@ -105,6 +105,11 @@
                         <md-input-container class="md-block">
                             <label for="display_name">Display name</label>
                             <input id="display_name" ng-model="ctrl.user.display_name" type="text">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="role">Role</label>
+                            <input id="role" ng-model="ctrl.user.role" type="text" readonly>
                         </md-input-container>
 
                         <md-input-container class="md-block">

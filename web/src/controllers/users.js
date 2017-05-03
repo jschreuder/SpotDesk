@@ -25,7 +25,8 @@
                     ctrl.user = {
                         email: null,
                         display_name: null,
-                        password: null
+                        password: null,
+                        role: "admin"
                     };
                     $mdDialog.show({
                         contentElement: "#createUser",
@@ -38,7 +39,7 @@
                 };
                 ctrl.submitUser = function () {
                     $sdUsers.create(
-                        ctrl.user.email, ctrl.user.display_name, ctrl.user.password
+                        ctrl.user.email, ctrl.user.display_name, ctrl.user.password, ctrl.user.role
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchUsers();
@@ -85,7 +86,7 @@
                 };
                 ctrl.submitEditUser = function () {
                     $sdUsers.update(
-                        ctrl.user.email, ctrl.user.display_name, ctrl.user.active
+                        ctrl.user.email, ctrl.user.display_name, ctrl.user.role, ctrl.user.active
                     ).then(function () {
                         $mdDialog.hide();
                         ctrl.fetchUser();

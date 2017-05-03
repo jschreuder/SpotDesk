@@ -5,6 +5,7 @@
             <tr md-row>
                 <th md-column md-order-by="email"><span>E-mail</span></th>
                 <th md-column md-order-by="display_name"><span>Display name</span></th>
+                <th md-column md-order-by="role"><span>Role</span></th>
             </tr>
             </thead>
             <tbody md-body>
@@ -16,6 +17,9 @@
                 </td>
                 <td md-cell>
                     {{ u.display_name }}
+                </td>
+                <td md-cell>
+                    {{ u.role }}
                 </td>
             </tr>
             </tbody>
@@ -51,6 +55,11 @@
                         <md-input-container class="md-block">
                             <label for="user_pass">Password</label>
                             <input id="user_pass" ng-model="ctrl.user.password" type="password">
+                        </md-input-container>
+
+                        <md-input-container class="md-block">
+                            <label for="role">Role</label>
+                            <input id="role" ng-model="ctrl.user.role" type="text" readonly>
                         </md-input-container>
                     </div>
                 </md-dialog-content>

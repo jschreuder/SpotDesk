@@ -12,17 +12,19 @@
                     return $http.get("/users/" + btoa(email));
                 },
 
-                create: function (email, display_name, password) {
+                create: function (email, display_name, password, role) {
                     return $http.post("/users", {
                         email: email,
                         display_name: display_name,
-                        password: $sdHash(password)
+                        password: $sdHash(password),
+                        role: role
                     });
                 },
 
-                update: function (email, display_name, active) {
+                update: function (email, display_name, role, active) {
                     return $http.put("/users/" + btoa(email), {
                         display_name: display_name,
+                        role: role,
                         active: active
                     });
                 },

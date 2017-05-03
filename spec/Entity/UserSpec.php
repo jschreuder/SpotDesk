@@ -5,6 +5,7 @@ namespace spec\jschreuder\SpotDesk\Entity;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
+use Zend\Permissions\Rbac\RoleInterface;
 
 class UserSpec extends ObjectBehavior
 {
@@ -17,15 +18,19 @@ class UserSpec extends ObjectBehavior
     /** @var  string */
     private $password;
 
+    /** @var  RoleInterface */
+    private $role;
+
     /** @var  bool */
     private $active;
 
-    public function let() : void
+    public function let(RoleInterface $role) : void
     {
         $this->beConstructedWith(
             $this->email = EmailAddressValue::get('another@address.email'),
             $this->displayName = 'Display Moi',
             $this->password = password_hash('my-super-duper-secret-phrase', PASSWORD_DEFAULT),
+            $this->role = $role,
             $this->active = true
         );
     }
@@ -40,16 +45,17 @@ class UserSpec extends ObjectBehavior
         $this->getEmail()->shouldReturn($this->email);
         $this->getDisplayName()->shouldReturn($this->displayName);
         $this->getPassword()->shouldReturn($this->password);
+        $this->getRole()->shouldReturn($this->role);
         $this->isActive()->shouldBe(true);
     }
 
     public function it_can_instantiate_without_setting_user_active() : void
     {
-        $this->beConstructedWith($this->email, $this->displayName, $this->password);
+        $this->beConstructedWith($this->email, $this->displayName, $this->password, $this->role);
         $this->isActive()->shouldBe(true);
     }
 
-    public function it_can_change_some_properties() : void
+    public function it_can_change_some_properties(RoleInterface $role) : void
     {
         $displayName = 'MyNickname';
         $this->setDisplayName($displayName);
@@ -58,6 +64,9 @@ class UserSpec extends ObjectBehavior
         $password = password_hash('new-pass', PASSWORD_DEFAULT);
         $this->setPassword($password);
         $this->getPassword()->shouldBe($password);
+
+        $this->setRole($role);
+        $this->getRole()->shouldBe($role);
 
         $this->setActive(false);
         $this->isActive()->shouldBe(false);

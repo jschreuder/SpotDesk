@@ -12,11 +12,16 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Permissions\Rbac\Rbac;
+use Zend\Permissions\Rbac\RoleInterface;
 
 class AuthenticationServiceSpec extends ObjectBehavior
 {
     /** @var  UserRepository */
     private $userRepository;
+
+    /** @var  Rbac */
+    private $rbac;
 
     /** @var  int */
     private $passwordAlgorithm;
@@ -33,10 +38,11 @@ class AuthenticationServiceSpec extends ObjectBehavior
     /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
     private $sessionRefreshAfter;
 
-    public function let(UserRepository $userRepository, SessionStorageInterface $sessionStorage) : void
+    public function let(UserRepository $userRepository, Rbac $rbac, SessionStorageInterface $sessionStorage) : void
     {
         $this->beConstructedWith(
             $this->userRepository = $userRepository,
+            $this->rbac = $rbac,
             $this->passwordAlgorithm = PASSWORD_BCRYPT,
             $this->passwordOptions = ['cost' => 8],
             $this->sessionStorage = $sessionStorage,
@@ -50,15 +56,17 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->shouldHaveType(AuthenticationService::class);
     }
 
-    public function it_can_create_a_user() : void
+    public function it_can_create_a_user(RoleInterface $role) : void
     {
         $userMail = 'user@test.dev';
         $displayName = 'Username';
         $password = 'my-secret';
+        $roleName = 'user';
 
+        $this->rbac->getRole($roleName)->willReturn($role);
         $this->userRepository->createUser(new Argument\Token\TypeToken(User::class));
 
-        $this->createUser($userMail, $displayName, $password);
+        $this->createUser($userMail, $displayName, $password, $roleName);
     }
 
     public function it_can_change_a_user_password(User $user)
@@ -183,20 +191,12 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->getSession($request)->shouldReturn($session);
     }
 
-    public function it_returns_empty_when_there_is_no_session_data(ServerRequestInterface $request) : void
+    public function it_returns_empty_session_when_there_is_no_session_data(ServerRequestInterface $request) : void
     {
         $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn(null);
-        $this->getSession($request)->shouldReturn(null);
-    }
-
-    public function it_returns_empty_when_there_is_no_valid_session(ServerRequestInterface $request) : void
-    {
-        $sessionData = 'nope';
-        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
-
-        $this->sessionStorage->load($sessionData)->willReturn(null);
-
-        $this->getSession($request)->shouldReturn(null);
+        $session = $this->getSession($request);
+        $session->shouldBeAnInstanceOf(SessionInterface::class);
+        $session->isEmpty()->shouldBe(true);
     }
 
     public function it_can_attach_a_session_to_response(

@@ -44,9 +44,11 @@ class JwtSessionStorageSpec extends ObjectBehavior
         $session->get('user')->shouldBe($user);
     }
 
-    public function it_returns_null_when_loading_bogus_session() : void
+    public function it_returns_empty_session_when_loading_bogus_session() : void
     {
-        $this->load('bogus')->shouldBeNull();
+        $session = $this->load('bogus');
+        $session->shouldBeAnInstanceOf(SessionInterface::class);
+        $session->isEmpty()->shouldBe(true);
     }
 
     // @todo add specs for invalid signature and non-matching claims

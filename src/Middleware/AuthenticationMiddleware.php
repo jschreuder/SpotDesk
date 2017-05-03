@@ -4,7 +4,10 @@ namespace jschreuder\SpotDesk\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use jschreuder\SpotDesk\Entity\GuestUser;
+use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -14,31 +17,40 @@ final class AuthenticationMiddleware implements MiddlewareInterface
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    /** @var  UserRepository */
+    private $userRepository;
+
+    public function __construct(AuthenticationServiceInterface $authenticationService, UserRepository $userRepository)
     {
         $this->authenticationService = $authenticationService;
+        $this->userRepository = $userRepository;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
-        // Allow site template without auth
-        if ($request->getMethod() === 'GET' && trim($request->getUri()->getPath(), '/') === '') {
-            return $delegate->process($request);
-        }
         // Respond to login attempt
         if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {
             $body = (array) $request->getParsedBody();
             return $this->authenticationService->login($body['user'] ?? '', $body['pass'] ?? '');
         }
 
-        // Check login status
+        // Create user object from session or generate guest user
         $session = $this->authenticationService->getSession($request);
-        if (is_null($session)) {
-            return new JsonResponse(['message' => 'Unauthorized'], 401);
+        try {
+            $userEmail = EmailAddressValue::get(strval($session->get('user')));
+            $user = $this->userRepository->getUserByEmail($userEmail);
+            if (!$user->isActive()) {
+                throw new \OutOfBoundsException('Inactive user');
+            }
+        } catch (\DomainException | \OutOfBoundsException $exception) {
+            $user = new GuestUser();
         }
 
-        // Check if session needs refresh, will add new session ID to response when it does
-        $response = $delegate->process($request->withAttribute('session', $session));
+        // Process request with session and user attributes added
+        $response = $delegate->process(
+            $request->withAttribute('session', $session)->withAttribute('user', $user)
+        );
+        // Attaches session refresh if necessary
         return $this->authenticationService->attachSession($response, $session);
     }
 }

@@ -14,6 +14,7 @@ use jschreuder\Middle\ServerMiddleware\RequestFilterMiddleware;
 use jschreuder\Middle\ServerMiddleware\RequestValidatorMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
+use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Middleware\SecurityHeadersMiddleware;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
@@ -34,6 +35,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Permissions\Rbac\Rbac;
+use Zend\Permissions\Rbac\Role;
 
 class MainServiceProvider implements ServiceProviderInterface
 {
@@ -44,7 +47,8 @@ class MainServiceProvider implements ServiceProviderInterface
                 new ControllerRunner(),
                 new RequestValidatorMiddleware($container['requestValidator.errorHandler']),
                 new RequestFilterMiddleware(),
-                new AuthenticationMiddleware($container['service.authentication']),
+                new AuthorizationMiddleware($container['rbac']),
+                new AuthenticationMiddleware($container['service.authentication'], $container['repository.users']),
                 new JsonRequestParserMiddleware(),
                 new RoutingMiddleware(
                     $container['app.router'],
@@ -97,7 +101,7 @@ class MainServiceProvider implements ServiceProviderInterface
             ], 400);
         });
 
-        $container['db'] = function (Container $container) {
+        $container['db'] = function () use ($container) {
             return new \PDO(
                 $container['db.dsn'] . ';dbname=' . $container['db.dbname'],
                 $container['db.user'],
@@ -107,6 +111,13 @@ class MainServiceProvider implements ServiceProviderInterface
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 ]
             );
+        };
+
+        $container['rbac'] = function () {
+            $rbac = new Rbac();
+            $rbac->addRole((new Role('admin'))->addPermission('all'));
+            $rbac->addRole((new Role('guest'))->addPermission('public'));
+            return $rbac;
         };
 
         $container['site.template'] = $container->protect(function () use ($container): ResponseInterface {
@@ -157,6 +168,7 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['service.authentication'] = function () use ($container) {
             return new AuthenticationService(
                 $container['repository.users'],
+                $container['rbac'],
                 $container['password.algo'],
                 $container['password.options'],
                 $container['session.storage'],
@@ -176,7 +188,7 @@ class MainServiceProvider implements ServiceProviderInterface
         };
 
         $container['repository.users'] = function () use ($container) {
-            return new UserRepository($container['db']);
+            return new UserRepository($container['db'], $container['rbac']);
         };
 
         $container['repository.tickets'] = function () use ($container) {

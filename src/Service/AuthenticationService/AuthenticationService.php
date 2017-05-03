@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
+use jschreuder\Middle\Session\Session;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
@@ -9,6 +10,7 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
+use Zend\Permissions\Rbac\Rbac;
 
 final class AuthenticationService implements AuthenticationServiceInterface
 {
@@ -16,6 +18,9 @@ final class AuthenticationService implements AuthenticationServiceInterface
 
     /** @var  UserRepository */
     private $userRepository;
+
+    /** @var  Rbac */
+    private $rbac;
 
     /** @var  int */
     private $passwordAlgorithm;
@@ -34,6 +39,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
 
     public function __construct(
         UserRepository $userRepository,
+        Rbac $rbac,
         int $passwordAlgorithm,
         array $passwordOptions,
         SessionStorageInterface $sessionStorage,
@@ -41,6 +47,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
         float $sessionRefreshAfter = .5
     ) {
         $this->userRepository = $userRepository;
+        $this->rbac = $rbac;
         $this->passwordAlgorithm = $passwordAlgorithm;
         $this->passwordOptions = $passwordOptions;
         $this->sessionStorage = $sessionStorage;
@@ -53,12 +60,13 @@ final class AuthenticationService implements AuthenticationServiceInterface
         return password_hash($password, $this->passwordAlgorithm, $this->passwordOptions);
     }
 
-    public function createUser(string $email, string $displayName, string $password) : User
+    public function createUser(string $email, string $displayName, string $password, string $roleName) : User
     {
         $user = new User(
             EmailAddressValue::get($email),
             $displayName,
-            $this->hashPassword($password)
+            $this->hashPassword($password),
+            $this->rbac->getRole($roleName)
         );
         $this->userRepository->createUser($user);
         return $user;
@@ -99,11 +107,11 @@ final class AuthenticationService implements AuthenticationServiceInterface
         ]);
     }
 
-    public function getSession(ServerRequestInterface $request) : ?SessionInterface
+    public function getSession(ServerRequestInterface $request) : SessionInterface
     {
         $sessionId = $request->getHeaderLine(self::AUTHORIZATION_HEADER);
         if (!$sessionId) {
-            return null;
+            return new Session();
         }
 
         return $this->sessionStorage->load($sessionId);
@@ -111,12 +119,14 @@ final class AuthenticationService implements AuthenticationServiceInterface
 
     public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface
     {
+        if (!$session->get('user')) {
+            return $response;
+        }
+
         $refreshTimeframe = intval($this->sessionDuration * $this->sessionRefreshAfter);
         if (!$this->sessionStorage->needsRefresh($session, $refreshTimeframe)) {
             return $response;
         };
-
-        // @todo verify if user has been deactivated when doing a session refresh
 
         return $response->withHeader(
             self::AUTHORIZATION_HEADER,

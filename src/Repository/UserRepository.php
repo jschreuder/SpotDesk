@@ -6,27 +6,33 @@ use jschreuder\SpotDesk\Collection\UserCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Zend\Permissions\Rbac\Rbac;
 
 class UserRepository
 {
     /** @var  \PDO */
     private $db;
 
-    public function __construct(\PDO $db)
+    /** @var  Rbac */
+    private $rbac;
+
+    public function __construct(\PDO $db, Rbac $rbac)
     {
         $this->db = $db;
+        $this->rbac = $rbac;
     }
 
     public function createUser(User $user) : void
     {
         $query = $this->db->prepare("
-            INSERT INTO `users` (`email`, `display_name`, `password`, `active`)
-            VALUES (:email, :display_name, :password, TRUE)
+            INSERT INTO `users` (`email`, `display_name`, `password`, `role`, `active`)
+            VALUES (:email, :display_name, :password, :role, TRUE)
         ");
         $query->execute([
             'email' => $user->getEmail()->toString(),
             'display_name' => $user->getDisplayName(),
             'password' => $user->getPassword(),
+            'role' => $user->getRole()->getName(),
         ]);
     }
 
@@ -36,6 +42,7 @@ class UserRepository
             EmailAddressValue::get($row['email']),
             $row['display_name'],
             $row['password'],
+            $this->rbac->getRole($row['role']),
             boolval($row['active'])
         );
     }
@@ -83,12 +90,13 @@ class UserRepository
     {
         $query = $this->db->prepare("
             UPDATE `users`
-            SET `display_name` = :display_name, active = :active
+            SET `display_name` = :display_name, role = :role, active = :active
             WHERE `email` = :email
         ");
         $query->execute([
             'display_name' => $user->getDisplayName(),
             'email' => $user->getEmail()->toString(),
+            'role' => $user->getRole()->getName(),
             'active' => intval($user->isActive()),
         ]);
 

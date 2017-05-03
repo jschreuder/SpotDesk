@@ -12,7 +12,7 @@ interface AuthenticationServiceInterface
     /**
      * Creates a new user, stores it in the database and returns it.
      */
-    public function createUser(string $email, string $displayName, string $password) : User;
+    public function createUser(string $email, string $displayName, string $password, string $roleName) : User;
 
     /**
      * Modifies the given user's password
@@ -33,7 +33,7 @@ interface AuthenticationServiceInterface
      * Returns Session object if the session ID found in the $authorizationHeader is valid,
      * null otherwise.
      */
-    public function getSession(ServerRequestInterface $request) : ?SessionInterface;
+    public function getSession(ServerRequestInterface $request) : SessionInterface;
 
     /**
      * Adds a session ID to the response if it is new or requires a refresh,

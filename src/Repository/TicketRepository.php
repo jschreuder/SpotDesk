@@ -316,12 +316,37 @@ class TicketRepository
         return $updateCollection;
     }
 
+    public function createTicketSubscription(
+        Ticket $ticket,
+        EmailAddressValue $email,
+        bool $internal
+    ) : TicketSubscription
+    {
+        $subscription = new TicketSubscription(Uuid::uuid4(), $ticket, $email, $internal);
+
+        $query = $this->db->prepare("
+            INSERT INTO `ticket_subscriptions`
+                (`ticket_subscription_id`, `ticket_id`, `email`, `internal`)
+            VALUES
+                (:ticket_subscription_id, :ticket_id, :email, :internal)
+        ");
+        $query->execute([
+            'ticket_subscription_id' => $subscription->getId()->getBytes(),
+            'ticket_id' => $subscription->getTicket()->getId()->getBytes(),
+            'email' => $subscription->getEmail()->toString(),
+            'internal' => intval($internal),
+        ]);
+
+        return $subscription;
+    }
+
     private function arrayToTicketSubscription(array $row, Ticket $ticket) : TicketSubscription
     {
         return new TicketSubscription(
             Uuid::fromBytes($row['ticket_subscription_id']),
             $ticket,
-            EmailAddressValue::get($row['email'])
+            EmailAddressValue::get($row['email']),
+            boolval($row['internal'])
         );
     }
 
@@ -337,6 +362,16 @@ class TicketRepository
             $subscriptionCollection->push($this->arrayToTicketSubscription($row, $ticket));
         }
         return $subscriptionCollection;
+    }
+
+    public function deleteTicketSubscription(TicketSubscription $subscription) : void
+    {
+        $query = $this->db->prepare("
+            DELETE FROM `ticket_subscriptions` WHERE `ticket_subscription_id` = :ticket_subscription_id
+        ");
+        $query->execute([
+            'ticket_subscription_id' => $subscription->getId()->getBytes(),
+        ]);
     }
 
     public function isDuplicate(

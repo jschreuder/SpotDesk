@@ -4,6 +4,7 @@ namespace spec\jschreuder\SpotDesk\Collection;
 
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Ramsey\Uuid\Uuid;
 
@@ -126,5 +127,30 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
     {
         $this->shouldThrow(\RuntimeException::class)->duringOffsetSet('key', $ticketSubscription);
         $this->shouldThrow(\RuntimeException::class)->duringOffsetUnset('key');
+    }
+
+    public function it_can_retrieve_subscription_from_collection_by_email_address(
+        TicketSubscription $ticketSubscription1,
+        TicketSubscription $ticketSubscription2,
+        TicketSubscription $ticketSubscription3
+    ) : void
+    {
+        $ticketSubscription1->getId()->willReturn(Uuid::uuid4());
+        $email1 = EmailAddressValue::get('one@domain.dev');
+        $ticketSubscription1->getEmail()->willReturn($email1);
+
+        $ticketSubscription2->getId()->willReturn(Uuid::uuid4());
+        $email2 = EmailAddressValue::get('two@domain.dev');
+        $ticketSubscription2->getEmail()->willReturn($email2);
+
+        $ticketSubscription3->getId()->willReturn(Uuid::uuid4());
+        $email3 = EmailAddressValue::get('three@domain.dev');
+        $ticketSubscription3->getEmail()->willReturn($email3);
+
+        $this->beConstructedWith($ticketSubscription1, $ticketSubscription2, $ticketSubscription3);
+
+        $this->getByEmailAddress($email2)->shouldReturn($ticketSubscription2);
+        $this->getByEmailAddress($email3)->shouldReturn($ticketSubscription3);
+        $this->getByEmailAddress($email1)->shouldReturn($ticketSubscription1);
     }
 }

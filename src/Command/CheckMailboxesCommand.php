@@ -148,12 +148,19 @@ class CheckMailboxesCommand extends Command
             return null;
         }
 
-        // Only count as reply when sender matches either the original poster or a known user,
-        // otherwise process as new ticket.
-        if (!$ticket->getEmail()->isEqual($fromEmailAddress) && !$this->isUser($fromEmailAddress)) {
-            return null;
+        // Count as reply when sender matches either the original poster or a known user
+        if ($ticket->getEmail()->isEqual($fromEmailAddress) || $this->isUser($fromEmailAddress)) {
+            return $ticket;
         }
-        return $ticket;
+
+        // If it's neither, check if it's a ticket subscriber and allow if it is
+        $subscriptions = $this->ticketRepository->getTicketSubscriptions($ticket);
+        if (!is_null($subscriptions->getByEmailAddress($fromEmailAddress))) {
+            return $ticket;
+        }
+
+        // None of the above? Not allowed to update the ticket, thus create a new one
+        return null;
     }
 
     private function processTicket(

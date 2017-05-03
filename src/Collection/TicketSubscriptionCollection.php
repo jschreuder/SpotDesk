@@ -3,6 +3,7 @@
 namespace jschreuder\SpotDesk\Collection;
 
 use jschreuder\SpotDesk\Entity\TicketSubscription;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 
 class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterator
 {
@@ -31,5 +32,17 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
             throw new \OutOfBoundsException('No such status: ' . $ticketSubscriptionId);
         }
         return $this->collection[$ticketSubscriptionId];
+    }
+
+    public function getByEmailAddress(EmailAddressValue $email) : ?TicketSubscription
+    {
+        /** @var  TicketSubscription[] $subscriptions */
+        $subscriptions = $this->toArray();
+        foreach ($subscriptions as $subscription) {
+            if ($subscription->getEmail()->isEqual($email)) {
+                return $subscription;
+            }
+        }
+        return null;
     }
 }

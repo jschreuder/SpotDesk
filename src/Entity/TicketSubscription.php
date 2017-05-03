@@ -16,11 +16,15 @@ class TicketSubscription
     /** @var  EmailAddressValue */
     private $email;
 
-    public function __construct(UuidInterface $id, Ticket $ticket, EmailAddressValue $email)
+    /** @var  bool */
+    private $internal;
+
+    public function __construct(UuidInterface $id, Ticket $ticket, EmailAddressValue $email, bool $internal)
     {
         $this->id = $id;
         $this->ticket = $ticket;
         $this->email = $email;
+        $this->internal = $internal;
     }
 
     public function getId() : UuidInterface
@@ -36,5 +40,10 @@ class TicketSubscription
     public function getEmail() : EmailAddressValue
     {
         return $this->email;
+    }
+
+    public function getInternal() : bool
+    {
+        return $this->internal;
     }
 }

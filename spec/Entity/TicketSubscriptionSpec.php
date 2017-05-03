@@ -19,12 +19,16 @@ class TicketSubscriptionSpec extends ObjectBehavior
     /** @var  EmailAddressValue */
     private $email;
 
+    /** @var  bool */
+    private $internal;
+
     public function let(UuidInterface $id, Ticket $ticket) : void
     {
         $this->beConstructedWith(
             $this->id = $id,
             $this->ticket = $ticket,
-            $this->email = EmailAddressValue::get('some@address.to')
+            $this->email = EmailAddressValue::get('some@address.to'),
+            $this->internal = false
         );
     }
 
@@ -38,5 +42,6 @@ class TicketSubscriptionSpec extends ObjectBehavior
         $this->getId()->shouldReturn($this->id);
         $this->getTicket()->shouldReturn($this->ticket);
         $this->getEmail()->shouldReturn($this->email);
+        $this->getInternal()->shouldReturn($this->internal);
     }
 }

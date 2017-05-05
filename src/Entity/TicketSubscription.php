@@ -18,13 +18,17 @@ class TicketSubscription
 
     /** @var  bool */
     private $internal;
+    
+    /** @var  bool */
+    private $sendNotifications;
 
-    public function __construct(UuidInterface $id, Ticket $ticket, EmailAddressValue $email, bool $internal)
+    public function __construct(UuidInterface $id, Ticket $ticket, EmailAddressValue $email, bool $internal, bool $sendNotifications)
     {
         $this->id = $id;
         $this->ticket = $ticket;
         $this->email = $email;
         $this->internal = $internal;
+        $this->sendNotifications = $sendNotifications;
     }
 
     public function getId() : UuidInterface
@@ -41,9 +45,24 @@ class TicketSubscription
     {
         return $this->email;
     }
+    
+    public function setInternal(bool $internal) : void
+    {
+        $this->internal = $internal;
+    }
 
-    public function getInternal() : bool
+    public function isInternal() : bool
     {
         return $this->internal;
+    }
+    
+    public function setSendNotifications(bool $sendNotifications) : void
+    {
+        $this->sendNotifications = $sendNotifications;
+    }
+
+    public function sendNotifications() : bool
+    {
+        return $this->sendNotifications;
     }
 }

@@ -21,6 +21,9 @@ class TicketSubscriptionSpec extends ObjectBehavior
 
     /** @var  bool */
     private $internal;
+    
+    /** @var  bool */
+    private $sendNotifications;
 
     public function let(UuidInterface $id, Ticket $ticket) : void
     {
@@ -28,7 +31,8 @@ class TicketSubscriptionSpec extends ObjectBehavior
             $this->id = $id,
             $this->ticket = $ticket,
             $this->email = EmailAddressValue::get('some@address.to'),
-            $this->internal = false
+            $this->internal = false,
+            $this->sendNotifications = true
         );
     }
 
@@ -42,6 +46,16 @@ class TicketSubscriptionSpec extends ObjectBehavior
         $this->getId()->shouldReturn($this->id);
         $this->getTicket()->shouldReturn($this->ticket);
         $this->getEmail()->shouldReturn($this->email);
-        $this->getInternal()->shouldReturn($this->internal);
+        $this->isInternal()->shouldReturn($this->internal);
+        $this->sendNotifications()->shouldReturn($this->sendNotifications);
+    }
+    
+    public function it_can_change_some_properties() : void
+    {
+        $this->setInternal(true);
+        $this->isInternal()->shouldBe(true);
+        
+        $this->setSendNotifications(false);
+        $this->sendNotifications()->shouldBe(false);
     }
 }

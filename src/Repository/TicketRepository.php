@@ -319,10 +319,11 @@ class TicketRepository
     public function createTicketSubscription(
         Ticket $ticket,
         EmailAddressValue $email,
-        bool $internal
+        bool $internal,
+        bool $sendNotifications
     ) : TicketSubscription
     {
-        $subscription = new TicketSubscription(Uuid::uuid4(), $ticket, $email, $internal);
+        $subscription = new TicketSubscription(Uuid::uuid4(), $ticket, $email, $internal, $sendNotifications);
 
         $query = $this->db->prepare("
             INSERT INTO `ticket_subscriptions`
@@ -346,7 +347,8 @@ class TicketRepository
             Uuid::fromBytes($row['ticket_subscription_id']),
             $ticket,
             EmailAddressValue::get($row['email']),
-            boolval($row['internal'])
+            boolval($row['internal']),
+            boolval($row['send_notifications'])
         );
     }
 

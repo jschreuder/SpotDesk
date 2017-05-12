@@ -51,7 +51,19 @@ class JwtSessionStorageSpec extends ObjectBehavior
         $session->isEmpty()->shouldBe(true);
     }
 
-    // @todo add specs for invalid signature and non-matching claims
+    public function it_returns_empty_session_on_invalid_signature() : void
+    {
+        $user = 'user@id.me';
+
+        $token = $this->create(['user' => $user], 1800);
+        $token = substr($token->getWrappedObject(), 0, -3);
+
+        $session = $this->load($token);
+        $session->shouldBeAnInstanceOf(SessionInterface::class);
+        $session->isEmpty()->shouldBe(true);
+    }
+
+    // @todo add specs for non-matching claims
 
     public function it_can_tell_when_session_needs_a_refresh_due_to_changes(SessionInterface $session) : void
     {

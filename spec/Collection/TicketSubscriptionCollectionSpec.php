@@ -153,4 +153,11 @@ class TicketSubscriptionCollectionSpec extends ObjectBehavior
         $this->getByEmailAddress($email3)->shouldReturn($ticketSubscription3);
         $this->getByEmailAddress($email1)->shouldReturn($ticketSubscription1);
     }
+
+    public function it_throws_exception_when_fetching_by_non_existent_email_address() : void
+    {
+        $this->beConstructedWith();
+        $this->shouldThrow(\OutOfBoundsException::class)
+            ->duringGetByEmailAddress(EmailAddressValue::get('one@domain.dev'));
+    }
 }

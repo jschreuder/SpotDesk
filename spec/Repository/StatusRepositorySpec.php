@@ -23,7 +23,7 @@ class StatusRepositorySpec extends ObjectBehavior
         $this->shouldHaveType(StatusRepository::class);
     }
 
-    public function it_can_get_a_status(\PDOStatement $statement)
+    public function it_can_get_a_status(\PDOStatement $statement) : void
     {
         $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
         $statement->execute()->shouldBeCalled();
@@ -41,5 +41,14 @@ class StatusRepositorySpec extends ObjectBehavior
         $status = $this->getStatus('Awaiting client');
         $status->getName()->shouldBe('Awaiting client');
         $status->getType()->toString()->shouldBe('paused');
+    }
+
+    public function it_throws_exception_on_invalid_status(\PDOStatement $statement) : void
+    {
+        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $statement->execute()->shouldBeCalled();
+        $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(null);
+
+        $this->shouldThrow(\OutOfBoundsException::class)->duringGetStatus('Open');
     }
 }

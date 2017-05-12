@@ -9,7 +9,6 @@ use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Psr\Http\Message\ResponseInterface;
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\RoleInterface;
 
@@ -55,6 +54,13 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->createUser($userMail, $displayName, $password, $roleName);
     }
 
+    public function it_can_fetch_a_user(User $user) : void
+    {
+        $emailAddress = 'user@test.dev';
+        $this->userRepository->getUserByEmail(EmailAddressValue::get($emailAddress))->willReturn($user);
+        $this->fetchUser($emailAddress)->shouldReturn($user);
+    }
+
     public function it_can_change_a_user_password(User $user)
     {
         $this->userRepository->updatePassword($user, new Argument\Token\TypeToken('string'))->shouldBeCalled();
@@ -73,7 +79,6 @@ class AuthenticationServiceSpec extends ObjectBehavior
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
-        $sessionToken = 'session-token';
         $user->getEmail()->willReturn(EmailAddressValue::get($userMail));
         $user->getPassword()->willReturn(password_hash(
             $password,

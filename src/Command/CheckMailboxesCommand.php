@@ -155,12 +155,13 @@ class CheckMailboxesCommand extends Command
 
         // If it's neither, check if it's a ticket subscriber and allow if it is
         $subscriptions = $this->ticketRepository->getTicketSubscriptions($ticket);
-        if (!is_null($subscriptions->getByEmailAddress($fromEmailAddress))) {
+        try {
+            $subscriptions->getByEmailAddress($fromEmailAddress);
             return $ticket;
+        } catch (\OutOfBoundsException $exception) {
+            // All failed. Not allowed to update the ticket, thus create a new one
+            return null;
         }
-
-        // None of the above? Not allowed to update the ticket, thus create a new one
-        return null;
     }
 
     private function processTicket(

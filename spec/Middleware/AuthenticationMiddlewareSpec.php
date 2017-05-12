@@ -56,6 +56,29 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $response->getStatusCode()->shouldBe(201);
     }
 
+    public function it_can_handle_a_failed_login(
+        ServerRequestInterface $request,
+        UriInterface $uri,
+        DelegateInterface $delegate,
+        SessionInterface $session
+    ) : void
+    {
+        $username = 'user@name.email';
+        $password = 'i-ll-never-tell';
+
+        $request->getMethod()->willReturn('POST');
+        $request->getUri()->willReturn($uri);
+        $uri->getPath()->willReturn('/login');
+        $request->getParsedBody()->willReturn(['user' => $username, 'pass' => $password]);
+        $request->getAttribute('session')->willReturn($session);
+
+        $this->authenticationService->login($username, $password, $session)->willReturn(false);
+
+        $response = $this->process($request, $delegate);
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(401);
+    }
+
     public function it_creates_guest_user_and_empty_session_when_not_logged_in(
         ServerRequestInterface $request1,
         ServerRequestInterface $request2,

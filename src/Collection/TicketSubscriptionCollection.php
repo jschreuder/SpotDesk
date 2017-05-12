@@ -43,6 +43,6 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
                 return $subscription;
             }
         }
-        return null;
+        throw new \OutOfBoundsException('E-mail address not in collection: ' . $email->toString());
     }
 }

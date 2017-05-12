@@ -20,7 +20,7 @@
                     }
 
                     // Check cookie for persisted login status
-                    var cookieToken = $cookies.get("spotdesk-authorization");
+                    var cookieToken = $cookies.get("spotdesk-session");
                     if (cookieToken) {
                         srvc.persistToken = true;
                         srvc.token = cookieToken;
@@ -34,9 +34,9 @@
                 srvc.updateToken = function (token) {
                     srvc.token = token;
                     if (srvc.persistToken) {
-                        $cookies.put("spotdesk-authorization", token);
+                        $cookies.put("spotdesk-session", token);
                     } else {
-                        $cookies.remove("spotdesk-authorization");
+                        $cookies.remove("spotdesk-session");
                     }
                 };
 
@@ -90,13 +90,13 @@
                         return config;
                     }
 
-                    config.headers["SpotDesk-Authorization"] = interceptor.$auth.token;
+                    config.headers["SpotDesk-Session"] = interceptor.$auth.token;
                     return config;
                 },
 
                 response: function (response) {
-                    if (interceptor.$auth && response.headers("SpotDesk-Authorization")) {
-                        interceptor.$auth.updateToken(response.headers("SpotDesk-Authorization"));
+                    if (interceptor.$auth && response.headers("SpotDesk-Session")) {
+                        interceptor.$auth.updateToken(response.headers("SpotDesk-Session"));
                     }
                     return response;
                 },

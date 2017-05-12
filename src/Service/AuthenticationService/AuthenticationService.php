@@ -2,14 +2,10 @@
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
-use jschreuder\Middle\Session\Session;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 use Zend\Permissions\Rbac\Rbac;
 
 final class AuthenticationService implements AuthenticationServiceInterface
@@ -28,31 +24,16 @@ final class AuthenticationService implements AuthenticationServiceInterface
     /** @var  array */
     private $passwordOptions;
 
-    /** @var  SessionStorageInterface */
-    private $sessionStorage;
-
-    /** @var  int */
-    private $sessionDuration;
-
-    /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
-    private $sessionRefreshAfter;
-
     public function __construct(
         UserRepository $userRepository,
         Rbac $rbac,
         int $passwordAlgorithm,
-        array $passwordOptions,
-        SessionStorageInterface $sessionStorage,
-        int $sessionDuration = 3600,
-        float $sessionRefreshAfter = .5
+        array $passwordOptions
     ) {
         $this->userRepository = $userRepository;
         $this->rbac = $rbac;
         $this->passwordAlgorithm = $passwordAlgorithm;
         $this->passwordOptions = $passwordOptions;
-        $this->sessionStorage = $sessionStorage;
-        $this->sessionDuration = $sessionDuration;
-        $this->sessionRefreshAfter = $sessionRefreshAfter;
     }
 
     private function hashPassword(string $password) : string
@@ -72,6 +53,11 @@ final class AuthenticationService implements AuthenticationServiceInterface
         return $user;
     }
 
+    public function fetchUser(string $emailAddress) : User
+    {
+        return $this->userRepository->getUserByEmail(EmailAddressValue::get($emailAddress));
+    }
+
     public function changePassword(User $user, string $newPassword) : void
     {
         $this->userRepository->updatePassword($user, $this->hashPassword($newPassword));
@@ -82,18 +68,21 @@ final class AuthenticationService implements AuthenticationServiceInterface
         return password_verify($password, $user->getPassword());
     }
 
-    public function login(string $email, string $password) : ResponseInterface
+    public function login(string $email, string $password, SessionInterface $session) : bool
     {
+        // Attempt to fetch user from database, just return on failure
         try {
             $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
         } catch (\OutOfBoundsException | \DomainException $exception) {
-            return new JsonResponse(['message' => 'Login failed'], 401);
+            return false;
         }
 
+        // Check if user is active and if given password is valid, just return otherwise
         if (!$user->isActive() || !$this->checkPassword($user, $password)) {
-            return new JsonResponse(['message' => 'Login failed'], 401);
+            return false;
         }
 
+        // Force password rehash when algorithm or options have been changed
         if (password_needs_rehash($user->getPassword(), $this->passwordAlgorithm, $this->passwordOptions)) {
             $this->userRepository->updatePassword(
                 $user,
@@ -101,36 +90,8 @@ final class AuthenticationService implements AuthenticationServiceInterface
             );
         }
 
-        $sessionData = $this->sessionStorage->create($user->getEmail()->toString(), $this->sessionDuration);
-        return new JsonResponse(['message' => 'Login succeeded'], 201, [
-            self::AUTHORIZATION_HEADER => $sessionData,
-        ]);
-    }
-
-    public function getSession(ServerRequestInterface $request) : SessionInterface
-    {
-        $sessionId = $request->getHeaderLine(self::AUTHORIZATION_HEADER);
-        if (!$sessionId) {
-            return new Session();
-        }
-
-        return $this->sessionStorage->load($sessionId);
-    }
-
-    public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface
-    {
-        if (!$session->get('user')) {
-            return $response;
-        }
-
-        $refreshTimeframe = intval($this->sessionDuration * $this->sessionRefreshAfter);
-        if (!$this->sessionStorage->needsRefresh($session, $refreshTimeframe)) {
-            return $response;
-        };
-
-        return $response->withHeader(
-            self::AUTHORIZATION_HEADER,
-            $this->sessionStorage->create($session->get('user'), $this->sessionDuration)
-        );
+        // All passes, add data to session
+        $session->set('user', $user->getEmail()->toString());
+        return true;
     }
 }

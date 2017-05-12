@@ -13,6 +13,7 @@ use jschreuder\Middle\ServerMiddleware\JsonRequestParserMiddleware;
 use jschreuder\Middle\ServerMiddleware\RequestFilterMiddleware;
 use jschreuder\Middle\ServerMiddleware\RequestValidatorMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
+use jschreuder\Middle\ServerMiddleware\SessionMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Middleware\SecurityHeadersMiddleware;
@@ -24,6 +25,7 @@ use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
 use jschreuder\SpotDesk\Service\AuthenticationService\JwtSessionStorage;
+use jschreuder\SpotDesk\Service\AuthenticationService\SessionProcessor;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
 use jschreuder\SpotDesk\Service\SendMailService\SmtpSendMailService;
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
@@ -49,6 +51,7 @@ class MainServiceProvider implements ServiceProviderInterface
                 new RequestFilterMiddleware(),
                 new AuthorizationMiddleware($container['rbac']),
                 new AuthenticationMiddleware($container['service.authentication'], $container['repository.users']),
+                new SessionMiddleware($container['session.processor']),
                 new JsonRequestParserMiddleware(),
                 new RoutingMiddleware(
                     $container['app.router'],
@@ -165,15 +168,20 @@ class MainServiceProvider implements ServiceProviderInterface
             );
         };
 
+        $container['session.processor'] = function () use ($container) {
+            return new SessionProcessor(
+                $container['session.storage'],
+                $container['session.duration'],
+                $container['session.refresh_after']
+            );
+        };
+
         $container['service.authentication'] = function () use ($container) {
             return new AuthenticationService(
                 $container['repository.users'],
                 $container['rbac'],
                 $container['password.algo'],
-                $container['password.options'],
-                $container['session.storage'],
-                $container['session.duration'],
-                $container['session.refresh_after']
+                $container['password.options']
             );
         };
 

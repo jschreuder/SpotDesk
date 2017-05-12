@@ -4,10 +4,9 @@ namespace jschreuder\SpotDesk\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\GuestUser;
-use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
-use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -17,28 +16,24 @@ final class AuthenticationMiddleware implements MiddlewareInterface
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
-    /** @var  UserRepository */
-    private $userRepository;
-
-    public function __construct(AuthenticationServiceInterface $authenticationService, UserRepository $userRepository)
+    public function __construct(AuthenticationServiceInterface $authenticationService)
     {
         $this->authenticationService = $authenticationService;
-        $this->userRepository = $userRepository;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
+        /** @var  SessionInterface $session */
+        $session = $request->getAttribute('session');
+
         // Respond to login attempt
         if ($request->getMethod() === 'POST' && trim($request->getUri()->getPath(), '/') === 'login') {
-            $body = (array) $request->getParsedBody();
-            return $this->authenticationService->login($body['user'] ?? '', $body['pass'] ?? '');
+            return $this->login($request, $session);
         }
 
         // Create user object from session or generate guest user
-        $session = $this->authenticationService->getSession($request);
         try {
-            $userEmail = EmailAddressValue::get(strval($session->get('user')));
-            $user = $this->userRepository->getUserByEmail($userEmail);
+            $user = $this->authenticationService->fetchUser(strval($session->get('user')));
             if (!$user->isActive()) {
                 throw new \OutOfBoundsException('Inactive user');
             }
@@ -46,11 +41,20 @@ final class AuthenticationMiddleware implements MiddlewareInterface
             $user = new GuestUser();
         }
 
-        // Process request with session and user attributes added
-        $response = $delegate->process(
-            $request->withAttribute('session', $session)->withAttribute('user', $user)
+        // Process request with authenticated user attribute added
+        return $delegate->process(
+            $request->withAttribute('user', $user)
         );
-        // Attaches session refresh if necessary
-        return $this->authenticationService->attachSession($response, $session);
+    }
+
+    private function login(ServerRequestInterface $request, SessionInterface $session) : ResponseInterface
+    {
+        $body = (array) $request->getParsedBody();
+        $user = $body['user'] ?? '';
+        $pass = $body['pass'] ?? '';
+        if ($this->authenticationService->login($user, $pass, $session)) {
+            return new JsonResponse(['message' => 'Login succeeded'], 201);
+        }
+        return new JsonResponse(['message' => 'Login failed'], 401);
     }
 }

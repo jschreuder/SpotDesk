@@ -31,17 +31,18 @@ final class JwtSessionStorage implements SessionStorageInterface
     /**
      * Creates a JWT session and returns it as a string
      */
-    public function create(string $userId, int $sessionDuration) : string
+    public function create(array $sessionData, int $sessionDuration) : string
     {
-        $token = (new Builder())->setIssuer($this->siteUrl)
+        $token = (new Builder())
+            ->setIssuer($this->siteUrl)
             ->setAudience($this->siteUrl)
-            ->setId(sha1($this->siteUrl . $userId), true)
             ->setIssuedAt(time())
-            ->setExpiration(time() + $sessionDuration)
-            ->set('user', $userId)
-            ->sign($this->jwtSigner, $this->jwtKey)
-            ->getToken();
-        return strval($token);
+            ->setExpiration(time() + $sessionDuration);
+        foreach ($sessionData as $key => $value) {
+            $token->set($key, $value);
+        }
+
+        return strval($token->sign($this->jwtSigner, $this->jwtKey)->getToken());
     }
 
     /**
@@ -78,7 +79,7 @@ final class JwtSessionStorage implements SessionStorageInterface
 
     public function needsRefresh(SessionInterface $session, int $refreshTimeframe) : bool
     {
-        $expires = $session->get('expires');
-        return $expires - time() < $refreshTimeframe;
+        $expires = $session->get('expires') - time();
+        return $session->hasChanged() || ($expires < $refreshTimeframe);
     }
 }

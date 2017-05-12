@@ -21,14 +21,10 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
     /** @var  AuthenticationServiceInterface */
     private $authenticationService;
 
-    /** @var  UserRepository */
-    private $userRepository;
-
-    public function let(AuthenticationServiceInterface $authenticationService, UserRepository $userRepository) : void
+    public function let(AuthenticationServiceInterface $authenticationService) : void
     {
         $this->beConstructedWith(
-            $this->authenticationService = $authenticationService,
-            $this->userRepository = $userRepository
+            $this->authenticationService = $authenticationService
         );
     }
 
@@ -41,7 +37,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         ServerRequestInterface $request,
         UriInterface $uri,
         DelegateInterface $delegate,
-        ResponseInterface $response
+        SessionInterface $session
     ) : void
     {
         $username = 'user@name.email';
@@ -51,16 +47,18 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $request->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/login');
         $request->getParsedBody()->willReturn(['user' => $username, 'pass' => $password]);
+        $request->getAttribute('session')->willReturn($session);
 
-        $this->authenticationService->login($username, $password)->willReturn($response);
+        $this->authenticationService->login($username, $password, $session)->willReturn(true);
 
-        $this->process($request, $delegate)->shouldReturn($response);
+        $response = $this->process($request, $delegate);
+        $response->shouldBeAnInstanceOf(ResponseInterface::class);
+        $response->getStatusCode()->shouldBe(201);
     }
 
     public function it_creates_guest_user_and_empty_session_when_not_logged_in(
         ServerRequestInterface $request1,
         ServerRequestInterface $request2,
-        ServerRequestInterface $request3,
         SessionInterface $session,
         UriInterface $uri,
         DelegateInterface $delegate,
@@ -70,28 +68,25 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $request1->getMethod()->willReturn('GET');
         $request1->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/something');
+        $request1->getAttribute('session')->willReturn($session);
 
-        $this->authenticationService->getSession($request1)->willReturn($session);
+        $this->authenticationService->fetchUser('')->willThrow(new \OutOfBoundsException());
 
-        $request1->withAttribute('session', $session)->willReturn($request2);
-        $request2->withAttribute('user', new TypeToken(GuestUser::class))->willReturn($request3);
+        $request1->withAttribute('user', new TypeToken(GuestUser::class))->willReturn($request2);
 
-        $delegate->process($request3)->willReturn($response);
-        $this->authenticationService->attachSession($response, $session)->willReturn($response);
+        $delegate->process($request2)->willReturn($response);
 
         $this->process($request1, $delegate)->shouldReturn($response);
     }
 
-    public function it_attaches_session_to_the_request_and_response(
+    public function it_attaches_user_to_the_request_when_logged_in(
         ServerRequestInterface $request1,
         ServerRequestInterface $request2,
-        ServerRequestInterface $request3,
         UriInterface $uri,
         DelegateInterface $delegate,
         SessionInterface $session,
         User $user,
-        ResponseInterface $response1,
-        ResponseInterface $response2
+        ResponseInterface $response
     ) : void
     {
         $userEmail = 'user@mail.co';
@@ -99,18 +94,42 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $request1->getMethod()->willReturn('GET');
         $request1->getUri()->willReturn($uri);
         $uri->getPath()->willReturn('/something');
+        $request1->getAttribute('session')->willReturn($session);
 
-        $this->authenticationService->getSession($request1)->willReturn($session);
         $session->get('user')->willReturn($userEmail);
-        $this->userRepository->getUserByEmail(EmailAddressValue::get($userEmail))->willReturn($user);
+        $this->authenticationService->fetchUser($userEmail)->willReturn($user);
         $user->isActive()->willReturn(true);
 
-        $request1->withAttribute('session', $session)->willReturn($request2);
-        $request2->withAttribute('user', $user)->willReturn($request3);
-        $delegate->process($request3)->willReturn($response1);
+        $request1->withAttribute('user', $user)->willReturn($request2);
+        $delegate->process($request2)->willReturn($response);
 
-        $this->authenticationService->attachSession($response1, $session)->willReturn($response2);
+        $this->process($request1, $delegate)->shouldReturn($response);
+    }
 
-        $this->process($request1, $delegate)->shouldReturn($response2);
+    public function it_attaches_falls_back_to_guest_on_inactive_user(
+        ServerRequestInterface $request1,
+        ServerRequestInterface $request2,
+        UriInterface $uri,
+        DelegateInterface $delegate,
+        SessionInterface $session,
+        User $user,
+        ResponseInterface $response
+    ) : void
+    {
+        $userEmail = 'user@mail.co';
+
+        $request1->getMethod()->willReturn('GET');
+        $request1->getUri()->willReturn($uri);
+        $uri->getPath()->willReturn('/something');
+        $request1->getAttribute('session')->willReturn($session);
+
+        $session->get('user')->willReturn($userEmail);
+        $this->authenticationService->fetchUser($userEmail)->willThrow(new \OutOfBoundsException());
+        $user->isActive()->willReturn(false);
+
+        $request1->withAttribute('user', new TypeToken(GuestUser::class))->willReturn($request2);
+        $delegate->process($request2)->willReturn($response);
+
+        $this->process($request1, $delegate)->shouldReturn($response);
     }
 }

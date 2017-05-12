@@ -6,12 +6,10 @@ use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
-use jschreuder\SpotDesk\Service\AuthenticationService\SessionStorageInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\RoleInterface;
 
@@ -29,25 +27,13 @@ class AuthenticationServiceSpec extends ObjectBehavior
     /** @var  array */
     private $passwordOptions;
 
-    /** @var  SessionStorageInterface */
-    private $sessionStorage;
-
-    /** @var  int */
-    private $sessionDuration;
-
-    /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
-    private $sessionRefreshAfter;
-
-    public function let(UserRepository $userRepository, Rbac $rbac, SessionStorageInterface $sessionStorage) : void
+    public function let(UserRepository $userRepository, Rbac $rbac) : void
     {
         $this->beConstructedWith(
             $this->userRepository = $userRepository,
             $this->rbac = $rbac,
             $this->passwordAlgorithm = PASSWORD_BCRYPT,
-            $this->passwordOptions = ['cost' => 8],
-            $this->sessionStorage = $sessionStorage,
-            $this->sessionDuration = 7200,
-            $this->sessionRefreshAfter = 0.5
+            $this->passwordOptions = ['cost' => 8]
         );
     }
 
@@ -83,7 +69,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->checkPassword($user, 'nope')->shouldBe(false);
     }
 
-    public function it_can_login(User $user) : void
+    public function it_can_login(User $user, SessionInterface $session) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -97,34 +83,27 @@ class AuthenticationServiceSpec extends ObjectBehavior
 
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
-        $this->sessionStorage->create($userMail, $this->sessionDuration)
-            ->willReturn($sessionToken);
 
-        $response = $this->login($userMail, $password);
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(201);
-        $response->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->shouldBe($sessionToken);
+        $session->set('user', $userMail);
+
+        $this->login($userMail, $password, $session)->shouldBe(true);
     }
 
-    public function it_fails_login_on_invalid_emailaddress() : void
+    public function it_fails_login_on_invalid_emailaddress(SessionInterface $session) : void
     {
         $userEmail = 'not an e-mailaddress';
-        $response = $this->login($userEmail, 'pass');
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $this->login($userEmail, 'pass', $session)->shouldBe(false);
     }
 
-    public function it_fails_when_user_is_not_found() : void
+    public function it_fails_when_user_is_not_found(SessionInterface $session) : void
     {
         $userMail = 'user@test.dev';
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willThrow(new \OutOfBoundsException());
-        $response = $this->login($userMail, 'pass');
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $this->login($userMail, 'pass', $session)->shouldBe(false);
     }
 
-    public function it_fails_login_on_disabled_user(User $user) : void
+    public function it_fails_login_on_disabled_user(User $user, SessionInterface $session) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -134,12 +113,10 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
 
-        $response = $this->login($userMail, $password);
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $this->login($userMail, $password, $session)->shouldBe(false);
     }
 
-    public function it_fails_login_on_incorrect_password(User $user) : void
+    public function it_fails_login_on_incorrect_password(User $user, SessionInterface $session) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -153,12 +130,10 @@ class AuthenticationServiceSpec extends ObjectBehavior
         $this->userRepository->getUserByEmail(new Argument\Token\TypeToken(EmailAddressValue::class))
             ->willReturn($user);
 
-        $response = $this->login($userMail, 'nope');
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $this->login($userMail, 'nope', $session)->shouldBe(false);
     }
 
-    public function it_regenerates_password_when_necessary(User $user) : void
+    public function it_regenerates_password_when_necessary(User $user, SessionInterface $session) : void
     {
         $userMail = 'user@test.dev';
         $password = 'my-secret';
@@ -173,56 +148,9 @@ class AuthenticationServiceSpec extends ObjectBehavior
             ->willReturn($user);
         $this->userRepository->updatePassword($user, new Argument\Token\TypeToken('string'))
             ->shouldBeCalled();
-        $this->sessionStorage->create($userMail, $this->sessionDuration)
-            ->willReturn('session-token');
 
-        $response = $this->login($userMail, $password);
-        $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(201);
-    }
+        $session->set('user', $userMail);
 
-    public function it_can_retrieve_a_session(ServerRequestInterface $request, SessionInterface $session) : void
-    {
-        $sessionData = 'data';
-        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn($sessionData);
-
-        $this->sessionStorage->load($sessionData)->willReturn($session);
-
-        $this->getSession($request)->shouldReturn($session);
-    }
-
-    public function it_returns_empty_session_when_there_is_no_session_data(ServerRequestInterface $request) : void
-    {
-        $request->getHeaderLine(AuthenticationService::AUTHORIZATION_HEADER)->willReturn(null);
-        $session = $this->getSession($request);
-        $session->shouldBeAnInstanceOf(SessionInterface::class);
-        $session->isEmpty()->shouldBe(true);
-    }
-
-    public function it_can_attach_a_session_to_response(
-        ResponseInterface $response,
-        ResponseInterface $responseWithSession,
-        SessionInterface $session
-    ) : void
-    {
-        $this->sessionStorage->needsRefresh($session, 3600)->willReturn(true);
-
-        $userMail = 'user@test.dev';
-        $sessionData = 'data';
-        $session->get('user')->willReturn($userMail);
-        $this->sessionStorage->create($userMail, $this->sessionDuration)->willReturn($sessionData);
-        $response->withHeader(AuthenticationService::AUTHORIZATION_HEADER, $sessionData)
-            ->willReturn($responseWithSession);
-
-        $this->attachSession($response, $session)->shouldReturn($responseWithSession);
-    }
-
-    public function it_will_do_nothing_when_no_session_refresh_is_necessary(
-        ResponseInterface $response,
-        SessionInterface $session
-    ) : void
-    {
-        $this->sessionStorage->needsRefresh($session, 3600)->willReturn(false);
-        $this->attachSession($response, $session)->shouldReturn($response);
+        $this->login($userMail, $password, $session)->shouldBe(true);
     }
 }

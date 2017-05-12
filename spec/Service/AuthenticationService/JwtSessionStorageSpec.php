@@ -36,7 +36,7 @@ class JwtSessionStorageSpec extends ObjectBehavior
     {
         $user = 'user@id.me';
 
-        $token = $this->create($user, 1800);
+        $token = $this->create(['user' => $user], 1800);
         $token->shouldBeString();
 
         $session = $this->load($token);
@@ -53,10 +53,25 @@ class JwtSessionStorageSpec extends ObjectBehavior
 
     // @todo add specs for invalid signature and non-matching claims
 
-    public function it_can_tell_when_session_needs_a_refresh(SessionInterface $session) : void
+    public function it_can_tell_when_session_needs_a_refresh_due_to_changes(SessionInterface $session) : void
+    {
+        $session->get('expires')->willReturn(time() + 50);
+        $session->hasChanged()->willReturn(true);
+        $this->needsRefresh($session, 25)->shouldBe(true);
+    }
+
+    public function it_can_tell_when_session_does_not_need_a_refresh_due_to_changes(SessionInterface $session) : void
+    {
+        $session->get('expires')->willReturn(time() + 50);
+        $session->hasChanged()->willReturn(false);
+        $this->needsRefresh($session, 25)->shouldBe(false);
+    }
+
+    public function it_can_tell_when_session_needs_a_refresh_to_prevent_expiration(SessionInterface $session) : void
     {
         // Set expiration of session 25 seconds into the future
         $session->get('expires')->willReturn(time() + 25);
+        $session->hasChanged()->willReturn(false);
 
         // If only requires refresh within the last 5 seconds this should be false
         $this->needsRefresh($session, 5)->shouldBe(false);

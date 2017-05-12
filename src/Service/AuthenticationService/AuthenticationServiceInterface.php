@@ -15,6 +15,11 @@ interface AuthenticationServiceInterface
     public function createUser(string $email, string $displayName, string $password, string $roleName) : User;
 
     /**
+     * Fetches a user entity by its e-mailaddress.
+     */
+    public function fetchUser(string $email) : User;
+
+    /**
      * Modifies the given user's password
      */
     public function changePassword(User $user, string $newPassword) : void;
@@ -25,19 +30,8 @@ interface AuthenticationServiceInterface
     public function checkPassword(User $user, string $password) : bool;
 
     /**
-     * Generates response based on the success of the login.
+     * Adds userdata to session if login passes, returns boolean indicating
+     * success or failure.
      */
-    public function login(string $email, string $password) : ResponseInterface;
-
-    /**
-     * Returns Session object if the session ID found in the $authorizationHeader is valid,
-     * null otherwise.
-     */
-    public function getSession(ServerRequestInterface $request) : SessionInterface;
-
-    /**
-     * Adds a session ID to the response if it is new or requires a refresh,
-     * just returns the given response otherwise.
-     */
-    public function attachSession(ResponseInterface $response, SessionInterface $session) : ResponseInterface;
+    public function login(string $email, string $password, SessionInterface $session) : bool;
 }

@@ -4,8 +4,6 @@ namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 
 interface AuthenticationServiceInterface
 {

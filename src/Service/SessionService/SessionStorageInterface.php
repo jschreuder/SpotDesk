@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace jschreuder\SpotDesk\Service\AuthenticationService;
+namespace jschreuder\SpotDesk\Service\SessionService;
 
 use jschreuder\Middle\Session\SessionInterface;
 

@@ -1,9 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace spec\jschreuder\SpotDesk\Service\AuthenticationService;
+namespace spec\jschreuder\SpotDesk\Service\SessionService;
 
 use jschreuder\Middle\Session\SessionInterface;
-use jschreuder\SpotDesk\Service\AuthenticationService\JwtSessionStorage;
+use jschreuder\SpotDesk\Service\SessionService\JwtSessionStorage;
 use Lcobucci\JWT\Signer;
 use PhpSpec\ObjectBehavior;
 

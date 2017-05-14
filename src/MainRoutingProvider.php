@@ -5,7 +5,7 @@ namespace jschreuder\SpotDesk;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\RoutingProviderInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
-use jschreuder\SpotDesk\Controller\AppInitController;
+use jschreuder\SpotDesk\Controller\AngularInitController;
 use jschreuder\SpotDesk\Controller\MailboxDeleteController;
 use jschreuder\SpotDesk\Controller\MailboxUpdateController;
 use jschreuder\SpotDesk\Controller\TicketAddUpdateController;
@@ -47,8 +47,8 @@ class MainRoutingProvider implements RoutingProviderInterface
     {
         /** @var  SymfonyRouter $router */
 
-        $router->get('homepage', '/', function () {
-            return new AppInitController($this->container['site.title'], $this->container['site.url']);
+        $router->get('angular_init', '/', function () {
+            return new AngularInitController($this->container['site.title'], $this->container['site.url']);
         });
 
         $router->put('change_password', '/change_password', function () {

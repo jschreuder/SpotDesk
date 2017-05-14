@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class AppInitController implements ControllerInterface, AuthorizableControllerInterface
+class AngularInitController implements ControllerInterface, AuthorizableControllerInterface
 {
     /** @var  string */
     private $siteTitle;

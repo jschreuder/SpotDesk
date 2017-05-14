@@ -119,4 +119,13 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(401);
     }
+
+    public function it_will_error_when_request_has_no_user_attribute(
+        ServerRequestInterface $request,
+        DelegateInterface $delegate
+    ) : void
+    {
+        $request->getAttribute('user')->willReturn(null);
+        $this->shouldThrow(\RuntimeException::class)->duringProcess($request, $delegate);
+    }
 }

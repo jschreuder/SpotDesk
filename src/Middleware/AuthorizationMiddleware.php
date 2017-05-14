@@ -26,8 +26,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
-        $permission = $this->getPermission($request);
         $role = $this->getUserRole($request);
+        $permission = $this->getPermission($request);
 
         // Only allow access to delegate when permission is granted to user's role
         if (

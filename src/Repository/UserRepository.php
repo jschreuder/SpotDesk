@@ -47,14 +47,20 @@ class UserRepository
         );
     }
 
-    public function getUsers() : UserCollection
+    private function statementToUserCollection(\PDOStatement $statement) : UserCollection
     {
-        $query = $this->db->query("SELECT * FROM `users`");
         $users = new UserCollection();
-        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $users->push($this->arrayToUser($row));
         }
         return $users;
+    }
+
+    public function getUsers() : UserCollection
+    {
+        return $this->statementToUserCollection(
+            $this->db->query("SELECT * FROM `users`")
+        );
     }
 
     public function getUsersForDepartment(Department $department) : UserCollection
@@ -66,12 +72,7 @@ class UserRepository
             WHERE u.`active` IS TRUE
         ");
         $query->execute(['department_id' => $department->getId()->getBytes()]);
-
-        $userCollection = new UserCollection();
-        while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
-            $userCollection->push($this->arrayToUser($row));
-        }
-        return $userCollection;
+        return $this->statementToUserCollection($query);
     }
 
     public function getUserByEmail(EmailAddressValue $email) : User
@@ -125,11 +126,19 @@ class UserRepository
         $query = $this->db->prepare("
             INSERT INTO `users_departments` (`email`, `department_id`)
             VALUES (:email, :department_id)
+            ON DUPLICATE KEY UPDATE email = :email, department_id = :department_id
         ");
         $query->execute([
             'email' => $user->getEmail()->toString(),
             'department_id' => $department->getId()->getBytes(),
         ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException(
+                'User "' . $user->getEmail()->toString() . '" was already assigned to department "' .
+                $department->getName() . '".'
+            );
+        }
     }
 
     public function removeUserFromDepartment(User $user, Department $department) : void
@@ -142,6 +151,13 @@ class UserRepository
             'email' => $user->getEmail()->toString(),
             'department_id' => $department->getId()->getBytes(),
         ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException(
+                'User "' . $user->getEmail()->toString() . '" could not be removed from department "' .
+                $department->getName() . '", probably because it was not assigned to it.'
+            );
+        }
     }
 
     public function deleteUser(User $user) : void
@@ -151,5 +167,11 @@ class UserRepository
             WHERE `email` = :email
         ");
         $query->execute(['email' => $user->getEmail()->toString()]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException(
+                'User "' . $user->getEmail()->toString() . '" could not be deleted, possibly did no exist."'
+            );
+        }
     }
 }

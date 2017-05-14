@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Entity;
 
+use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Zend\Permissions\Rbac\Role;
 use Zend\Permissions\Rbac\RoleInterface;
@@ -14,7 +15,7 @@ class GuestUser extends User
             EmailAddressValue::get('guest@spotdev.local'),
             'Guest',
             '',
-            (new Role('guest'))->addPermission('public'),
+            (new Role('guest'))->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC),
             true
         );
     }

@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Middleware;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use jschreuder\SpotDesk\Entity\User;
+use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -13,6 +14,8 @@ use Zend\Permissions\Rbac\RoleInterface;
 
 class AuthorizationMiddleware implements MiddlewareInterface
 {
+    const UNKNOWN_PERMISSION = '__authorization_not_set';
+
     /** @var  Rbac */
     private $rbac;
 
@@ -27,7 +30,10 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $role = $this->getUserRole($request);
 
         // Only allow access to delegate when permission is granted to user's role
-        if ($this->rbac->isGranted($role, 'all') || $this->rbac->isGranted($role, $permission)) {
+        if (
+            $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)
+            || $this->rbac->isGranted($role, $permission)
+        ) {
             return $delegate->process($request);
         }
 
@@ -47,11 +53,9 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
     private function getPermission(ServerRequestInterface $request) : string
     {
-        if ($request->getMethod() === 'GET' && trim($request->getUri()->getPath(), '/') === '') {
-            return 'public';
-        }
-
-        $class = get_class($request->getAttribute('controller'));
-        return str_replace('Controller', '', $class);
+        $controller = $request->getAttribute('controller');
+        return ($controller instanceof AuthorizableControllerInterface)
+            ? $controller->getRequiredPermission()
+            : self::UNKNOWN_PERMISSION;
     }
 }

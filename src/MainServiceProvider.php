@@ -35,7 +35,6 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\Role;
@@ -122,21 +121,6 @@ class MainServiceProvider implements ServiceProviderInterface
             $rbac->addRole((new Role('guest'))->addPermission('public'));
             return $rbac;
         };
-
-        $container['site.template'] = $container->protect(function () use ($container): ResponseInterface {
-            $siteTitle = $container['site.title'];
-            $siteUrl = $container['site.url'];
-            $generator = function () use ($siteTitle, $siteUrl): string {
-                ob_start();
-                require __DIR__ . '/../templates/template.php';
-                $rendered = ob_get_contents();
-                ob_end_clean();
-                return $rendered;
-            };
-            $response = new Response();
-            $response->getBody()->write($generator());
-            return $response;
-        });
 
         $container['mail.swiftmailer'] = function () use ($container) {
             $transport = \Swift_SmtpTransport::newInstance(

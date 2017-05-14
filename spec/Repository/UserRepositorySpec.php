@@ -46,7 +46,7 @@ class UserRepositorySpec extends ObjectBehavior
         $user->getRole()->willReturn($role);
         $role->getName()->willReturn($roleName);
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('INSERT'))->willReturn($statement);
         $statement->execute([
             'email' => $email,
             'display_name' => $displayName,
@@ -59,7 +59,7 @@ class UserRepositorySpec extends ObjectBehavior
 
     public function it_can_get_all_users(\PDOStatement $statement, RoleInterface $role) : void
     {
-        $this->db->query(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->query(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
             ['email' => 'one@d.com', 'display_name' => 'One', 'password' => '...', 'role' => 'user', 'active' => true],
             ['email' => 'two@d.com', 'display_name' => 'Two', 'password' => '...', 'role' => 'user', 'active' => false],
@@ -89,7 +89,7 @@ class UserRepositorySpec extends ObjectBehavior
         $departmentId = Uuid::uuid4();
         $department->getId()->willReturn($departmentId);
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->execute(['department_id' => $departmentId->getBytes()])->shouldBeCalled();
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
             ['email' => 'one@d.com', 'display_name' => 'One', 'password' => '...', 'role' => 'user', 'active' => true],
@@ -114,7 +114,7 @@ class UserRepositorySpec extends ObjectBehavior
     public function it_can_get_one_user(\PDOStatement $statement, RoleInterface $role) : void
     {
         $email = 'user@domain.mail';
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->execute(['email' => $email])->shouldBeCalled();
         $statement->rowCount()->willReturn(1);
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
@@ -135,7 +135,7 @@ class UserRepositorySpec extends ObjectBehavior
     public function it_errors_when_user_doesnt_exist(\PDOStatement $statement) : void
     {
         $email = 'user@domain.mail';
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->execute(['email' => $email])->shouldBeCalled();
         $statement->rowCount()->willReturn(0);
 
@@ -151,7 +151,7 @@ class UserRepositorySpec extends ObjectBehavior
 
         $role->getName()->willReturn($roleName = 'user');
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('UPDATE'))->willReturn($statement);
         $statement->execute([
             'display_name' => $displayName,
             'email' => $email->toString(),
@@ -172,7 +172,7 @@ class UserRepositorySpec extends ObjectBehavior
 
         $role->getName()->willReturn($roleName = 'user');
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('UPDATE'))->willReturn($statement);
         $statement->execute([
             'display_name' => $displayName,
             'email' => $email->toString(),
@@ -189,7 +189,7 @@ class UserRepositorySpec extends ObjectBehavior
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
         $password = password_hash('some-password', PASSWORD_DEFAULT);
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('UPDATE'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'password' => $password,
@@ -206,7 +206,7 @@ class UserRepositorySpec extends ObjectBehavior
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
         $password = password_hash('some-password', PASSWORD_DEFAULT);
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('UPDATE'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'password' => $password,
@@ -228,7 +228,7 @@ class UserRepositorySpec extends ObjectBehavior
         $department->getId()->willReturn($departmentId);
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('INSERT'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'department_id' => $departmentId->getBytes(),
@@ -248,7 +248,7 @@ class UserRepositorySpec extends ObjectBehavior
         $department->getId()->willReturn($departmentId);
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('INSERT'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'department_id' => $departmentId->getBytes(),
@@ -268,7 +268,7 @@ class UserRepositorySpec extends ObjectBehavior
         $department->getId()->willReturn($departmentId);
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('DELETE'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'department_id' => $departmentId->getBytes(),
@@ -288,7 +288,7 @@ class UserRepositorySpec extends ObjectBehavior
         $department->getId()->willReturn($departmentId);
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('DELETE'))->willReturn($statement);
         $statement->execute([
             'email' => $email->toString(),
             'department_id' => $departmentId->getBytes(),
@@ -302,7 +302,7 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('DELETE'))->willReturn($statement);
         $statement->execute(['email' => $email->toString()])->shouldBeCalled();
         $statement->rowCount()->willReturn(1);
 
@@ -313,7 +313,7 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('DELETE'))->willReturn($statement);
         $statement->execute(['email' => $email->toString()])->shouldBeCalled();
         $statement->rowCount()->willReturn(0);
 

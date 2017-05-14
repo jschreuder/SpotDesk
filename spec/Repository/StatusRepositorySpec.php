@@ -25,7 +25,7 @@ class StatusRepositorySpec extends ObjectBehavior
 
     public function it_can_get_a_status(\PDOStatement $statement) : void
     {
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->execute()->shouldBeCalled();
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(
             ['status' => 'Open', 'type' => 'open'],
@@ -45,7 +45,7 @@ class StatusRepositorySpec extends ObjectBehavior
 
     public function it_throws_exception_on_invalid_status(\PDOStatement $statement) : void
     {
-        $this->db->prepare(new Argument\Token\TypeToken('string'))->willReturn($statement);
+        $this->db->prepare(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
         $statement->execute()->shouldBeCalled();
         $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(null);
 

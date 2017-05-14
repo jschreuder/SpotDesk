@@ -24,6 +24,7 @@ use jschreuder\SpotDesk\Repository\TicketMailingRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
+use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use jschreuder\SpotDesk\Service\SessionService\JwtSessionStorage;
 use jschreuder\SpotDesk\Service\SessionService\SessionProcessor;
 use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
@@ -117,8 +118,10 @@ class MainServiceProvider implements ServiceProviderInterface
 
         $container['rbac'] = function () {
             $rbac = new Rbac();
-            $rbac->addRole((new Role('admin'))->addPermission('all'));
-            $rbac->addRole((new Role('guest'))->addPermission('public'));
+            $rbac->addRole((new Role('admin'))
+                ->addPermission(AuthorizableControllerInterface::ROLE_ADMIN));
+            $rbac->addRole((new Role('guest'))
+                ->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC));
             return $rbac;
         };
 

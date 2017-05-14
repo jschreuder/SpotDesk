@@ -12,29 +12,29 @@ class SessionProcessor implements SessionProcessorInterface
     const SESSION_KEY = 'SpotDesk-Session';
 
     /** @var  SessionStorageInterface */
-    private $sessionStorage;
+    private $storage;
 
     /** @var  int */
-    private $sessionDuration;
+    private $duration;
 
     /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
-    private $sessionRefreshAfter;
+    private $refreshAfter;
 
     public function __construct(
-        SessionStorageInterface $sessionStorage,
-        int $sessionDuration = 3600,
-        float $sessionRefreshAfter = .5
+        SessionStorageInterface $storage,
+        int $duration = 3600,
+        float $refreshAfter = .5
     )
     {
-        $this->sessionStorage = $sessionStorage;
-        $this->sessionDuration = $sessionDuration;
-        $this->sessionRefreshAfter = $sessionRefreshAfter;
+        $this->storage = $storage;
+        $this->duration = $duration;
+        $this->refreshAfter = $refreshAfter;
     }
 
     public function processRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $sessionId = $request->getHeaderLine(self::SESSION_KEY) ?? '';
-        $session = $this->sessionStorage->load($sessionId);
+        $session = $this->storage->load($sessionId);
         return $request->withAttribute('session', $session);
     }
 
@@ -46,14 +46,14 @@ class SessionProcessor implements SessionProcessorInterface
             return $response;
         }
 
-        $refreshTimeframe = intval($this->sessionDuration * $this->sessionRefreshAfter);
-        if (!$this->sessionStorage->needsRefresh($session, $refreshTimeframe)) {
+        $refreshTimeframe = intval($this->duration * $this->refreshAfter);
+        if (!$this->storage->needsRefresh($session, $refreshTimeframe)) {
             return $response;
         };
 
         return $response->withHeader(
             self::SESSION_KEY,
-            $this->sessionStorage->create($session->toArray(), $this->sessionDuration)
+            $this->storage->create($session->toArray(), $this->duration)
         );
     }
 }

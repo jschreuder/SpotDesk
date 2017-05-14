@@ -8,7 +8,6 @@ use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Permissions\Rbac\Rbac;
@@ -106,7 +105,7 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
         User $user,
         RoleInterface $role,
         ControllerInterface $controller
-    )
+    ) : void
     {
         $request->getAttribute('controller')->willReturn($controller);
         $request->getAttribute('user')->willReturn($user);

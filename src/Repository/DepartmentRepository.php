@@ -63,8 +63,7 @@ class DepartmentRepository
     public function getDepartments() : DepartmentCollection
     {
         if (is_null($this->_departments)) {
-            $query = $this->db->prepare("SELECT * FROM `departments`");
-            $query->execute();
+            $query = $this->db->query("SELECT * FROM `departments`");
 
             $departmentRows = [];
             $departmentCollection = new DepartmentCollection();
@@ -130,5 +129,9 @@ class DepartmentRepository
             WHERE `department_id` = :department_id
         ");
         $query->execute(['department_id' => $department->getId()->getBytes()]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to delete department: ' . $department->getId()->toString());
+        }
     }
 }

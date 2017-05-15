@@ -104,9 +104,7 @@ class MailboxRepository
 
     public function getMailboxes() : MailboxCollection
     {
-        $query = $this->db->prepare("SELECT * FROM `mailboxes`");
-        $query->execute();
-
+        $query = $this->db->query("SELECT * FROM `mailboxes`");
         $mailboxCollection = new MailboxCollection();
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
             $mailboxCollection->push($this->arrayToMailbox($row));
@@ -130,7 +128,7 @@ class MailboxRepository
         return $mailboxCollection;
     }
 
-    public function updateMailbox(Mailbox $mailbox)
+    public function updateMailbox(Mailbox $mailbox) : void
     {
         $query = $this->db->prepare("
             UPDATE `mailboxes`
@@ -151,6 +149,10 @@ class MailboxRepository
             'imap_user' => $mailbox->getImapUser(),
             'imap_pass' => $mailbox->getImapPass(),
         ]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to update mailbox: ' . $mailbox->getId()->toString());
+        }
     }
 
     public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null) : void
@@ -179,5 +181,9 @@ class MailboxRepository
             WHERE `mailbox_id` = :mailbox_id
         ");
         $query->execute(['mailbox_id' => $mailbox->getId()->getBytes()]);
+
+        if ($query->rowCount() !== 1) {
+            throw new \RuntimeException('Failed to delete mailbox: ' . $mailbox->getId()->toString());
+        }
     }
 }

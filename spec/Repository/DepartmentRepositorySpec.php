@@ -94,6 +94,14 @@ class DepartmentRepositorySpec extends ObjectBehavior
         $department->getId()->equals($uuid1)->shouldBe(true);
     }
 
+    public function it_errors_when_getting_non_existent_department(\PDOStatement $statement) : void
+    {
+        $this->db->query(new Argument\Token\StringContainsToken('SELECT'))->willReturn($statement);
+        $statement->fetch(\PDO::FETCH_ASSOC)->willReturn(null);
+
+        $this->shouldThrow(\OutOfBoundsException::class)->duringGetDepartment(Uuid::uuid4());
+    }
+
     public function it_can_get_a_users_departments(
         \PDOStatement $statement1,
         \PDOStatement $statement2,

@@ -66,11 +66,9 @@ class TicketMailingRepository
 
     public function getUnsent() : TicketMailingCollection
     {
-        $query = $this->db->prepare("
+        $query = $this->db->query("
             SELECT * FROM `ticket_mailings` WHERE `sent_at` IS NULL
         ");
-        $query->execute();
-
         $ticketMailingCollection = new TicketMailingCollection();
         while ($row = $query->fetch(\PDO::FETCH_ASSOC)) {
             $ticketMailingCollection->push($this->arrayToTicketMailing($row));

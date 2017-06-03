@@ -21,6 +21,6 @@ class EmailAddressValueSpec extends ObjectBehavior
     {
         $email = 'not-an-email-address';
         $this->beConstructedThrough('get', [$email]);
-        $this->shouldThrow(\DomainException::class)->duringInstantiation();
+        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
     }
 }

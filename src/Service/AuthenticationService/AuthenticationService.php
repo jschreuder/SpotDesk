@@ -73,7 +73,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
         // Attempt to fetch user from database, just return on failure
         try {
             $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
-        } catch (\OutOfBoundsException | \DomainException $exception) {
+        } catch (\OutOfBoundsException | \InvalidArgumentException $exception) {
             return false;
         }
 

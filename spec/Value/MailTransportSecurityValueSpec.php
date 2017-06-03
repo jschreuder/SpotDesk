@@ -41,6 +41,6 @@ class MailTransportSecurityValueSpec extends ObjectBehavior
     public function it_errors_on_invalid_value() : void
     {
         $this->beConstructedThrough('get', ['nonsense']);
-        $this->shouldThrow(\DomainException::class)->duringInstantiation();
+        $this->shouldThrow(\InvalidArgumentException::class)->duringInstantiation();
     }
 }

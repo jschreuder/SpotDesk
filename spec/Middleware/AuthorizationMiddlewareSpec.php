@@ -4,6 +4,7 @@ namespace spec\jschreuder\SpotDesk\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use jschreuder\Middle\Controller\ControllerInterface;
+use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
@@ -73,7 +74,7 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $response = $this->process($request, $delegate);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $response->getStatusCode()->shouldBe(403);
     }
 
     public function it_will_allow_admins_everywhere(
@@ -117,7 +118,7 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $response = $this->process($request, $delegate);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
-        $response->getStatusCode()->shouldBe(401);
+        $response->getStatusCode()->shouldBe(403);
     }
 
     public function it_will_error_when_request_has_no_user_attribute(
@@ -126,6 +127,6 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
     ) : void
     {
         $request->getAttribute('user')->willReturn(null);
-        $this->shouldThrow(\RuntimeException::class)->duringProcess($request, $delegate);
+        $this->shouldThrow(AuthenticationException::class)->duringProcess($request, $delegate);
     }
 }

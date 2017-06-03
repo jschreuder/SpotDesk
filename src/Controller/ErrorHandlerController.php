@@ -21,7 +21,7 @@ class ErrorHandlerController implements ControllerInterface
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
         /** @var  \Throwable $exception */
-        $exception = $request->getAttribute('exception');
+        $exception = $request->getAttribute('error');
         $code = $this->getCode($exception);
 
         return new JsonResponse(
@@ -39,7 +39,7 @@ class ErrorHandlerController implements ControllerInterface
         }
 
         $code = $exception->getCode();
-        if ($code >= 400 || $code < 600) {
+        if ($code >= 400 && $code < 600) {
             return $code;
         }
 

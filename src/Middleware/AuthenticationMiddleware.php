@@ -38,7 +38,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
             if (!$user->isActive()) {
                 throw new AuthenticationException('Inactive user');
             }
-        } catch (\DomainException | \OutOfBoundsException $exception) {
+        } catch (\InvalidArgumentException | \OutOfBoundsException $exception) {
             $user = new GuestUser();
         }
 

@@ -76,12 +76,12 @@ class MainServiceProvider implements ServiceProviderInterface
             return $router->getGenerator();
         };
 
-        $container['app.error_handlers.404'] = function () use ($container) {
-            return new ErrorHandlerController($container['logger']);
+        $container['app.error_handlers.404'] = function () {
+            return new NotFoundHandlerController();
         };
 
-        $container['app.error_handlers.500'] = function () {
-            return new NotFoundHandlerController();
+        $container['app.error_handlers.500'] = function () use ($container) {
+            return new ErrorHandlerController($container['logger']);
         };
 
         $container['requestValidator.errorHandler'] = $container->protect(function (

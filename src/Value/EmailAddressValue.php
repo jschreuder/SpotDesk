@@ -15,7 +15,7 @@ final class EmailAddressValue
     private function __construct(string $emailAddress)
     {
         if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-            throw new \DomainException('Invalid e-mail address given: ' . $emailAddress);
+            throw new \InvalidArgumentException('Invalid e-mail address given: ' . $emailAddress);
         }
         $this->value = mb_strtolower($emailAddress);
     }

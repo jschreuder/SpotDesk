@@ -4,6 +4,7 @@ namespace jschreuder\SpotDesk\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -38,14 +39,14 @@ class AuthorizationMiddleware implements MiddlewareInterface
         }
 
         // YOU... SHALL NOT PASS!
-        return new JsonResponse(['message' => 'Not authorized'], 401);
+        return new JsonResponse(['message' => 'Not authorized'], 403);
     }
 
     private function getUserRole(ServerRequestInterface $request) : RoleInterface
     {
         $user = $request->getAttribute('user');
         if (!$user instanceof User) {
-            throw new \RuntimeException('No user available on request');
+            throw new AuthenticationException('No user available on request');
         }
 
         return $user->getRole();

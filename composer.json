@@ -16,7 +16,7 @@
     "require": {
         "php": ">=7.1",
         "ext-mbstring": "*",
-        "jschreuder/middle": "^0.9.0",
+        "jschreuder/middle": "^0.10.0",
         "robmorgan/phinx": "^0.8.0",
         "pimple/pimple": "^3.0",
         "zendframework/zend-diactoros": "^1.4",

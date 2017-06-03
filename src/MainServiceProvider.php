@@ -3,9 +3,8 @@
 namespace jschreuder\SpotDesk;
 
 use jschreuder\Middle\ApplicationStack;
-use jschreuder\Middle\Controller\CallableController;
 use jschreuder\Middle\Controller\ControllerRunner;
-use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\Middle\Router\RouterInterface;
 use jschreuder\Middle\Router\SymfonyRouter;
 use jschreuder\Middle\ServerMiddleware\ErrorHandlerMiddleware;
@@ -14,6 +13,8 @@ use jschreuder\Middle\ServerMiddleware\RequestFilterMiddleware;
 use jschreuder\Middle\ServerMiddleware\RequestValidatorMiddleware;
 use jschreuder\Middle\ServerMiddleware\RoutingMiddleware;
 use jschreuder\Middle\ServerMiddleware\SessionMiddleware;
+use jschreuder\SpotDesk\Controller\ErrorHandlerController;
+use jschreuder\SpotDesk\Controller\NotFoundHandlerController;
 use jschreuder\SpotDesk\Middleware\AuthenticationMiddleware;
 use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Middleware\SecurityHeadersMiddleware;
@@ -75,23 +76,13 @@ class MainServiceProvider implements ServiceProviderInterface
             return $router->getGenerator();
         };
 
-        $container['app.error_handlers.404'] = CallableController::factoryFromCallable(
-            function (ServerRequestInterface $request) use ($container) : ResponseInterface {
-                return new JsonResponse(
-                    [
-                        'message' => 'Not found: ' .
-                            $request->getMethod() . ' ' . $request->getUri()->getPath(),
-                    ],
-                    404
-                );
-            }
-        );
+        $container['app.error_handlers.404'] = function () use ($container) {
+            return new ErrorHandlerController($container['logger']);
+        };
 
-        $container['app.error_handlers.500'] = CallableController::factoryFromCallable(
-            function () use ($container) : ResponseInterface {
-                return new JsonResponse(['message' => 'System Error'], 500);
-            }
-        );
+        $container['app.error_handlers.500'] = function () {
+            return new NotFoundHandlerController();
+        };
 
         $container['requestValidator.errorHandler'] = $container->protect(function (
             ServerRequestInterface $request,

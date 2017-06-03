@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\MailboxCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -151,7 +152,7 @@ class MailboxRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update mailbox: ' . $mailbox->getId()->toString());
+            throw new SpotDeskException('Failed to update mailbox: ' . $mailbox->getId()->toString());
         }
     }
 
@@ -169,7 +170,7 @@ class MailboxRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update last check for mailbox: ' . $mailbox->getId()->toString());
+            throw new SpotDeskException('Failed to update last check for mailbox: ' . $mailbox->getId()->toString());
         }
         $mailbox->setLastCheck($checkTime);
     }
@@ -183,7 +184,7 @@ class MailboxRepository
         $query->execute(['mailbox_id' => $mailbox->getId()->getBytes()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to delete mailbox: ' . $mailbox->getId()->toString());
+            throw new SpotDeskException('Failed to delete mailbox: ' . $mailbox->getId()->toString());
         }
     }
 }

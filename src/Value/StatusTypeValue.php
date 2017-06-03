@@ -24,7 +24,7 @@ final class StatusTypeValue
     private function __construct(string $statusType)
     {
         if (!in_array($statusType, [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED], true)) {
-            throw new \DomainException('Invalid status type: ' . $statusType);
+            throw new \InvalidArgumentException('Invalid status type: ' . $statusType);
         }
         $this->value = $statusType;
     }

@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\UserCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Zend\Permissions\Rbac\Rbac;
 
@@ -102,7 +103,7 @@ class UserRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update user: ' . $user->getEmail()->toString());
+            throw new SpotDeskException('Failed to update user: ' . $user->getEmail()->toString());
         }
     }
 
@@ -116,7 +117,7 @@ class UserRepository
         $query->execute(['password' => $newPassword, 'email' => $user->getEmail()->toString()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update password for user: ' . $user->getEmail()->toString());
+            throw new SpotDeskException('Failed to update password for user: ' . $user->getEmail()->toString());
         }
         $user->setPassword($newPassword);
     }
@@ -134,7 +135,7 @@ class UserRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException(
+            throw new SpotDeskException(
                 'User "' . $user->getEmail()->toString() . '" was already assigned to department "' .
                 $department->getName() . '".'
             );
@@ -153,7 +154,7 @@ class UserRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException(
+            throw new SpotDeskException(
                 'User "' . $user->getEmail()->toString() . '" could not be removed from department "' .
                 $department->getName() . '", probably because it was not assigned to it.'
             );
@@ -169,7 +170,7 @@ class UserRepository
         $query->execute(['email' => $user->getEmail()->toString()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException(
+            throw new SpotDeskException(
                 'User "' . $user->getEmail()->toString() . '" could not be deleted, possibly did no exist."'
             );
         }

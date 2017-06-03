@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -118,7 +119,7 @@ class DepartmentRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update department: ' . $department->getId()->toString());
+            throw new SpotDeskException('Failed to update department: ' . $department->getId()->toString());
         }
     }
 
@@ -131,7 +132,7 @@ class DepartmentRepository
         $query->execute(['department_id' => $department->getId()->getBytes()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to delete department: ' . $department->getId()->toString());
+            throw new SpotDeskException('Failed to delete department: ' . $department->getId()->toString());
         }
     }
 }

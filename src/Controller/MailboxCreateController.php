@@ -5,7 +5,7 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;

@@ -6,6 +6,7 @@ use jschreuder\SpotDesk\Collection\TicketMailingCollection;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use Ramsey\Uuid\Uuid;
 
 class TicketMailingRepository
@@ -90,7 +91,7 @@ class TicketMailingRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException(
+            throw new SpotDeskException(
                 'Failed to update sent status for ticket-mailing: ' . $ticketMailing->getId()->toString()
             );
         }

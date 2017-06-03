@@ -4,6 +4,7 @@ namespace jschreuder\SpotDesk\Middleware;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface;
+use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\GuestUser;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
@@ -35,7 +36,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         try {
             $user = $this->authenticationService->fetchUser(strval($session->get('user')));
             if (!$user->isActive()) {
-                throw new \OutOfBoundsException('Inactive user');
+                throw new AuthenticationException('Inactive user');
             }
         } catch (\DomainException | \OutOfBoundsException $exception) {
             $user = new GuestUser();

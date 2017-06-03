@@ -5,10 +5,9 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use Particle\Filter\Filter;
-use Particle\Validator\Exception\InvalidValueException;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -49,7 +48,7 @@ class UserCreateController implements ControllerInterface, RequestValidatorInter
         $validator->required('password')->string()->lengthBetween(12, null);
         $validator->required('role')->string()->callback(function ($value) {
             if (!$this->rbac->hasRole($value)) {
-                throw new InvalidValueException('Unknown role: ' . $value, 'unknown_role');
+                throw new \InvalidArgumentException('Unknown role: ' . $value, 'unknown_role');
             }
             return true;
         });

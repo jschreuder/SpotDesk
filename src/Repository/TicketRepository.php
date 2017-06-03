@@ -10,6 +10,7 @@ use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use jschreuder\SpotDesk\Value\StatusTypeValue;
 use Ramsey\Uuid\Uuid;
@@ -183,7 +184,7 @@ class TicketRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update status for ticket: ' . $ticket->getId()->toString());
+            throw new SpotDeskException('Failed to update status for ticket: ' . $ticket->getId()->toString());
         }
         $ticket->setStatus($status);
     }
@@ -201,7 +202,7 @@ class TicketRepository
         ]);
 
         if ($query->rowCount() !== 1) {
-            throw new \RuntimeException('Failed to update department for ticket: ' . $ticket->getId()->toString());
+            throw new SpotDeskException('Failed to update department for ticket: ' . $ticket->getId()->toString());
         }
         $ticket->setDepartment($department);
     }

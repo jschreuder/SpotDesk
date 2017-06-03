@@ -5,6 +5,7 @@ namespace jschreuder\SpotDesk\Service\SendMailService;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 
@@ -56,7 +57,7 @@ final class SmtpSendMailService implements SendMailServiceInterface
         $message = $this->createMessage($ticket, $subject, $renderedMail);
         $sent = $this->swiftMailer->send($message);
         if ($sent === 0) {
-            throw new \RuntimeException('Failed to send mail');
+            throw new SpotDeskException('Failed to send mail');
         }
 
         $this->ticketMailingRepository->setSent($ticketMailing);

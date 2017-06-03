@@ -3,6 +3,7 @@
 namespace jschreuder\SpotDesk\Collection;
 
 use jschreuder\SpotDesk\Entity\Ticket;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 
 class TicketCollection implements \ArrayAccess, \Countable, \Iterator
 {
@@ -39,7 +40,7 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
     public function getTotalCount() : int
     {
         if (is_null($this->totalCount)) {
-            throw new \RuntimeException('Total count must be set before it is retrieved.');
+            throw new SpotDeskException('Total count must be set before it is retrieved.');
         }
         return $this->totalCount;
     }

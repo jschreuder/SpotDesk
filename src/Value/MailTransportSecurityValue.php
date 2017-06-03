@@ -24,7 +24,7 @@ final class MailTransportSecurityValue
     private function __construct(string $transportSecurity)
     {
         if (!in_array($transportSecurity, self::getValues(), true)) {
-            throw new \DomainException('Invalid mail transport security flag: ' . $transportSecurity);
+            throw new \InvalidArgumentException('Invalid mail transport security flag: ' . $transportSecurity);
         }
         $this->value = $transportSecurity;
     }

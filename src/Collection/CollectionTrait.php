@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use jschreuder\SpotDesk\Exception\SpotDeskException;
+
 trait CollectionTrait
 {
     private $collection = [];
@@ -33,12 +35,12 @@ trait CollectionTrait
 
     public function offsetSet($key, $value) : void
     {
-        throw new \RuntimeException('Collections cannot be modified as array');
+        throw new SpotDeskException('Collections cannot be modified as array');
     }
 
     public function offsetUnset($key) : void
     {
-        throw new \RuntimeException('Collections cannot be modified as array');
+        throw new SpotDeskException('Collections cannot be modified as array');
     }
 
     public function count()

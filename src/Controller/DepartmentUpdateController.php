@@ -5,8 +5,9 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Controller\ValidationFailedException;
+use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Department;
+use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Particle\Filter\Filter;
@@ -80,7 +81,7 @@ class DepartmentUpdateController implements ControllerInterface, RequestFilterIn
     {
         while ($parent) {
             if ($parent->getId()->equals($department->getId())) {
-                throw new \RuntimeException('Child cannot be a parent of its own parent.');
+                throw new SpotDeskException('Child cannot be a parent of its own parent.');
             }
             $parent = $parent->getParent();
         }

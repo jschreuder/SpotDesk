@@ -113,7 +113,7 @@ class CheckMailboxesCommand extends Command
                 $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
                 $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
 
-                if ($ticket = $this->getTicketFromEmail($subject, $email)) {
+                if ($ticket = $this->getTicketFromEmail($subject)) {
                     $this->processTicketUpdate($mailbox, $ticket, $email, $message, $createdAt);
                 } else {
                     $this->processTicket($mailbox, $email, $subject, $message, $createdAt);
@@ -134,7 +134,7 @@ class CheckMailboxesCommand extends Command
         $this->mailboxRepository->updateLastCheck($mailbox);
     }
 
-    private function getTicketFromEmail(string $subject, EmailAddressValue $fromEmailAddress) : ?Ticket
+    private function getTicketFromEmail(string $subject) : ?Ticket
     {
         $pattern = '#\[(?P<uuid>' . trim(Uuid::VALID_PATTERN, '^$') . ')\]#';
         if (preg_match($pattern, $subject, $matches) < 1) {

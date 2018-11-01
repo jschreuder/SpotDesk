@@ -1,6 +1,6 @@
 "use strict";
 
-var CACHE_NAME = 'spotdesk-v1-dev';
+var CACHE_NAME = 'spotdesk-v1.1-dev';
 
 var urlsToCache = [
     // main file
@@ -25,7 +25,7 @@ var urlsToCache = [
     "./node_modules/angular-cookies/angular-cookies.js",
     "./node_modules/angular-material/angular-material.css",
     "./node_modules/angular-material/angular-material.js",
-    "./node_modules/angular-ui-router/release/angular-ui-router.js",
+    "./node_modules/@uirouter/angularjs/release/angular-ui-router.js",
     "./node_modules/angular-material-data-table/dist/md-data-table.js",
     "./node_modules/angular-material-data-table/dist/md-data-table.css",
     "./node_modules/font-awesome/css/font-awesome.css",

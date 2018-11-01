@@ -1,9 +1,9 @@
 /.idea/
 /bin/
+/config/env.php
+/config/dev.php
 /coverage.xml
 /datamodel/
-/etc/env.php
-/etc/dev.php
 /var/logs/*.log
 /vendor/
 /web/node_modules/

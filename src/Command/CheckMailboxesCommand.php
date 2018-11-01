@@ -70,6 +70,7 @@ class CheckMailboxesCommand extends Command
         }
     }
 
+    /** @throws  \PhpImap\Exception */
     private function createConnection(Mailbox $mailbox) : ImapConnection
     {
         $path = '{' . $mailbox->getImapServer() . ':' . $mailbox->getImapPort() . '/imap';
@@ -98,12 +99,19 @@ class CheckMailboxesCommand extends Command
         return in_array($emailAddress->toString(), $userEmailAddresses, true);
     }
 
-    private function checkMailbox(Mailbox $mailbox, OutputInterface $output)
+    private function checkMailbox(Mailbox $mailbox, OutputInterface $output) : void
     {
-        $connection = $this->createConnection($mailbox);
+        try {
+            // Setup connection and retrieve unread mails
+            $connection = $this->createConnection($mailbox);
+            $mailIds = $connection->searchMailbox('UNSEEN');
+        } catch (\Throwable $exception) {
+            $output->writeln(
+                'ERROR CREATING MAILBOX ' . $mailbox->getName() . ': ' . $exception->getMessage()
+            );
+            return;
+        }
 
-        // Only retrieve unread mails
-        $mailIds = $connection->searchMailbox('UNSEEN');
         foreach ($mailIds as $mailId) {
             try {
                 // Retrieve mail by ID and fetch the relevant values from it

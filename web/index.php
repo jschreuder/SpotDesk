@@ -18,4 +18,4 @@ $request = Zend\Diactoros\ServerRequestFactory::fromGlobals();
 $response = $app->process($request);
 
 // Output the response
-(new Zend\Diactoros\Response\SapiEmitter())->emit($response);
+(new Zend\HttpHandlerRunner\Emitter\SapiEmitter())->emit($response);

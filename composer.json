@@ -10,9 +10,6 @@
         }
     ],
     "minimum-stability": "stable",
-    "config": {
-        "bin-dir": "bin"
-    },
     "require": {
         "php": ">=7.1",
         "ext-mbstring": "*",
@@ -21,11 +18,12 @@
         "jschreuder/middle": "^1.0",
         "robmorgan/phinx": "^0.10",
         "pimple/pimple": "^3.0",
-        "zendframework/zend-diactoros": "^1.4",
         "monolog/monolog": "^1.23",
-        "symfony/routing": "^3.2",
-        "symfony/console": "^3.2",
-        "ramsey/uuid": "^3.6",
+        "zendframework/zend-diactoros": "^2.0",
+        "zendframework/zend-httphandlerrunner": "^1.0",
+        "symfony/routing": "^4.1",
+        "symfony/console": "^4.1",
+        "ramsey/uuid": "^3.8",
         "lcobucci/jwt": "^3.2",
         "php-imap/php-imap": "^2.0",
         "swiftmailer/swiftmailer": "^5.4",
@@ -34,16 +32,23 @@
         "twig/twig": "^2.3",
         "zendframework/zend-permissions-rbac": "^2.5"
     },
+    "require-dev": {
+        "ext-imap": "*",
+        "phpspec/phpspec": "^4.0",
+        "phploc/phploc": "^4.0",
+        "phpmd/phpmd": "^2.6",
+        "fzaninotto/faker": "^1.6",
+        "leanphp/phpspec-code-coverage": "^4.0"
+    },
+    "suggest": {
+        "ext-imap": "For reading e-mails into tickets"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
     "autoload": {
         "psr-4": {
             "jschreuder\\SpotDesk\\": "src"
         }
-    },
-    "require-dev": {
-        "phpspec/phpspec": "^3.2",
-        "phploc/phploc": "^3.0",
-        "phpmd/phpmd": "^2.6",
-        "fzaninotto/faker": "^1.6",
-        "henrikbjorn/phpspec-code-coverage": "^3.0"
     }
 }

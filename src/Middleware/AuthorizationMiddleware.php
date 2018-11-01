@@ -2,13 +2,13 @@
 
 namespace jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\RoleInterface;
@@ -25,7 +25,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $this->rbac = $rbac;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    /** @throws  AuthenticationException */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler) : ResponseInterface
     {
         $role = $this->getUserRole($request);
         $permission = $this->getPermission($request);
@@ -35,13 +36,14 @@ class AuthorizationMiddleware implements MiddlewareInterface
             $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)
             || $this->rbac->isGranted($role, $permission)
         ) {
-            return $delegate->process($request);
+            return $requestHandler->handle($request);
         }
 
         // YOU... SHALL NOT PASS!
         return new JsonResponse(['message' => 'Not authorized'], 403);
     }
 
+    /** @throws  AuthenticationException */
     private function getUserRole(ServerRequestInterface $request) : RoleInterface
     {
         $user = $request->getAttribute('user');

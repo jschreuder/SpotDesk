@@ -114,7 +114,7 @@ class CheckMailboxesCommand extends Command
                 $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
 
                 if ($ticket = $this->getTicketFromEmail($subject, $email)) {
-                    $this->processTicketUpdate($ticket, $email, $message, $createdAt);
+                    $this->processTicketUpdate($mailbox, $ticket, $email, $message, $createdAt);
                 } else {
                     $this->processTicket($mailbox, $email, $subject, $message, $createdAt);
                 }
@@ -143,23 +143,8 @@ class CheckMailboxesCommand extends Command
 
         $id = Uuid::fromString($matches['uuid']);
         try {
-            $ticket = $this->ticketRepository->getTicket($id);
+            return $this->ticketRepository->getTicket($id);
         } catch (\OutOfBoundsException $exception) {
-            return null;
-        }
-
-        // Count as reply when sender matches either the original poster or a known user
-        if ($ticket->getEmail()->isEqual($fromEmailAddress) || $this->isUser($fromEmailAddress)) {
-            return $ticket;
-        }
-
-        // If it's neither, check if it's a ticket subscriber and allow if it is
-        $subscriptions = $this->ticketRepository->getTicketSubscriptions($ticket);
-        try {
-            $subscriptions->getByEmailAddress($fromEmailAddress);
-            return $ticket;
-        } catch (\OutOfBoundsException $exception) {
-            // All failed. Not allowed to update the ticket, thus create a new one
             return null;
         }
     }
@@ -170,7 +155,7 @@ class CheckMailboxesCommand extends Command
         string $subject,
         string $message,
         \DateTimeInterface $createdAt
-    )
+    ) : void
     {
         $department = $mailbox->getDepartment();
         if ($this->ticketRepository->isDuplicate($email, $subject, $message, $createdAt, $department)) {
@@ -184,17 +169,42 @@ class CheckMailboxesCommand extends Command
     }
 
     private function processTicketUpdate(
+        Mailbox $mailbox,
         Ticket $ticket,
         EmailAddressValue $email,
         string $message,
         \DateTimeInterface $createdAt
-    )
+    ) : void
     {
+        // Count as reply when sender matches either the original poster or a known user
+        if (
+            $ticket->getEmail()->isEqual($email)
+            || $mailbox->getDepartment()->getEmail()->isEqual($email)
+            || $this->isUser($email)
+        ) {
+            // Ticket creator, department or user - will always be processed as non-internal
+            $internal = false;
+        } else {
+            $subscriptions = $this->ticketRepository->getTicketSubscriptions($ticket);
+            try {
+                // Subscriber, use subscription "internal" setting
+                $subscription = $subscriptions->getByEmailAddress($email);
+                $internal = $subscription->isInternal();
+            } catch (\OutOfBoundsException $exception) {
+                // No user, department, creator or subscriber. Thus can't update ticket, create a new one instead
+                $this->processTicket($mailbox, $email, $ticket->getSubject(), $message, $createdAt);
+                return;
+            }
+        }
+
+        // Skip if it's a duplicate
         if ($this->ticketRepository->isDuplicateUpdate($ticket, $email, $message, $createdAt)) {
             return;
         }
+
+        //  Create ticket-update and notification mailing
         $ticketUpdate = $this->ticketRepository->createTicketUpdate(
-            $ticket, $email, $message, false, $createdAt
+            $ticket, $email, $message, $internal, $createdAt
         );
         $this->mailService->addTicketMailing($ticket, SendMailServiceInterface::TYPE_UPDATE_TICKET, $ticketUpdate);
 

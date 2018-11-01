@@ -2,7 +2,6 @@
 
 namespace spec\jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
@@ -11,6 +10,7 @@ use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInter
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Permissions\Rbac\Rbac;
 use Zend\Permissions\Rbac\RoleInterface;
 
@@ -32,7 +32,7 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
     public function it_can_authorize_a_user(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         ResponseInterface $response,
         User $user,
         RoleInterface $role,
@@ -48,14 +48,14 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)->willReturn(false);
         $this->rbac->isGranted($role, $permission)->willReturn(true);
-        $delegate->process($request)->willReturn($response);
+        $requestHandler->handle($request)->willReturn($response);
 
-        $this->process($request, $delegate)->shouldReturn($response);
+        $this->process($request, $requestHandler)->shouldReturn($response);
     }
 
     public function it_can_stop_unauthorized_user(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         User $user,
         RoleInterface $role,
         AuthorizableControllerInterface $controller
@@ -70,16 +70,16 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)->willReturn(false);
         $this->rbac->isGranted($role, $permission)->willReturn(false);
-        $delegate->process($request)->shouldNotBeCalled();
+        $requestHandler->handle($request)->shouldNotBeCalled();
 
-        $response = $this->process($request, $delegate);
+        $response = $this->process($request, $requestHandler);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(403);
     }
 
     public function it_will_allow_admins_everywhere(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         ResponseInterface $response,
         User $user,
         RoleInterface $role,
@@ -95,14 +95,14 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)->willReturn(true);
         $this->rbac->isGranted($role, $permission)->shouldNotBeCalled();
-        $delegate->process($request)->willReturn($response);
+        $requestHandler->handle($request)->willReturn($response);
 
-        $this->process($request, $delegate)->shouldReturn($response);
+        $this->process($request, $requestHandler)->shouldReturn($response);
     }
 
     public function it_will_require_unknown_permission_on_non_authorizable_controller(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         User $user,
         RoleInterface $role,
         ControllerInterface $controller
@@ -114,19 +114,19 @@ class AuthorizationMiddlewareSpec extends ObjectBehavior
 
         $this->rbac->isGranted($role, AuthorizableControllerInterface::ROLE_ADMIN)->willReturn(false);
         $this->rbac->isGranted($role, AuthorizationMiddleware::UNKNOWN_PERMISSION)->willReturn(false);
-        $delegate->process($request)->shouldNotBeCalled();
+        $requestHandler->handle($request)->shouldNotBeCalled();
 
-        $response = $this->process($request, $delegate);
+        $response = $this->process($request, $requestHandler);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(403);
     }
 
     public function it_will_error_when_request_has_no_user_attribute(
         ServerRequestInterface $request,
-        DelegateInterface $delegate
+        RequestHandlerInterface $requestHandler
     ) : void
     {
         $request->getAttribute('user')->willReturn(null);
-        $this->shouldThrow(AuthenticationException::class)->duringProcess($request, $delegate);
+        $this->shouldThrow(AuthenticationException::class)->duringProcess($request, $requestHandler);
     }
 }

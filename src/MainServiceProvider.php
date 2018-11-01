@@ -51,7 +51,7 @@ class MainServiceProvider implements ServiceProviderInterface
                 new RequestValidatorMiddleware($container['requestValidator.errorHandler']),
                 new RequestFilterMiddleware(),
                 new AuthorizationMiddleware($container['rbac']),
-                new AuthenticationMiddleware($container['service.authentication'], $container['repository.users']),
+                new AuthenticationMiddleware($container['service.authentication']),
                 new SessionMiddleware($container['session.processor']),
                 new JsonRequestParserMiddleware(),
                 new RoutingMiddleware(

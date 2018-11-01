@@ -2,7 +2,6 @@
 
 namespace spec\jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\GuestUser;
 use jschreuder\SpotDesk\Entity\User;
@@ -13,6 +12,7 @@ use Prophecy\Argument\Token\TypeToken;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthenticationMiddlewareSpec extends ObjectBehavior
 {
@@ -34,7 +34,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
     public function it_can_handle_login_request(
         ServerRequestInterface $request,
         UriInterface $uri,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         SessionInterface $session
     ) : void
     {
@@ -49,7 +49,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
 
         $this->authenticationService->login($username, $password, $session)->willReturn(true);
 
-        $response = $this->process($request, $delegate);
+        $response = $this->process($request, $requestHandler);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(201);
     }
@@ -57,7 +57,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
     public function it_can_handle_a_failed_login(
         ServerRequestInterface $request,
         UriInterface $uri,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         SessionInterface $session
     ) : void
     {
@@ -72,7 +72,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
 
         $this->authenticationService->login($username, $password, $session)->willReturn(false);
 
-        $response = $this->process($request, $delegate);
+        $response = $this->process($request, $requestHandler);
         $response->shouldBeAnInstanceOf(ResponseInterface::class);
         $response->getStatusCode()->shouldBe(401);
     }
@@ -82,7 +82,7 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         ServerRequestInterface $request2,
         SessionInterface $session,
         UriInterface $uri,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         ResponseInterface $response
     ) : void
     {
@@ -95,16 +95,16 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
 
         $request1->withAttribute('user', new TypeToken(GuestUser::class))->willReturn($request2);
 
-        $delegate->process($request2)->willReturn($response);
+        $requestHandler->handle($request2)->willReturn($response);
 
-        $this->process($request1, $delegate)->shouldReturn($response);
+        $this->process($request1, $requestHandler)->shouldReturn($response);
     }
 
     public function it_attaches_user_to_the_request_when_logged_in(
         ServerRequestInterface $request1,
         ServerRequestInterface $request2,
         UriInterface $uri,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         SessionInterface $session,
         User $user,
         ResponseInterface $response
@@ -122,16 +122,16 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $user->isActive()->willReturn(true);
 
         $request1->withAttribute('user', $user)->willReturn($request2);
-        $delegate->process($request2)->willReturn($response);
+        $requestHandler->handle($request2)->willReturn($response);
 
-        $this->process($request1, $delegate)->shouldReturn($response);
+        $this->process($request1, $requestHandler)->shouldReturn($response);
     }
 
     public function it_attaches_falls_back_to_guest_on_inactive_user(
         ServerRequestInterface $request1,
         ServerRequestInterface $request2,
         UriInterface $uri,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         SessionInterface $session,
         User $user,
         ResponseInterface $response
@@ -149,8 +149,8 @@ class AuthenticationMiddlewareSpec extends ObjectBehavior
         $user->isActive()->willReturn(false);
 
         $request1->withAttribute('user', new TypeToken(GuestUser::class))->willReturn($request2);
-        $delegate->process($request2)->willReturn($response);
+        $requestHandler->handle($request2)->willReturn($response);
 
-        $this->process($request1, $delegate)->shouldReturn($response);
+        $this->process($request1, $requestHandler)->shouldReturn($response);
     }
 }

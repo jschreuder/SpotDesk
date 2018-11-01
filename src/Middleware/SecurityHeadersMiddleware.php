@@ -2,10 +2,10 @@
 
 namespace jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class SecurityHeadersMiddleware implements MiddlewareInterface
 {
@@ -17,9 +17,9 @@ final class SecurityHeadersMiddleware implements MiddlewareInterface
         $this->siteUrl = $siteUrl;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler) : ResponseInterface
     {
-        $response = $delegate->process($request);
+        $response = $requestHandler->handle($request);
 
         // Add a bunch of security related headers to the response
         $response = $response

@@ -2,12 +2,12 @@
 
 namespace spec\jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use jschreuder\SpotDesk\Middleware\SecurityHeadersMiddleware;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 class SecurityHeadersMiddlewareSpec extends ObjectBehavior
 {
@@ -28,7 +28,7 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
 
     public function it_attaches_security_headers_to_response(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         ResponseInterface $response1,
         ResponseInterface $response2,
         ResponseInterface $response3,
@@ -36,7 +36,7 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
         ResponseInterface $response5
     ) : void
     {
-        $delegate->process($request)->willReturn($response1);
+        $requestHandler->handle($request)->willReturn($response1);
 
         $response1->withHeader('X-Frame-Options', new Argument\Token\TypeToken('string'))
             ->willReturn($response2);
@@ -47,12 +47,12 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
         $response4->withHeader('Content-Security-Policy', new Argument\Token\TypeToken('string'))
             ->willReturn($response5);
 
-        $this->process($request, $delegate)->shouldReturn($response5);
+        $this->process($request, $requestHandler)->shouldReturn($response5);
     }
 
     public function it_also_attaches_hsts_header_on_https_connection(
         ServerRequestInterface $request,
-        DelegateInterface $delegate,
+        RequestHandlerInterface $requestHandler,
         ResponseInterface $response1,
         ResponseInterface $response2,
         ResponseInterface $response3,
@@ -63,7 +63,7 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
     {
         $this->beConstructedWith('https://secure.site');
 
-        $delegate->process($request)->willReturn($response1);
+        $requestHandler->handle($request)->willReturn($response1);
 
         $response1->withHeader('X-Frame-Options', new Argument\Token\TypeToken('string'))
             ->willReturn($response2);
@@ -76,6 +76,6 @@ class SecurityHeadersMiddlewareSpec extends ObjectBehavior
         $response5->withHeader('Strict-Transport-Security', new Argument\Token\TypeToken('string'))
             ->willReturn($response6);
 
-        $this->process($request, $delegate)->shouldReturn($response6);
+        $this->process($request, $requestHandler)->shouldReturn($response6);
     }
 }

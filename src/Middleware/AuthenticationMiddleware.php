@@ -2,14 +2,14 @@
 
 namespace jschreuder\SpotDesk\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\GuestUser;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
@@ -22,7 +22,8 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         $this->authenticationService = $authenticationService;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
+    /** @throws  AuthenticationException */
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler) : ResponseInterface
     {
         /** @var  SessionInterface $session */
         $session = $request->getAttribute('session');
@@ -43,7 +44,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
         }
 
         // Process request with authenticated user attribute added
-        return $delegate->process(
+        return $requestHandler->handle(
             $request->withAttribute('user', $user)
         );
     }

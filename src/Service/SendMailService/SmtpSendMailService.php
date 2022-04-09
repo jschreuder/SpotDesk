@@ -5,15 +5,17 @@ namespace jschreuder\SpotDesk\Service\SendMailService;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Entity\TicketMailing;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
-use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Repository\TicketMailingRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
 final class SmtpSendMailService implements SendMailServiceInterface
 {
     public function __construct(
         private TicketMailingRepository $ticketMailingRepository,
-        private \Swift_Mailer $swiftMailer,
+        private MailerInterface $mailer,
         private MailTemplateFactoryInterface $mailTemplateFactory,
         private EmailAddressValue $defaultFrom,
         private string $siteName
@@ -36,10 +38,7 @@ final class SmtpSendMailService implements SendMailServiceInterface
         $renderedMail = $mail->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate]);
 
         $message = $this->createMessage($ticket, $subject, $renderedMail);
-        $sent = $this->swiftMailer->send($message);
-        if ($sent === 0) {
-            throw new SpotDeskException('Failed to send mail');
-        }
+        $this->mailer->send($message);
 
         $this->ticketMailingRepository->setSent($ticketMailing);
     }
@@ -49,7 +48,7 @@ final class SmtpSendMailService implements SendMailServiceInterface
         return ($ticketUpdate ? 'Re: ' : '') . $ticket->getSubject() . ' [' . $ticket->getId()->toString() . ']';
     }
 
-    private function createMessage(Ticket $ticket, string $subject, string $renderedMail) : \Swift_Message
+    private function createMessage(Ticket $ticket, string $subject, string $renderedMail) : Email
     {
         $fromMail = $ticket->getDepartment()
             ? $ticket->getDepartment()->getEmail()->toString()
@@ -57,10 +56,10 @@ final class SmtpSendMailService implements SendMailServiceInterface
         $fromName = $ticket->getDepartment()
             ? $ticket->getDepartment()->getName() . ' - ' . $this->siteName
             : $this->siteName;
-
-        return \Swift_Message::newInstance($subject)
-            ->setFrom($fromMail, $fromName)
-            ->setTo($ticket->getEmail()->toString())
-            ->setBody($renderedMail, 'text/html');
+        return (new Email())
+            ->from(new Address($fromMail, $fromName))
+            ->to($ticket->getEmail()->toString())
+            ->subject($subject)
+            ->html($renderedMail);
     }
 }

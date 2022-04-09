@@ -30,10 +30,6 @@ return [
     'session.refresh_after' => .25,  // session is refreshed after .25 * 7200 = 1800 seconds (30 minutes)
 
     // SMTP configuration
-    'smtp.from' => 'test@mail.dev',
-    'smtp.server' => 'localhost',
-    'smtp.port' => 587,
-    'smtp.security' => null, // null, 'ssl' or 'tls'
-    'smtp.user' => '',
-    'smtp.pass' => '',
+    'mailer.from' => 'test@mail.dev',
+    'mailer.dsn' => 'smtp://localhost:587',
 ];

@@ -8,9 +8,14 @@ use Twig\Environment;
 
 class TwigMailTemplateSpec extends ObjectBehavior
 {
-    private Environment $twig;
-    private string $template;
-    private string $subject;
+    /** @var  Environment */
+    private $twig;
+
+    /** @var  string */
+    private $template;
+
+    /** @var  string */
+    private $subject;
 
     public function let(Environment $twig) : void
     {

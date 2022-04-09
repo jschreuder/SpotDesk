@@ -41,6 +41,8 @@ use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -119,15 +121,8 @@ class MainServiceProvider implements ServiceProviderInterface
             return $rbac;
         };
 
-        $container['mail.swiftmailer'] = function () use ($container) {
-            $transport = \Swift_SmtpTransport::newInstance(
-                $container['smtp.server'],
-                $container['smtp.port'],
-                $container['smtp.security']
-            )
-                ->setUsername($container['smtp.user'])
-                ->setPassword($container['smtp.pass']);
-            return \Swift_Mailer::newInstance($transport);
+        $container['mail.mailer'] = function () use ($container) {
+            return new Mailer(Transport::fromDsn($container['mailer.dsn']));
         };
 
         $container['mail.twig'] = function () use ($container) {
@@ -169,9 +164,9 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['service.mail'] = function () use ($container) {
             return new SmtpSendMailService(
                 $container['repository.ticket_mailings'],
-                $container['mail.swiftmailer'],
+                $container['mail.mailer'],
                 $container['mail.template_factory'],
-                EmailAddressValue::get($container['smtp.from']),
+                EmailAddressValue::get($container['mailer.from']),
                 $container['site.title']
             );
         };

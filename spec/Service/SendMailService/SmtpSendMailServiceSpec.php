@@ -15,14 +15,16 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class SmtpSendMailServiceSpec extends ObjectBehavior
 {
     /** @var  TicketMailingRepository */
     private $ticketMailingRepository;
 
-    /** @var  \Swift_Mailer */
-    private $swiftMailer;
+    /** @var  MailerInterface */
+    private $mailer;
 
     /** @var  MailTemplateFactory */
     private $mailTemplateFactory;
@@ -34,13 +36,13 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
     private $siteName;
 
     public function let(
-        \Swift_Mailer $swiftMailer,
+        MailerInterface $mailer,
         MailTemplateFactoryInterface $templateFactory,
         TicketMailingRepository $repository
     ) : void {
         $this->beConstructedWith(
             $this->ticketMailingRepository = $repository,
-            $this->swiftMailer = $swiftMailer,
+            $this->mailer = $mailer,
             $this->mailTemplateFactory = $templateFactory,
             $this->defaultFrom = EmailAddressValue::get('mail@test.dev'),
             $this->siteName = 'SiteName'
@@ -89,7 +91,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
         $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
-        $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
+        $this->mailer->send(new Argument\Token\TypeToken(Email::class))->shouldBeCalled();
 
         $this->ticketMailingRepository->setSent($ticketMailing)->shouldBeCalled();
 
@@ -125,7 +127,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
         $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
-        $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(1);
+        $this->mailer->send(new Argument\Token\TypeToken(Email::class))->shouldBeCalled();
 
         $this->ticketMailingRepository->setSent($ticketMailing)->shouldBeCalled();
 
@@ -155,7 +157,7 @@ class SmtpSendMailServiceSpec extends ObjectBehavior
         $this->mailTemplateFactory->getMailTemplate($type)->willReturn($mailTemplate);
         $mailTemplate->render(['ticket' => $ticket, 'ticket_update' => $ticketUpdate])->willReturn('mail contents');
 
-        $this->swiftMailer->send(new Argument\Token\TypeToken(\Swift_Message::class))->willReturn(0);
+        $this->mailer->send(new Argument\Token\TypeToken(Email::class))->willThrow(new \RuntimeException());
 
         $this->ticketMailingRepository->setSent($ticketMailing)->shouldNotBeCalled();
 

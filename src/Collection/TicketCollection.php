@@ -43,7 +43,7 @@ class TicketCollection implements ArrayAccess, Countable, Iterator
 
     public function getTotalCount() : int
     {
-        if (is_null($this->totalCount)) {
+        if (!isset($this->totalCount)) {
             throw new SpotDeskException('Total count must be set before it is retrieved.');
         }
         return $this->totalCount;

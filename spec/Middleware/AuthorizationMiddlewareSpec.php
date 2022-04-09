@@ -7,15 +7,16 @@ use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Middleware\AuthorizationMiddleware;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\RoleInterface;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\RoleInterface;
 
 class AuthorizationMiddlewareSpec extends ObjectBehavior
 {
+    /** @var  Rbac */
     private $rbac;
 
     public function let(Rbac $rbac)

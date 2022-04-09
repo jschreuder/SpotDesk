@@ -33,7 +33,7 @@ class StatusRepository
 
     public function getStatuses() : StatusCollection
     {
-        if (is_null($this->_statuses)) {
+        if (!isset($this->_statuses)) {
             $query = $this->db->prepare("
                 SELECT * FROM `statuses`
             ");

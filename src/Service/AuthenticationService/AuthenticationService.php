@@ -17,7 +17,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
     public function __construct(
         private UserRepository $userRepository,
         private Rbac $rbac,
-        private int $passwordAlgorithm,
+        private string|int $passwordAlgorithm,
         private array $passwordOptions
     )
     {

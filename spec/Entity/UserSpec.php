@@ -4,8 +4,8 @@ namespace spec\jschreuder\SpotDesk\Entity;
 
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Laminas\Permissions\Rbac\RoleInterface;
 use PhpSpec\ObjectBehavior;
-use Zend\Permissions\Rbac\RoleInterface;
 
 class UserSpec extends ObjectBehavior
 {
@@ -46,7 +46,7 @@ class UserSpec extends ObjectBehavior
         $this->getDisplayName()->shouldReturn($this->displayName);
         $this->getPassword()->shouldReturn($this->password);
         $this->getRole()->shouldReturn($this->role);
-        $this->isActive()->shouldBe(true);
+        $this->isActive()->shouldBe($this->active);
     }
 
     public function it_can_instantiate_without_setting_user_active() : void

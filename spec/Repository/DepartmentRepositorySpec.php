@@ -132,7 +132,7 @@ class DepartmentRepositorySpec extends ObjectBehavior
 
         $departments = $this->getDepartmentsForUser($user);
         $departments->shouldHaveType(DepartmentCollection::class);
-        $departments->offsetExists($uuid1->toString())->shouldBe(false);
+        $departments->shouldNotHaveKey($uuid1->toString());
         $departments[$uuid2->toString()]->getName()->shouldBe('Two');
         $departments[$uuid2->toString()]->getParent()->getId()->equals($uuid1)->shouldBe(true);
         $departments[$uuid2->toString()]->getEmail()->toString()->shouldBe('two@dom.dev');

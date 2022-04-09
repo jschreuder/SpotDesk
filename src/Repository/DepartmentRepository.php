@@ -60,7 +60,7 @@ class DepartmentRepository
 
     public function getDepartments() : DepartmentCollection
     {
-        if (is_null($this->_departments)) {
+        if (!isset($this->_departments)) {
             $query = $this->db->query("SELECT * FROM `departments`");
 
             $departmentRows = [];

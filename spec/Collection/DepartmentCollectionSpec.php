@@ -19,9 +19,9 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($department1, $department2);
         $this->shouldHaveType(DepartmentCollection::class);
 
-        $this->offsetExists($uuid1->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid1->toString());
         $this->offsetGet($uuid1->toString())->shouldReturn($department1);
-        $this->offsetExists($uuid2->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid2->toString());
         $this->offsetGet($uuid2->toString())->shouldReturn($department2);
     }
 
@@ -35,11 +35,11 @@ class DepartmentCollectionSpec extends ObjectBehavior
         $department3->getId()->willReturn($uuid3);
         $this->beConstructedWith($department1, $department2);
 
-        $this->offsetExists($uuid3->toString())->shouldBe(false);
+        $this->shouldNotHaveKey($uuid3->toString());
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($uuid3->toString());
 
         $this->push($department3);
-        $this->offsetExists($uuid3->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid3->toString());
         $this->offsetGet($uuid3->toString())->shouldReturn($department3);
     }
 

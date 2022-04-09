@@ -7,10 +7,10 @@ use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\RoleInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\RoleInterface;
 
 class AuthenticationServiceSpec extends ObjectBehavior
 {
@@ -20,7 +20,7 @@ class AuthenticationServiceSpec extends ObjectBehavior
     /** @var  Rbac */
     private $rbac;
 
-    /** @var  int */
+    /** @var  string|int */
     private $passwordAlgorithm;
 
     /** @var  array */

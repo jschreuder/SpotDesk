@@ -7,11 +7,11 @@ use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\RoleInterface;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Ramsey\Uuid\Uuid;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\RoleInterface;
 
 class UserRepositorySpec extends ObjectBehavior
 {
@@ -246,6 +246,7 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $departmentId = Uuid::uuid4();
         $department->getId()->willReturn($departmentId);
+        $department->getName()->willReturn('myGroup');
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
         $this->db->prepare(new Argument\Token\StringContainsToken('INSERT'))->willReturn($statement);
@@ -286,6 +287,7 @@ class UserRepositorySpec extends ObjectBehavior
     {
         $departmentId = Uuid::uuid4();
         $department->getId()->willReturn($departmentId);
+        $department->getName()->willReturn('myGroup');
         $user->getEmail()->willReturn($email = EmailAddressValue::get('my@name.email'));
 
         $this->db->prepare(new Argument\Token\StringContainsToken('DELETE'))->willReturn($statement);

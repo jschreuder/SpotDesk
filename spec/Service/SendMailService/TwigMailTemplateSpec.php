@@ -4,19 +4,15 @@ namespace spec\jschreuder\SpotDesk\Service\SendMailService;
 
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
 use PhpSpec\ObjectBehavior;
+use Twig\Environment;
 
 class TwigMailTemplateSpec extends ObjectBehavior
 {
-    /** @var  \Twig_Environment */
-    private $twig;
+    private Environment $twig;
+    private string $template;
+    private string $subject;
 
-    /** @var  string */
-    private $template;
-
-    /** @var  string */
-    private $subject;
-
-    public function let(\Twig_Environment $twig) : void
+    public function let(Environment $twig) : void
     {
         $this->beConstructedWith(
             $this->twig = $twig,

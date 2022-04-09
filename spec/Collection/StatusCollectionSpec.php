@@ -18,9 +18,9 @@ class StatusCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($status1, $status2);
         $this->shouldHaveType(StatusCollection::class);
 
-        $this->offsetExists($statusName1)->shouldBe(true);
+        $this->shouldHaveKey($statusName1);
         $this->offsetGet($statusName1)->shouldReturn($status1);
-        $this->offsetExists($statusName2)->shouldBe(true);
+        $this->shouldHaveKey($statusName2);
         $this->offsetGet($statusName2)->shouldReturn($status2);
     }
 
@@ -34,11 +34,11 @@ class StatusCollectionSpec extends ObjectBehavior
         $status3->getName()->willReturn($statusName3);
         $this->beConstructedWith($status1, $status2);
 
-        $this->offsetExists($statusName3)->shouldBe(false);
+        $this->shouldNotHaveKey($statusName3);
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($statusName3);
 
         $this->push($status3);
-        $this->offsetExists($statusName3)->shouldBe(true);
+        $this->shouldHaveKey($statusName3);
         $this->offsetGet($statusName3)->shouldReturn($status3);
     }
 

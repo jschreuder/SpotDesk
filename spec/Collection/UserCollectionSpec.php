@@ -19,9 +19,9 @@ class UserCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($user1, $user2);
         $this->shouldHaveType(UserCollection::class);
 
-        $this->offsetExists($email1->toString())->shouldBe(true);
+        $this->shouldHaveKey($email1->toString());
         $this->offsetGet($email1->toString())->shouldReturn($user1);
-        $this->offsetExists($email2->toString())->shouldBe(true);
+        $this->shouldHaveKey($email2->toString());
         $this->offsetGet($email2->toString())->shouldReturn($user2);
     }
 
@@ -35,11 +35,11 @@ class UserCollectionSpec extends ObjectBehavior
         $user3->getEmail()->willReturn($email3);
         $this->beConstructedWith($user1, $user2);
 
-        $this->offsetExists($email3->toString())->shouldBe(false);
+        $this->shouldNotHaveKey($email3->toString());
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($email3->toString());
 
         $this->push($user3);
-        $this->offsetExists($email3->toString())->shouldBe(true);
+        $this->shouldHaveKey($email3->toString());
         $this->offsetGet($email3->toString())->shouldReturn($user3);
     }
 

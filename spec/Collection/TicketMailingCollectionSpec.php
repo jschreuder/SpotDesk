@@ -19,9 +19,9 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($ticketMailing1, $ticketMailing2);
         $this->shouldHaveType(TicketMailingCollection::class);
 
-        $this->offsetExists($uuid1->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid1->toString());
         $this->offsetGet($uuid1->toString())->shouldReturn($ticketMailing1);
-        $this->offsetExists($uuid2->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid2->toString());
         $this->offsetGet($uuid2->toString())->shouldReturn($ticketMailing2);
     }
 
@@ -39,11 +39,11 @@ class TicketMailingCollectionSpec extends ObjectBehavior
         $ticketMailing3->getId()->willReturn($uuid3);
         $this->beConstructedWith($ticketMailing1, $ticketMailing2);
 
-        $this->offsetExists($uuid3->toString())->shouldBe(false);
+        $this->shouldNotHaveKey($uuid3->toString());
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($uuid3->toString());
 
         $this->push($ticketMailing3);
-        $this->offsetExists($uuid3->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid3->toString());
         $this->offsetGet($uuid3->toString())->shouldReturn($ticketMailing3);
     }
 

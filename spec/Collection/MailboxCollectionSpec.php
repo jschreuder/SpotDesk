@@ -19,9 +19,9 @@ class MailboxCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($mailbox1, $mailbox2);
         $this->shouldHaveType(MailboxCollection::class);
 
-        $this->offsetExists($uuid1->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid1->toString());
         $this->offsetGet($uuid1->toString())->shouldReturn($mailbox1);
-        $this->offsetExists($uuid2->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid2->toString());
         $this->offsetGet($uuid2->toString())->shouldReturn($mailbox2);
     }
 
@@ -35,11 +35,11 @@ class MailboxCollectionSpec extends ObjectBehavior
         $mailbox3->getId()->willReturn($uuid3);
         $this->beConstructedWith($mailbox1, $mailbox2);
 
-        $this->offsetExists($uuid3->toString())->shouldBe(false);
+        $this->shouldNotHaveKey($uuid3->toString());
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($uuid3->toString());
 
         $this->push($mailbox3);
-        $this->offsetExists($uuid3->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid3->toString());
         $this->offsetGet($uuid3->toString())->shouldReturn($mailbox3);
     }
 

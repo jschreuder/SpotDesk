@@ -19,9 +19,9 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $this->beConstructedWith($ticketUpdate1, $ticketUpdate2);
         $this->shouldHaveType(TicketUpdateCollection::class);
 
-        $this->offsetExists($uuid1->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid1->toString());
         $this->offsetGet($uuid1->toString())->shouldReturn($ticketUpdate1);
-        $this->offsetExists($uuid2->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid2->toString());
         $this->offsetGet($uuid2->toString())->shouldReturn($ticketUpdate2);
     }
 
@@ -39,11 +39,11 @@ class TicketUpdateCollectionSpec extends ObjectBehavior
         $ticketUpdate3->getId()->willReturn($uuid3);
         $this->beConstructedWith($ticketUpdate1, $ticketUpdate2);
 
-        $this->offsetExists($uuid3->toString())->shouldBe(false);
+        $this->shouldNotHaveKey($uuid3->toString());
         $this->shouldThrow(\OutOfBoundsException::class)->duringOffsetGet($uuid3->toString());
 
         $this->push($ticketUpdate3);
-        $this->offsetExists($uuid3->toString())->shouldBe(true);
+        $this->shouldHaveKey($uuid3->toString());
         $this->offsetGet($uuid3->toString())->shouldReturn($ticketUpdate3);
     }
 

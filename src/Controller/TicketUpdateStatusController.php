@@ -5,50 +5,41 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class TicketUpdateStatusController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    public function __construct(TicketRepository $ticketRepository, StatusRepository $statusRepository)
+    public function __construct(
+        private TicketRepository $ticketRepository, 
+        private StatusRepository $statusRepository
+    )
     {
-        $this->ticketRepository = $ticketRepository;
-        $this->statusRepository = $statusRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
-        $filter = new Filter();
-        $filter->value('status')->string();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request->withParsedBody($body), [
+            'status' => strval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
-        $validator->required('status')->string();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'ticket_id' => new UuidValidator(),
+            'status' => new StringLength(['min' => 1]),
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

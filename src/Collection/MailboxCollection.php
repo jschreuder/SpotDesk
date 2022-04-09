@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\Mailbox;
+use OutOfBoundsException;
 
-class MailboxCollection implements \ArrayAccess, \Countable, \Iterator
+class MailboxCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class MailboxCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($mailboxId) : Mailbox
     {
         if (!$this->offsetExists($mailboxId)) {
-            throw new \OutOfBoundsException('No such status: ' . $mailboxId);
+            throw new OutOfBoundsException('No such status: ' . $mailboxId);
         }
         return $this->collection[$mailboxId];
     }

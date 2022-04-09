@@ -2,9 +2,10 @@
 
 namespace jschreuder\SpotDesk\Exception;
 
+use RuntimeException;
 use Throwable;
 
-class SpotDeskException extends \RuntimeException
+class SpotDeskException extends RuntimeException
 {
     public function __construct($message = '', Throwable $previous = null)
     {

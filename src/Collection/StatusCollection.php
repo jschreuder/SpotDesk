@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\Status;
+use OutOfBoundsException;
 
-class StatusCollection implements \ArrayAccess, \Countable, \Iterator
+class StatusCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class StatusCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($status) : Status
     {
         if (!$this->offsetExists($status)) {
-            throw new \OutOfBoundsException('No such status: ' . $status);
+            throw new OutOfBoundsException('No such status: ' . $status);
         }
         return $this->collection[$status];
     }

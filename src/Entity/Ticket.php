@@ -4,61 +4,23 @@ namespace jschreuder\SpotDesk\Entity;
 
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\UuidInterface;
+use DateTimeInterface;
 
 class Ticket
 {
-    /** @var  UuidInterface */
-    private $id;
-
-    /** @var  string */
-    private $secretKey;
-
-    /** @var  EmailAddressValue */
-    private $email;
-
-    /** @var  string */
-    private $subject;
-
-    /** @var  string */
-    private $message;
-
-    /** @var  \DateTimeInterface */
-    private $createdAt;
-
-    /** @var  int */
-    private $updates;
-
-    /** @var  \DateTimeInterface */
-    private $lastUpdate;
-
-    /** @var  Status */
-    private $status;
-
-    /** @var  ?Department */
-    private $department;
-
     public function __construct(
-        UuidInterface $id,
-        string $secretKey,
-        EmailAddressValue $email,
-        string $subject,
-        string $message,
-        \DateTimeInterface $createdAt,
-        int $updates,
-        \DateTimeInterface $lastUpdate,
-        Status $status,
-        ?Department $department
-    ) {
-        $this->id = $id;
-        $this->secretKey = $secretKey;
-        $this->email = $email;
-        $this->subject = $subject;
-        $this->message = $message;
-        $this->createdAt = $createdAt;
-        $this->updates = $updates;
-        $this->lastUpdate = $lastUpdate;
-        $this->status = $status;
-        $this->department = $department;
+        private UuidInterface $id,
+        private string $secretKey,
+        private EmailAddressValue $email,
+        private string $subject,
+        private string $message,
+        private DateTimeInterface $createdAt,
+        private int $updates,
+        private DateTimeInterface $lastUpdate,
+        private Status $status,
+        private ?Department $department
+    )
+    {
     }
 
     public function getId() : UuidInterface
@@ -86,7 +48,7 @@ class Ticket
         return $this->message;
     }
 
-    public function getCreatedAt() : \DateTimeInterface
+    public function getCreatedAt() : DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -101,12 +63,12 @@ class Ticket
         $this->updates = $updates;
     }
 
-    public function getLastUpdate() : \DateTimeInterface
+    public function getLastUpdate() : DateTimeInterface
     {
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(\DateTimeInterface $lastUpdate) : void
+    public function setLastUpdate(DateTimeInterface $lastUpdate) : void
     {
         $this->lastUpdate = $lastUpdate;
     }

@@ -4,22 +4,17 @@ namespace jschreuder\SpotDesk\Controller;
 
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
+use Laminas\Diactoros\Response as Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
 
 class AngularInitController implements ControllerInterface, AuthorizableControllerInterface
 {
-    /** @var  string */
-    private $siteTitle;
-
-    /** @var  string */
-    private $siteUrl;
-
-    public function __construct($siteTitle, $siteUrl)
+    public function __construct(
+        private string $siteTitle, 
+        private string $siteUrl
+    )
     {
-        $this->siteTitle = $siteTitle;
-        $this->siteUrl = $siteUrl;
     }
 
     public function getRequiredPermission() : string

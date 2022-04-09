@@ -2,15 +2,19 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use InvalidArgumentException;
+use Iterator;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
+use OutOfBoundsException;
 
-class TicketCollection implements \ArrayAccess, \Countable, \Iterator
+class TicketCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
-    /** @var  int */
-    private $totalCount;
+    private int $totalCount;
 
     public function __construct(Ticket ...$tickets)
     {
@@ -32,7 +36,7 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($ticketId) : Ticket
     {
         if (!$this->offsetExists($ticketId)) {
-            throw new \OutOfBoundsException('No ticket with ID: ' . $ticketId);
+            throw new OutOfBoundsException('No ticket with ID: ' . $ticketId);
         }
         return $this->collection[$ticketId];
     }
@@ -48,7 +52,7 @@ class TicketCollection implements \ArrayAccess, \Countable, \Iterator
     public function setTotalCount(int $totalCount)
     {
         if ($totalCount < 0) {
-            throw new \InvalidArgumentException('Total count of tickets cannot be smaller then 0.');
+            throw new InvalidArgumentException('Total count of tickets cannot be smaller then 0.');
         }
         $this->totalCount = $totalCount;
     }

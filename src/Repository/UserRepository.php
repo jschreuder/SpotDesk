@@ -7,20 +7,17 @@ use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Zend\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\Rbac;
+use OutOfBoundsException;
+use PDO;
 
 class UserRepository
 {
-    /** @var  \PDO */
-    private $db;
-
-    /** @var  Rbac */
-    private $rbac;
-
-    public function __construct(\PDO $db, Rbac $rbac)
+    public function __construct(
+        private PDO $db, 
+        private Rbac $rbac
+    )
     {
-        $this->db = $db;
-        $this->rbac = $rbac;
     }
 
     public function createUser(User $user) : void
@@ -82,7 +79,7 @@ class UserRepository
         $query->execute(['email' => $email->toString()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \OutOfBoundsException('No user found with e-mail address: ' . $email->toString());
+            throw new OutOfBoundsException('No user found with e-mail address: ' . $email->toString());
         }
 
         return $this->arrayToUser($query->fetch(\PDO::FETCH_ASSOC));

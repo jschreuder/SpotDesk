@@ -5,24 +5,20 @@ namespace jschreuder\SpotDesk\Middleware;
 use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\RoleInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\RoleInterface;
 
 class AuthorizationMiddleware implements MiddlewareInterface
 {
     const UNKNOWN_PERMISSION = '__authorization_not_set';
 
-    /** @var  Rbac */
-    private $rbac;
-
-    public function __construct(Rbac $rbac)
+    public function __construct(private Rbac $rbac)
     {
-        $this->rbac = $rbac;
     }
 
     /** @throws  AuthenticationException */

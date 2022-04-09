@@ -3,24 +3,22 @@
 namespace jschreuder\SpotDesk\Controller;
 
 use jschreuder\Middle\Controller\ControllerInterface;
+use Laminas\Diactoros\Response\JsonResponse;
+use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Throwable;
 
 class ErrorHandlerController implements ControllerInterface
 {
-    /** @var  LoggerInterface */
-    private $logger;
-
-    public function __construct(LoggerInterface $logger)
+    public function __construct(private LoggerInterface $logger)
     {
-        $this->logger = $logger;
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface
     {
-        /** @var  \Throwable $exception */
+        /** @var  Throwable $exception */
         $exception = $request->getAttribute('error');
         $code = $this->getCode($exception);
 
@@ -32,9 +30,9 @@ class ErrorHandlerController implements ControllerInterface
         );
     }
 
-    private function getCode(\Throwable $exception) : int
+    private function getCode(Throwable $exception) : int
     {
-        if ($exception instanceof \PDOException) {
+        if ($exception instanceof PDOException) {
             return 503;
         }
 

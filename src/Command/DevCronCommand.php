@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Command;
 
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -24,7 +25,7 @@ class DevCronCommand extends Command
     {
         $checkTimeout = intval($input->getArgument('check-timeout'));
         if ($checkTimeout <= 0) {
-            throw new \InvalidArgumentException('Checking timeout must be greater then 0.');
+            throw new InvalidArgumentException('Checking timeout must be greater then 0.');
         }
 
         while (true) {

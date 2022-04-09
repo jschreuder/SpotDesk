@@ -9,25 +9,24 @@ use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\AbstractValidator;
+use Laminas\Validator\EmailAddress as EmailAddressValidator;
+use Laminas\Validator\Uuid as UuidValidator;
 use Particle\Validator\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class UserUpdateDepartmentsController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(UserRepository $userRepository, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private UserRepository $userRepository, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->userRepository = $userRepository;
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -40,16 +39,30 @@ class UserUpdateDepartmentsController implements ControllerInterface, RequestFil
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('email')->email();
-        $validator->required('departments', null, true)->each(function (Validator $validator) {
-            $validator->required('department_id')->uuid();
-        });
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'email' => new EmailAddressValidator(),
+            'departments' => new class extends AbstractValidator {
+                public function isValid(mixed $value) : bool
+                {
+                    if (!is_array($value)) {
+                        $this->error('Departments must be given in an array');
+                        return false;
+                    }
+                    $uuidValidator = new UuidValidator();
+                    foreach ($value as $department) {
+                        if (!isset($department['department_id'])) {
+                            $this->error('Not all departments have an ID.');
+                            return false;
+                        }
+                        if (!$uuidValidator->isValid($department['department_id'])) {
+                            $this->error('Not all department IDs are valid UUIDs.');
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            }
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

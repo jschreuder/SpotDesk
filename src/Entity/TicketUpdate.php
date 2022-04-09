@@ -4,41 +4,19 @@ namespace jschreuder\SpotDesk\Entity;
 
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Ramsey\Uuid\UuidInterface;
+use DateTimeInterface;
 
 class TicketUpdate
 {
-    /** @var  UuidInterface */
-    private $id;
-
-    /** @var  Ticket */
-    private $ticket;
-
-    /** @var  EmailAddressValue */
-    private $email;
-
-    /** @var  string */
-    private $message;
-
-    /** @var  \DateTimeInterface */
-    private $createdAt;
-
-    /** @var  bool */
-    private $internal;
-
     public function __construct(
-        UuidInterface $id,
-        Ticket $ticket,
-        EmailAddressValue $email,
-        string $message,
-        \DateTimeInterface $createdAt,
-        bool $internal
-    ) {
-        $this->id = $id;
-        $this->ticket = $ticket;
-        $this->email = $email;
-        $this->message = $message;
-        $this->createdAt = $createdAt;
-        $this->internal = $internal;
+        private UuidInterface $id,
+        private Ticket $ticket,
+        private EmailAddressValue $email,
+        private string $message,
+        private DateTimeInterface $createdAt,
+        private bool $internal
+    )
+    {
     }
 
     public function getId() : UuidInterface
@@ -61,7 +39,7 @@ class TicketUpdate
         return $this->message;
     }
 
-    public function getCreatedAt() : \DateTimeInterface
+    public function getCreatedAt() : DateTimeInterface
     {
         return $this->createdAt;
     }

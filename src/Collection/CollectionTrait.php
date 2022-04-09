@@ -6,7 +6,7 @@ use jschreuder\SpotDesk\Exception\SpotDeskException;
 
 trait CollectionTrait
 {
-    private $collection = [];
+    private array $collection = [];
 
     public function next() : void
     {
@@ -43,7 +43,7 @@ trait CollectionTrait
         throw new SpotDeskException('Collections cannot be modified as array');
     }
 
-    public function count()
+    public function count() : int
     {
         return count($this->collection);
     }

@@ -5,51 +5,47 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Filter\FilterChain;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use Laminas\Validator\EmailAddress as EmailAddressValidator;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class DepartmentUpdateController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(DepartmentRepository $departmentRepository)
+    public function __construct(private DepartmentRepository $departmentRepository)
     {
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
         $body['department_id'] = $request->getAttribute('department_id');
-        $filter = new Filter();
-        $filter->value('name')->string()->stripHtml()->trim();
-        $filter->value('email')->string()->trim();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request->withParsedBody($body), [
+            'name' => (new FilterChain())->attach(new StripTags())->attach(new StringTrim()), 
+            'email' => new StringTrim(),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('department_id')->uuid();
-        $validator->required('name')->string();
-        $validator->required('email')->email();
-        $validator->optional('parent_id')->uuid();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'department_id' => new UuidValidator(),
+            'name' => new StringLength(['min' => 1]),
+            'parent_id' => new UuidValidator(),
+            'email' => new EmailAddressValidator(),
+        ], ['parent_id']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

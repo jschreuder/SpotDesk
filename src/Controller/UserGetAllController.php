@@ -5,18 +5,14 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class UserGetAllController implements ControllerInterface
 {
-    /** @var  UserRepository */
-    private $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(private UserRepository $userRepository)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

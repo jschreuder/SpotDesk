@@ -5,23 +5,19 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\ValidationService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class TicketGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    public function __construct(TicketRepository $ticketRepository)
+    public function __construct(private TicketRepository $ticketRepository)
     {
-        $this->ticketRepository = $ticketRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -33,13 +29,9 @@ class TicketGetOneController implements ControllerInterface, RequestFilterInterf
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'ticket_id' => new UuidValidator(),
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

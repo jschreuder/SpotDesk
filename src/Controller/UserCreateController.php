@@ -5,58 +5,48 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
+use jschreuder\SpotDesk\Service\Validator\RoleValidator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Filter\StringTrim;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Validator\EmailAddress as EmailAddressValidator;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\ValidatorChain;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Permissions\Rbac\Rbac;
 
 class UserCreateController implements ControllerInterface, RequestValidatorInterface, RequestFilterInterface
 {
-    /** @var  AuthenticationServiceInterface */
-    private $authenticationService;
-
-    /** @var  Rbac */
-    private $rbac;
-
-    public function __construct(AuthenticationServiceInterface $authenticationService, Rbac $rbac)
+    public function __construct(
+        private AuthenticationServiceInterface $authenticationService, 
+        private Rbac $rbac
+    )
     {
-        $this->authenticationService = $authenticationService;
-        $this->rbac = $rbac;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
-        $filter = new Filter();
-        $filter->value('email')->string()->trim();
-        $filter->value('display_name')->string()->trim();
-        $filter->value('password')->string();
-        $filter->value('role')->string();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request, [
+            'email' => new StringTrim(),
+            'display_name' => new StringTrim(),
+            'password' => strval(...),
+            'role' => strval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('email')->string()->email()->lengthBetween(6, 123);
-        $validator->optional('display_name')->string()->lengthBetween(2, 63);
-        $validator->required('password')->string()->lengthBetween(12, null);
-        $validator->required('role')->string()->callback(function ($value) {
-            if (!$this->rbac->hasRole($value)) {
-                throw new \InvalidArgumentException('Unknown role: ' . $value, 'unknown_role');
-            }
-            return true;
-        });
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'email' => (new ValidatorChain())
+                ->attach(new EmailAddressValidator())
+                ->attach(new StringLength(['min' => 6, 'max' => 123])),
+            'display_name' => new StringLength(['min' => 2, 'max' => 63]),
+            'password' => new StringLength(['min' => 12]),
+            'role' => new RoleValidator(['rbac' => $this->rbac]),
+        ], ['display_name']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

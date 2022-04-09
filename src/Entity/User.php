@@ -3,31 +3,16 @@
 namespace jschreuder\SpotDesk\Entity;
 
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Zend\Permissions\Rbac\RoleInterface;
+use Laminas\Permissions\Rbac\RoleInterface;
 
 class User
 {
-    /** @var  EmailAddressValue */
-    private $email;
-
-    /** @var  string */
-    private $displayName;
-
-    /** @var  string */
-    private $password;
-
-    /** @var  RoleInterface */
-    private $role;
-
-    /** @var  bool */
-    private $active;
-
     public function __construct(
-        EmailAddressValue $email,
-        string $displayName,
-        string $password,
-        RoleInterface $role,
-        bool $active = true
+        private EmailAddressValue $email,
+        private string $displayName,
+        private string $password,
+        private RoleInterface $role,
+        private bool $active = true
     ) {
         $this->email = $email;
         $this->displayName = $displayName;

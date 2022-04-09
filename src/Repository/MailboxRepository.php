@@ -2,26 +2,24 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use DateTimeImmutable;
 use jschreuder\SpotDesk\Collection\MailboxCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
+use OutOfBoundsException;
+use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class MailboxRepository
 {
-    /** @var  \PDO */
-    private $db;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(\PDO $db, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private PDO $db, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->db = $db;
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function createMailbox(
@@ -43,7 +41,7 @@ class MailboxRepository
             $imapSecurity,
             $imapUser,
             $imapPass,
-            $lastCheck ?? new \DateTimeImmutable()
+            $lastCheck ?? new DateTimeImmutable()
         );
 
         $query = $this->db->prepare("
@@ -87,7 +85,7 @@ class MailboxRepository
             MailTransportSecurityValue::get($row['imap_security']),
             $row['imap_user'],
             $row['imap_pass'],
-            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_check'])
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_check'])
         );
     }
 
@@ -97,7 +95,7 @@ class MailboxRepository
         $query->execute(['mailbox_id' => $mailboxId->getBytes()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \OutOfBoundsException('No mailbox found for ID: ' . $mailboxId->toString());
+            throw new OutOfBoundsException('No mailbox found for ID: ' . $mailboxId->toString());
         }
 
         return $this->arrayToMailbox($query->fetch(\PDO::FETCH_ASSOC));
@@ -158,7 +156,7 @@ class MailboxRepository
 
     public function updateLastCheck(Mailbox $mailbox, ?\DateTimeInterface $checkTime = null) : void
     {
-        $checkTime = $checkTime ?? new \DateTimeImmutable('now');
+        $checkTime = $checkTime ?? new DateTimeImmutable('now');
         $query = $this->db->prepare("
             UPDATE `mailboxes`
             SET `last_check` = :last_check

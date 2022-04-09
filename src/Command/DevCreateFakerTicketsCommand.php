@@ -2,6 +2,7 @@
 
 namespace jschreuder\SpotDesk\Command;
 
+use DateTimeImmutable;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
@@ -21,28 +22,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevCreateFakerTicketsCommand extends Command
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    /** @var  FakerGenerator */
-    private $faker;
-
     public function __construct(
-        TicketRepository $ticketRepository,
-        DepartmentRepository $departmentRepository,
-        StatusRepository $statusRepository,
-        FakerGenerator $faker = null
-    ) {
-        $this->ticketRepository = $ticketRepository;
-        $this->departmentRepository = $departmentRepository;
-        $this->statusRepository = $statusRepository;
-        $this->faker = $faker ?? FakerFactory::create();
+        private TicketRepository $ticketRepository,
+        private DepartmentRepository $departmentRepository,
+        private StatusRepository $statusRepository,
+        private ?FakerGenerator $faker = null
+    )
+    {
+        $faker || $this->faker = FakerFactory::create();
         parent::__construct();
     }
 
@@ -128,7 +115,7 @@ class DevCreateFakerTicketsCommand extends Command
                 $from,
                 $faker->paragraph(random_int(1, 3)),
                 ($from === $admin && random_int(0, 2) === 2),
-                new \DateTimeImmutable('@' . ($ticket->getCreatedAt()->getTimestamp() + random_int(300, 259200)))
+                new DateTimeImmutable('@' . ($ticket->getCreatedAt()->getTimestamp() + random_int(300, 259200)))
             );
             $ticketUpdates->push($update);
         }

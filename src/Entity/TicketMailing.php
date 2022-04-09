@@ -3,30 +3,16 @@
 namespace jschreuder\SpotDesk\Entity;
 
 use Ramsey\Uuid\UuidInterface;
+use DateTimeInterface;
 
 class TicketMailing
 {
-    /** @var  UuidInterface */
-    private $id;
-
-    /** @var  Ticket */
-    private $ticket;
-
-    /** @var  TicketUpdate */
-    private $ticketUpdate;
-
-    /** @var  string */
-    private $type;
-
-    /** @var  ?\DateTimeInterface */
-    private $sentAt;
-
     public function __construct(
-        UuidInterface $id,
-        Ticket $ticket,
-        ?TicketUpdate $ticketUpdate,
-        string $type,
-        ?\DateTimeInterface $sentAt = null
+        private UuidInterface $id,
+        private Ticket $ticket,
+        private ?TicketUpdate $ticketUpdate,
+        private string $type,
+        private ?DateTimeInterface $sentAt = null
     ) {
         $this->id = $id;
         $this->ticket = $ticket;
@@ -55,12 +41,12 @@ class TicketMailing
         return $this->type;
     }
 
-    public function getSentAt() : ?\DateTimeInterface
+    public function getSentAt() : ?DateTimeInterface
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(\DateTimeInterface $sentAt) : void
+    public function setSentAt(DateTimeInterface $sentAt) : void
     {
         $this->sentAt = $sentAt;
     }

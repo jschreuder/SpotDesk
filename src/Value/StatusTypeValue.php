@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Value;
 
+use InvalidArgumentException;
+
 final class StatusTypeValue
 {
     const TYPE_OPEN = 'open';
@@ -18,15 +20,11 @@ final class StatusTypeValue
         return [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED];
     }
 
-    /** @var  string */
-    private $value;
-
-    private function __construct(string $statusType)
+    private function __construct(private string $value)
     {
-        if (!in_array($statusType, [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED], true)) {
-            throw new \InvalidArgumentException('Invalid status type: ' . $statusType);
+        if (!in_array($value, [self::TYPE_OPEN, self::TYPE_PAUSED, self::TYPE_CLOSED], true)) {
+            throw new InvalidArgumentException('Invalid status type: ' . $value);
         }
-        $this->value = $statusType;
     }
 
     public function toString() : string

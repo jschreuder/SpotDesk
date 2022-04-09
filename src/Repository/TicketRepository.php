@@ -2,6 +2,9 @@
 
 namespace jschreuder\SpotDesk\Repository;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use InvalidArgumentException;
 use jschreuder\SpotDesk\Collection\TicketCollection;
 use jschreuder\SpotDesk\Collection\TicketSubscriptionCollection;
 use jschreuder\SpotDesk\Collection\TicketUpdateCollection;
@@ -13,6 +16,8 @@ use jschreuder\SpotDesk\Entity\TicketUpdate;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use jschreuder\SpotDesk\Value\StatusTypeValue;
+use OutOfBoundsException;
+use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
@@ -20,23 +25,12 @@ class TicketRepository
 {
     const ALLOWED_SORT_COLUMNS = ['subject', 'updates', 'last_update', 'status'];
 
-    /** @var  \PDO */
-    private $db;
-
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
     public function __construct(
-        \PDO $db,
-        StatusRepository $statusRepository,
-        DepartmentRepository $departmentRepository
-    ) {
-        $this->db = $db;
-        $this->statusRepository = $statusRepository;
-        $this->departmentRepository = $departmentRepository;
+        private PDO $db,
+        private StatusRepository $statusRepository,
+        private DepartmentRepository $departmentRepository
+    )
+    {
     }
 
     public function createTicket(
@@ -54,7 +48,7 @@ class TicketRepository
             $message,
             $createdAt,
             0,
-            $createdAt ?? new \DateTimeImmutable(),
+            $createdAt ?? new DateTimeImmutable(),
             $this->statusRepository->getStatus('new'),
             $department
         );
@@ -92,9 +86,9 @@ class TicketRepository
             EmailAddressValue::get($row['email']),
             $row['subject'],
             $row['message'],
-            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['created_at']),
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['created_at']),
             intval($row['updates']),
-            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['last_update']),
             $this->statusRepository->getStatus($row['status']),
             $row['department_id']
                 ? $this->departmentRepository->getDepartment(Uuid::fromBytes($row['department_id']))
@@ -110,7 +104,7 @@ class TicketRepository
         $query->execute(['ticket_id' => $id->getBytes()]);
 
         if ($query->rowCount() !== 1) {
-            throw new \OutOfBoundsException('No ticket found for ID: ' . $id->toString());
+            throw new OutOfBoundsException('No ticket found for ID: ' . $id->toString());
         }
 
         return $this->arrayToTicket($query->fetch(\PDO::FETCH_ASSOC));
@@ -125,10 +119,10 @@ class TicketRepository
         string $sortDirection = 'ASC'
     ) : TicketCollection {
         if (!in_array($sortBy, self::ALLOWED_SORT_COLUMNS)) {
-            throw new \InvalidArgumentException('Invalid column for sorting: ' . $sortBy);
+            throw new InvalidArgumentException('Invalid column for sorting: ' . $sortBy);
         }
         if (!in_array(strtoupper($sortDirection), ['ASC', 'DESC'])) {
-            throw new \InvalidArgumentException('Invalid direction for sorting: ' . $sortDirection);
+            throw new InvalidArgumentException('Invalid direction for sorting: ' . $sortDirection);
         }
 
         // Fetch all tickets that are either assigned to a department the given user is a part of
@@ -269,7 +263,7 @@ class TicketRepository
             $ticket,
             $email,
             $message,
-            $createdAt ?? new \DateTimeImmutable(),
+            $createdAt ?? new DateTimeImmutable(),
             $internal
         );
 
@@ -298,7 +292,7 @@ class TicketRepository
             $ticket,
             EmailAddressValue::get($row['email']),
             $row['message'],
-            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['created_at']),
+            DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $row['created_at']),
             boolval($row['internal'])
         );
     }
@@ -381,7 +375,7 @@ class TicketRepository
         EmailAddressValue $email,
         string $subject,
         string $message,
-        \DateTimeInterface $createdAt,
+        DateTimeInterface $createdAt,
         ?Department $department
     ) : bool {
         $departmentWhere = (is_null($department) ? "IS NULL" : "= :department_id");
@@ -413,7 +407,7 @@ class TicketRepository
         Ticket $ticket,
         EmailAddressValue $email,
         string $message,
-        \DateTimeInterface $createdAt
+        DateTimeInterface $createdAt
     ) : bool
     {
         $query = $this->db->prepare("

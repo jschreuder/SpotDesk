@@ -7,20 +7,17 @@ use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use OutOfBoundsException;
+use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 
 class DepartmentRepository
 {
-    /** @var  \PDO */
-    private $db;
+    private DepartmentCollection $_departments;
 
-    /** @var  DepartmentCollection */
-    private $_departments;
-
-    public function __construct(\PDO $db)
+    public function __construct(private PDO $db)
     {
-        $this->db = $db;
     }
 
     public function createDepartment(string $name, ?Department $parent, EmailAddressValue $email) : Department
@@ -55,7 +52,7 @@ class DepartmentRepository
     {
         $departments = $this->getDepartments();
         if (!isset($departments[$departmentId->toString()])) {
-            throw new \OutOfBoundsException('No department found for ID: ' . $departmentId->toString());
+            throw new OutOfBoundsException('No department found for ID: ' . $departmentId->toString());
         }
 
         return $departments[$departmentId->toString()];

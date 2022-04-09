@@ -5,38 +5,30 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Service\FilterService;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
+use jschreuder\SpotDesk\Service\ValidationService;
+use jschreuder\SpotDesk\Service\Validator\TypeValidator;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\EmailAddress as EmailAddressValidator;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class TicketAddUpdateController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    /** @var  SendMailServiceInterface */
-    private $mailService;
-
     public function __construct(
-        TicketRepository $ticketRepository,
-        StatusRepository $statusRepository,
-        SendMailServiceInterface $mailService
-    ) {
-        $this->ticketRepository = $ticketRepository;
-        $this->statusRepository = $statusRepository;
-        $this->mailService = $mailService;
+        private TicketRepository $ticketRepository,
+        private StatusRepository $statusRepository,
+        private SendMailServiceInterface $mailService
+    )
+    {
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -44,28 +36,23 @@ class TicketAddUpdateController implements ControllerInterface, RequestFilterInt
         $body = (array) $request->getParsedBody();
         $body['ticket_id'] = $request->getAttribute('ticket_id');
         $body['email'] = $request->getAttribute('session')->get('user');
-        $filter = new Filter();
-        $filter->value('email')->string();
-        $filter->value('message')->string();
-        $filter->value('internal')->bool();
-        $filter->value('status_update')->string();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request->withParsedBody($body), [
+            'email' => strval(...),
+            'message' => strval(...),
+            'internal' => boolval(...),
+            'status_update' => strval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
-        $validator->required('email')->email();
-        $validator->required('message')->string();
-        $validator->required('internal')->bool();
-        $validator->optional('status_update')->string();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'ticket_id' => new UuidValidator(),
+            'email' => new EmailAddressValidator(),
+            'message' => new StringLength(['min' => 1]),
+            'internal' => new TypeValidator(['type' => boolean::class]),
+            'status_update' => new StringLength(['min' => 1]),
+        ], ['status_update']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

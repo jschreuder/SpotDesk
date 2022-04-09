@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Value;
 
+use InvalidArgumentException;
+
 final class EmailAddressValue
 {
     public static function get(string $emailAddress) : self
@@ -9,15 +11,12 @@ final class EmailAddressValue
         return new self($emailAddress);
     }
 
-    /** @var  string */
-    private $value;
-
-    private function __construct(string $emailAddress)
+    private function __construct(private string $value)
     {
-        if (!filter_var($emailAddress, FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Invalid e-mail address given: ' . $emailAddress);
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new InvalidArgumentException('Invalid e-mail address given: ' . $value);
         }
-        $this->value = mb_strtolower($emailAddress);
+        $this->value = mb_strtolower($value);
     }
 
     public function toString() : string

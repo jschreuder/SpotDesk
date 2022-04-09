@@ -11,24 +11,12 @@ class SessionProcessor implements SessionProcessorInterface
 {
     const SESSION_KEY = 'SpotDesk-Session';
 
-    /** @var  SessionStorageInterface */
-    private $storage;
-
-    /** @var  int */
-    private $duration;
-
-    /** @var  float between 0 and 1, after how much of the duration a session should be refreshed */
-    private $refreshAfter;
-
     public function __construct(
-        SessionStorageInterface $storage,
-        int $duration = 3600,
-        float $refreshAfter = .5
+        private SessionStorageInterface $storage,
+        private int $duration = 3600,
+        private float $refreshAfter = .5
     )
     {
-        $this->storage = $storage;
-        $this->duration = $duration;
-        $this->refreshAfter = $refreshAfter;
     }
 
     public function processRequest(ServerRequestInterface $request) : ServerRequestInterface

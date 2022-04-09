@@ -4,56 +4,21 @@ namespace jschreuder\SpotDesk\Entity;
 
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
 use Ramsey\Uuid\UuidInterface;
+use DateTimeInterface;
 
 class Mailbox
 {
-    /** @var  UuidInterface */
-    private $id;
-
-    /** @var  string */
-    private $name;
-
-    /** @var  ?Department */
-    private $department;
-
-    /** @var  string */
-    private $imapServer;
-
-    /** @var  int */
-    private $imapPort;
-
-    /** @var  MailTransportSecurityValue */
-    private $imapSecurity;
-
-    /** @var  string */
-    private $imapUser;
-
-    /** @var  string */
-    private $imapPass;
-
-    /** @var  \DateTimeInterface */
-    private $lastCheck;
-
     public function __construct(
-        UuidInterface $id,
-        string $name,
-        ?Department $department,
-        string $imapServer,
-        int $imapPort,
-        MailTransportSecurityValue $imapSecurity,
-        string $imapUser,
-        string $imapPass,
-        \DateTimeInterface $lastCheck
+        private UuidInterface $id,
+        private string $name,
+        private ?Department $department,
+        private string $imapServer,
+        private int $imapPort,
+        private MailTransportSecurityValue $imapSecurity,
+        private string $imapUser,
+        private string $imapPass,
+        private DateTimeInterface $lastCheck
     ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->department = $department;
-        $this->imapServer = $imapServer;
-        $this->imapPort = $imapPort;
-        $this->imapSecurity = $imapSecurity;
-        $this->imapUser = $imapUser;
-        $this->imapPass = $imapPass;
-        $this->lastCheck = $lastCheck;
     }
 
     public function getId() : UuidInterface
@@ -131,12 +96,12 @@ class Mailbox
         $this->imapPass = $imapPass;
     }
 
-    public function getLastCheck() : \DateTimeInterface
+    public function getLastCheck() : DateTimeInterface
     {
         return $this->lastCheck;
     }
 
-    public function setLastCheck(\DateTimeInterface $lastCheck) : void
+    public function setLastCheck(DateTimeInterface $lastCheck) : void
     {
         $this->lastCheck = $lastCheck;
     }

@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\User;
+use OutOfBoundsException;
 
-class UserCollection implements \ArrayAccess, \Countable, \Iterator
+class UserCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class UserCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($email) : User
     {
         if (!$this->offsetExists($email)) {
-            throw new \OutOfBoundsException('No user with e-mail: ' . $email);
+            throw new OutOfBoundsException('No user with e-mail: ' . $email);
         }
         return $this->collection[$email];
     }

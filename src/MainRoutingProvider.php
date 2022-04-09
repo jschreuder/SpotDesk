@@ -31,20 +31,18 @@ use jschreuder\SpotDesk\Controller\TicketUpdateStatusController;
 use jschreuder\SpotDesk\Controller\UserUpdateController;
 use jschreuder\SpotDesk\Controller\UserUpdateDepartmentsController;
 use Pimple\Container;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Validator\GenericValidator;
 
 class MainRoutingProvider implements RoutingProviderInterface
 {
-    /** @var  Container */
-    private $container;
-
-    public function __construct(Container $container)
+    public function __construct(private Container $container)
     {
-        $this->container = $container;
     }
 
     public function registerRoutes(RouterInterface $router) : void
     {
+        $uuidValidPattern = (new GenericValidator())->getPattern();
+
         /** @var  SymfonyRouter $router */
 
         $router->get('angular_init', '/', function () {
@@ -61,7 +59,9 @@ class MainRoutingProvider implements RoutingProviderInterface
         // Tickets
         $router->get('tickets.get_one', '/tickets/{ticket_id}', function () {
             return new TicketGetOneController($this->container['repository.tickets']);
-        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('ticket_id', $uuidValidPattern);
+        });
         $router->get('tickets.list', '/tickets', function () {
             return new TicketGetAllController($this->container['repository.tickets']);
         });
@@ -71,22 +71,30 @@ class MainRoutingProvider implements RoutingProviderInterface
                 $this->container['repository.statuses'],
                 $this->container['service.mail']
             );
-        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('ticket_id', $uuidValidPattern);
+        });
         $router->put('tickets.status_update', '/tickets/{ticket_id}/status', function () {
             return new TicketUpdateStatusController(
                 $this->container['repository.tickets'],
                 $this->container['repository.statuses']
             );
-        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('ticket_id', $uuidValidPattern);
+        });
         $router->put('tickets.department_update', '/tickets/{ticket_id}/department', function () {
             return new TicketUpdateDepartmentController(
                 $this->container['repository.tickets'],
                 $this->container['repository.departments']
             );
-        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('ticket_id', $uuidValidPattern);
+        });
         $router->delete('tickets.delete', '/tickets/{ticket_id}', function () {
             return new TicketDeleteController($this->container['repository.tickets']);
-        })->setRequirement('ticket_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('ticket_id', $uuidValidPattern);
+        });
 
         // Departments
         $router->get('departments.list', '/departments', function () {
@@ -104,18 +112,24 @@ class MainRoutingProvider implements RoutingProviderInterface
         });
         $router->put('departments.update', '/departments/{department_id}', function () {
             return new DepartmentUpdateController($this->container['repository.departments']);
-        })->setRequirement('department_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('department_id', $uuidValidPattern);
+        });
         $router->delete('departments.delete', '/departments/{department_id}', function () {
             return new DepartmentDeleteController(
                 $this->container['repository.departments'],
                 $this->container['repository.tickets']
             );
-        })->setRequirement('department_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('department_id', $uuidValidPattern);
+        });
 
         // Mailboxes
         $router->get('mailboxes.get_one', '/mailboxes/{mailbox_id}', function () {
             return new MailboxGetOneController($this->container['repository.mailboxes']);
-        })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('mailbox_id', $uuidValidPattern);
+        });
         $router->get('mailboxes.list', '/mailboxes', function () {
             return new MailboxGetAllController($this->container['repository.mailboxes']);
         });
@@ -130,10 +144,14 @@ class MainRoutingProvider implements RoutingProviderInterface
                 $this->container['repository.mailboxes'],
                 $this->container['repository.departments']
             );
-        })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('mailbox_id', $uuidValidPattern);
+        });
         $router->delete('mailboxes.delete', '/mailboxes/{mailbox_id}', function () {
             return new MailboxDeleteController($this->container['repository.mailboxes']);
-        })->setRequirement('mailbox_id', Uuid::VALID_PATTERN);
+        }, [], [], function ($route) use ($uuidValidPattern) {
+            $route->setRequirement('mailbox_id', $uuidValidPattern);
+        });
 
         // Users
         $router->get('users.list', '/users', function () {

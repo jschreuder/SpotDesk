@@ -5,48 +5,42 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\Ticket;
 use jschreuder\SpotDesk\Repository\TicketRepository;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use jschreuder\SpotDesk\Value\StatusTypeValue;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\Between;
+use Laminas\Validator\InArray;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class TicketGetAllController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    public function __construct(TicketRepository $ticketRepository)
+    public function __construct(private TicketRepository $ticketRepository)
     {
-        $this->ticketRepository = $ticketRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
-        $filter = new Filter();
-        $filter->values(['limit', 'page'])->int();
-        return $request->withQueryParams($filter->filter($request->getQueryParams()));
+        return FilterService::filterQuery($request, [
+            'limit' => intval(...),
+            'page' => intval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->optional('status_type')->string()->inArray(StatusTypeValue::getValues(), true);
-        $validator->optional('limit')->integer(true)->between(5, 50);
-        $validator->optional('page')->integer(true)->greaterThan(0);
-        $validator->optional('sort_by')->string()->inArray(['subject', 'updates', 'last_update', 'status']);
-        $validator->optional('sort_direction')->string()->inArray(['asc', 'desc']);
-
-        $validationResult = $validator->validate($request->getQueryParams());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validateQuery($request, [
+            'status_type' => new InArray(['haystack' => StatusTypeValue::getValues()]),
+            'limit' => new Between(['min' => 5, 'max' => 50]),
+            'page' => new Between(['min' => 0]),
+            'sort_by' => new InArray(['haystack' => ['subject', 'updates', 'last_update', 'status']]),
+            'sort_direction' => new InArray(['haystack' => ['asc', 'desc']]),
+        ], ['status_type', 'limit', 'page', 'sort_by', 'sort_direction']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

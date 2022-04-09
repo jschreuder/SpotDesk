@@ -10,12 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CreateUserCommand extends Command
 {
-    /** @var  AuthenticationServiceInterface */
-    private $authenticationService;
-
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(private AuthenticationServiceInterface $authenticationService)
     {
-        $this->authenticationService = $authenticationService;
         parent::__construct();
     }
 

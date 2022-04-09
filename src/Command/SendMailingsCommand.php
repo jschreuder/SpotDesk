@@ -10,18 +10,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SendMailingsCommand extends Command
 {
-    /** @var  TicketMailingRepository */
-    private $ticketMailingsRepository;
-
-    /** @var  SendMailServiceInterface */
-    private $mailService;
-
     public function __construct(
-        TicketMailingRepository $ticketMailingsRepository,
-        SendMailServiceInterface $mailService
-    ) {
-        $this->ticketMailingsRepository = $ticketMailingsRepository;
-        $this->mailService = $mailService;
+        private TicketMailingRepository $ticketMailingsRepository,
+        private SendMailServiceInterface $mailService
+    )
+    {
         parent::__construct();
     }
 

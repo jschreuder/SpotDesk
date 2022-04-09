@@ -2,10 +2,14 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\TicketSubscription;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use OutOfBoundsException;
 
-class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterator
+class TicketSubscriptionCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -29,12 +33,12 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
     public function offsetGet($ticketSubscriptionId) : TicketSubscription
     {
         if (!$this->offsetExists($ticketSubscriptionId)) {
-            throw new \OutOfBoundsException('No such status: ' . $ticketSubscriptionId);
+            throw new OutOfBoundsException('No such status: ' . $ticketSubscriptionId);
         }
         return $this->collection[$ticketSubscriptionId];
     }
 
-    public function getByEmailAddress(EmailAddressValue $email) : ?TicketSubscription
+    public function getByEmailAddress(EmailAddressValue $email) : TicketSubscription
     {
         /** @var  TicketSubscription[] $subscriptions */
         $subscriptions = $this->toArray();
@@ -43,6 +47,6 @@ class TicketSubscriptionCollection implements \ArrayAccess, \Countable, \Iterato
                 return $subscription;
             }
         }
-        throw new \OutOfBoundsException('E-mail address not in collection: ' . $email->toString());
+        throw new OutOfBoundsException('E-mail address not in collection: ' . $email->toString());
     }
 }

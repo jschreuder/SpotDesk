@@ -5,27 +5,22 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\ValidationService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class TicketUpdateDepartmentController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(TicketRepository $ticketRepository, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private TicketRepository $ticketRepository, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->ticketRepository = $ticketRepository;
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -37,14 +32,10 @@ class TicketUpdateDepartmentController implements ControllerInterface, RequestFi
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('ticket_id')->uuid();
-        $validator->optional('department_id')->uuid();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'ticket_id' => new UuidValidator(),
+            'department_id' => new UuidValidator(),
+        ], ['department_id']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

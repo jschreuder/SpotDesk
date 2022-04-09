@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
-class AuthenticationFailedException extends \Exception
+use Exception;
+
+class AuthenticationFailedException extends Exception
 {
 }

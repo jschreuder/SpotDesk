@@ -32,14 +32,17 @@ use jschreuder\SpotDesk\Service\SendMailService\MailTemplateFactory;
 use jschreuder\SpotDesk\Service\SendMailService\SmtpSendMailService;
 use jschreuder\SpotDesk\Service\SendMailService\TwigMailTemplate;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\Role;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
+use PDO;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
-use Zend\Permissions\Rbac\Rbac;
-use Zend\Permissions\Rbac\Role;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 class MainServiceProvider implements ServiceProviderInterface
 {
@@ -96,13 +99,13 @@ class MainServiceProvider implements ServiceProviderInterface
         });
 
         $container['db'] = function () use ($container) {
-            return new \PDO(
+            return new PDO(
                 $container['db.dsn'] . ';dbname=' . $container['db.dbname'],
                 $container['db.user'],
                 $container['db.pass'],
                 [
-                    \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-                    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 ]
             );
         };
@@ -128,7 +131,7 @@ class MainServiceProvider implements ServiceProviderInterface
         };
 
         $container['mail.twig'] = function () use ($container) {
-            return new \Twig_Environment(new \Twig_Loader_Filesystem([__DIR__ . '/../templates/emails']));
+            return new Environment(new FilesystemLoader([__DIR__ . '/../templates/emails']));
         };
 
         $container['mail.template_factory'] = function () use ($container) {

@@ -5,18 +5,15 @@ namespace jschreuder\SpotDesk\Repository;
 use jschreuder\SpotDesk\Collection\StatusCollection;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Value\StatusTypeValue;
+use OutOfBoundsException;
+use PDO;
 
 class StatusRepository
 {
-    /** @var  \PDO */
-    private $db;
+    private StatusCollection $_statuses;
 
-    /** @var  StatusCollection */
-    private $_statuses;
-
-    public function __construct(\PDO $db)
+    public function __construct(private PDO $db)
     {
-        $this->db = $db;
     }
 
     private function arrayToStatus(array $row) : Status
@@ -28,7 +25,7 @@ class StatusRepository
     {
         $statuses = $this->getStatuses();
         if (!isset($statuses[$status])) {
-            throw new \OutOfBoundsException('Status not found: ' . $status);
+            throw new OutOfBoundsException('Status not found: ' . $status);
         }
 
         return $statuses[$status];

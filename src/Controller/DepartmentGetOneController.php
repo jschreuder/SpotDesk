@@ -5,7 +5,6 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Collection\DepartmentCollection;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Entity\Mailbox;
@@ -13,31 +12,21 @@ use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\ValidationService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class DepartmentGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  MailboxRepository */
-    private $mailboxRepository;
-
     public function __construct(
-        DepartmentRepository $departmentRepository,
-        UserRepository $userRepository,
-        MailboxRepository $mailboxRepository
-    ) {
-        $this->departmentRepository = $departmentRepository;
-        $this->userRepository = $userRepository;
-        $this->mailboxRepository = $mailboxRepository;
+        private DepartmentRepository $departmentRepository,
+        private UserRepository $userRepository,
+        private MailboxRepository $mailboxRepository
+    )
+    {
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -49,13 +38,9 @@ class DepartmentGetOneController implements ControllerInterface, RequestFilterIn
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('department_id')->uuid();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'department_id' => new UuidValidator(),
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

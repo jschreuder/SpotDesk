@@ -5,18 +5,14 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class MailboxGetAllController implements ControllerInterface
 {
-    /** @var  MailboxRepository */
-    private $mailboxRepository;
-
-    public function __construct(MailboxRepository $mailboxRepository)
+    public function __construct(private MailboxRepository $mailboxRepository)
     {
-        $this->mailboxRepository = $mailboxRepository;
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

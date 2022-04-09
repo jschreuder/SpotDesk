@@ -3,18 +3,15 @@
 
 namespace jschreuder\SpotDesk\Service\SendMailService;
 
+use Twig\Environment;
+
 final class TwigMailTemplate implements MailTemplateInterface
 {
-    /** @var  \Twig_Environment */
-    private $twig;
-
-    /** @var  string */
-    private $template;
-
-    public function __construct(\Twig_Environment $twig, string $template)
+    public function __construct(
+        private Environment $twig, 
+        private string $template
+    )
     {
-        $this->twig = $twig;
-        $this->template = $template;
     }
 
     public function render(array $context) : string

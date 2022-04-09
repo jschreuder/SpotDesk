@@ -5,18 +5,14 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class DepartmentGetAllController implements ControllerInterface
 {
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(DepartmentRepository $departmentRepository)
+    public function __construct(private DepartmentRepository $departmentRepository)
     {
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\TicketUpdate;
+use OutOfBoundsException;
 
-class TicketUpdateCollection implements \ArrayAccess, \Countable, \Iterator
+class TicketUpdateCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class TicketUpdateCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($ticketUpdateId) : TicketUpdate
     {
         if (!$this->offsetExists($ticketUpdateId)) {
-            throw new \OutOfBoundsException('No such status: ' . $ticketUpdateId);
+            throw new OutOfBoundsException('No such status: ' . $ticketUpdateId);
         }
         return $this->collection[$ticketUpdateId];
     }

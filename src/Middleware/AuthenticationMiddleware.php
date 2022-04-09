@@ -2,24 +2,22 @@
 
 namespace jschreuder\SpotDesk\Middleware;
 
+use InvalidArgumentException;
 use jschreuder\Middle\Exception\AuthenticationException;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\GuestUser;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
+use Laminas\Diactoros\Response\JsonResponse;
+use OutOfBoundsException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 final class AuthenticationMiddleware implements MiddlewareInterface
 {
-    /** @var  AuthenticationServiceInterface */
-    private $authenticationService;
-
-    public function __construct(AuthenticationServiceInterface $authenticationService)
+    public function __construct(private AuthenticationServiceInterface $authenticationService)
     {
-        $this->authenticationService = $authenticationService;
     }
 
     /** @throws  AuthenticationException */
@@ -39,7 +37,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
             if (!$user->isActive()) {
                 throw new AuthenticationException('Inactive user');
             }
-        } catch (\InvalidArgumentException | \OutOfBoundsException $exception) {
+        } catch (InvalidArgumentException | OutOfBoundsException $exception) {
             $user = new GuestUser();
         }
 

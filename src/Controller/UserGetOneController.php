@@ -5,28 +5,23 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\EmailAddress as EmailAddressValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class UserGetOneController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(UserRepository $userRepository, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private UserRepository $userRepository, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->userRepository = $userRepository;
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -38,13 +33,9 @@ class UserGetOneController implements ControllerInterface, RequestFilterInterfac
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('email')->email();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'email' => new EmailAddressValidator(),
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

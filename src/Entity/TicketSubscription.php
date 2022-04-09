@@ -7,28 +7,14 @@ use Ramsey\Uuid\UuidInterface;
 
 class TicketSubscription
 {
-    /** @var  UuidInterface */
-    private $id;
-
-    /** @var  Ticket */
-    private $ticket;
-
-    /** @var  EmailAddressValue */
-    private $email;
-
-    /** @var  bool */
-    private $internal;
-    
-    /** @var  bool */
-    private $sendNotifications;
-
-    public function __construct(UuidInterface $id, Ticket $ticket, EmailAddressValue $email, bool $internal, bool $sendNotifications)
+    public function __construct(
+        private UuidInterface $id, 
+        private Ticket $ticket, 
+        private EmailAddressValue $email, 
+        private bool $internal, 
+        private bool $sendNotifications
+    )
     {
-        $this->id = $id;
-        $this->ticket = $ticket;
-        $this->email = $email;
-        $this->internal = $internal;
-        $this->sendNotifications = $sendNotifications;
     }
 
     public function getId() : UuidInterface

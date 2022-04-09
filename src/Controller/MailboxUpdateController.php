@@ -5,62 +5,57 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\MailboxRepository;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\MailTransportSecurityValue;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Filter\FilterChain;
+use Laminas\Filter\StringTrim;
+use Laminas\Filter\StripTags;
+use Laminas\Validator\Between;
+use Laminas\Validator\InArray;
+use Laminas\Validator\StringLength;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class MailboxUpdateController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  MailboxRepository */
-    private $mailboxRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(MailboxRepository $mailboxRepository, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private MailboxRepository $mailboxRepository, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->mailboxRepository = $mailboxRepository;
-        $this->departmentRepository = $departmentRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
         $body = (array) $request->getParsedBody();
         $body['mailbox_id'] = $request->getAttribute('mailbox_id');
-
-        $filter = new Filter();
-        $filter->value('name')->string()->trim();
-        $filter->value('imap_server')->string()->trim();
-        $filter->value('imap_port')->int();
-        $filter->value('imap_user')->string();
-        $filter->value('imap_pass')->string();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request->withParsedBody($body), [
+            'name' => (new FilterChain())->attach(new StripTags())->attach(new StringTrim()),
+            'imap_server' => new StringTrim(),
+            'imap_port' => intval(...),
+            'imap_user' => strval(...),
+            'imap_pass' => strval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('mailbox_id')->uuid();
-        $validator->required('name')->string()->lengthBetween(2, 63);
-        $validator->optional('department_id')->uuid();
-        $validator->required('imap_server')->string()->lengthBetween(2, 255);
-        $validator->required('imap_port')->integer(true)->between(1, 65535);
-        $validator->required('imap_security')->inArray(MailTransportSecurityValue::getValues());
-        $validator->optional('imap_user')->string()->lengthBetween(0, 255);
-        $validator->optional('imap_pass')->string()->lengthBetween(0, 255);
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'mailbox_id' => new UuidValidator(),
+            'name' => new StringLength(['min' => 1]),
+            'department_id' => new UuidValidator(),
+            'imap_server' => new StringLength(['min' => 2]),
+            'imap_port' => new Between(['min' => 1, 'max' => 65535]),
+            'imap_security' => new InArray(['haystack' => MailTransportSecurityValue::getValues()]),
+            'imap_user' => new StringLength(['min' => 0, 'max' => 255]),
+            'imap_pass' => new StringLength(['min' => 0, 'max' => 255]),
+        ], ['department_id', 'imap_user', 'imap_pass']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

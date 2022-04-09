@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\TicketMailing;
+use OutOfBoundsException;
 
-class TicketMailingCollection implements \ArrayAccess, \Countable, \Iterator
+class TicketMailingCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class TicketMailingCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($ticketMailingId) : TicketMailing
     {
         if (!$this->offsetExists($ticketMailingId)) {
-            throw new \OutOfBoundsException('No ticket with ID: ' . $ticketMailingId);
+            throw new OutOfBoundsException('No ticket with ID: ' . $ticketMailingId);
         }
         return $this->collection[$ticketMailingId];
     }

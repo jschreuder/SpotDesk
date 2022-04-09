@@ -11,16 +11,8 @@ class Status
     const STATUS_AWAITING_CLIENT = 'awaiting-client';
     const STATUS_CLOSED = 'closed';
 
-    /** @var  string */
-    private $name;
-
-    /** @var  StatusTypeValue */
-    private $type;
-
-    public function __construct(string $name, StatusTypeValue $type)
+    public function __construct(private string $name, private StatusTypeValue $type)
     {
-        $this->name = $name;
-        $this->type = $type;
     }
 
     public function getName() : string

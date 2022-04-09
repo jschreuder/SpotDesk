@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Value;
 
+use InvalidArgumentException;
+
 final class MailTransportSecurityValue
 {
     const SECURITY_NONE = 'none';
@@ -18,15 +20,11 @@ final class MailTransportSecurityValue
         return [self::SECURITY_NONE, self::SECURITY_SSL, self::SECURITY_TLS];
     }
 
-    /** @var  string */
-    private $value;
-
-    private function __construct(string $transportSecurity)
+    private function __construct(private string $value)
     {
-        if (!in_array($transportSecurity, self::getValues(), true)) {
-            throw new \InvalidArgumentException('Invalid mail transport security flag: ' . $transportSecurity);
+        if (!in_array($value, self::getValues(), true)) {
+            throw new InvalidArgumentException('Invalid mail transport security flag: ' . $value);
         }
-        $this->value = $transportSecurity;
     }
 
     public function toString() : string

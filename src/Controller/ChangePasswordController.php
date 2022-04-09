@@ -5,50 +5,39 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\AuthenticationService\AuthenticationServiceInterface;
+use jschreuder\SpotDesk\Service\FilterService;
+use jschreuder\SpotDesk\Service\ValidationService;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Particle\Filter\Filter;
-use Particle\Validator\Validator;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\StringLength;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
 
 class ChangePasswordController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  AuthenticationServiceInterface */
-    private $authenticationService;
-
-    public function __construct(UserRepository $userRepository, AuthenticationServiceInterface $authenticationService)
+    public function __construct(
+        private UserRepository $userRepository, 
+        private AuthenticationServiceInterface $authenticationService
+    )
     {
-        $this->userRepository = $userRepository;
-        $this->authenticationService = $authenticationService;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
     {
-        $body = (array) $request->getParsedBody();
-        $filter = new Filter();
-        $filter->value('old_password')->string();
-        $filter->value('new_password')->string();
-
-        return $request->withParsedBody($filter->filter($body));
+        return FilterService::filter($request, [
+            'old_password' => strval(...), 
+            'new_password' => strval(...),
+        ]);
     }
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('old_password')->string()->lengthBetween(1, null);
-        $validator->required('new_password')->string()->lengthBetween(12, null);
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'old_password' => new StringLength(['min' => 1]),
+            'new_password' => new StringLength(['min' => 12]),
+        ]);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

@@ -13,16 +13,11 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class AssignUserToDepartmentCommand extends Command
 {
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    public function __construct(UserRepository $userRepository, DepartmentRepository $departmentRepository)
+    public function __construct(
+        private UserRepository $userRepository, 
+        private DepartmentRepository $departmentRepository
+    )
     {
-        $this->userRepository = $userRepository;
-        $this->departmentRepository = $departmentRepository;
         parent::__construct();
     }
 

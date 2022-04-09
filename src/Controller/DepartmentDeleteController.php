@@ -5,28 +5,24 @@ namespace jschreuder\SpotDesk\Controller;
 use jschreuder\Middle\Controller\ControllerInterface;
 use jschreuder\Middle\Controller\RequestFilterInterface;
 use jschreuder\Middle\Controller\RequestValidatorInterface;
-use jschreuder\Middle\Exception\ValidationFailedException;
 use jschreuder\SpotDesk\Entity\Department;
 use jschreuder\SpotDesk\Repository\DepartmentRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
-use Particle\Validator\Validator;
+use jschreuder\SpotDesk\Service\ValidationService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Validator\InArray;
+use Laminas\Validator\Uuid as UuidValidator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Ramsey\Uuid\Uuid;
-use Zend\Diactoros\Response\JsonResponse;
 
 class DepartmentDeleteController implements ControllerInterface, RequestFilterInterface, RequestValidatorInterface
 {
-    /** @var  DepartmentRepository */
-    private $departmentRepository;
-
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    public function __construct(DepartmentRepository $departmentRepository, TicketRepository $ticketRepository)
+    public function __construct(
+        private DepartmentRepository $departmentRepository, 
+        private TicketRepository $ticketRepository
+    )
     {
-        $this->departmentRepository = $departmentRepository;
-        $this->ticketRepository = $ticketRepository;
     }
 
     public function filterRequest(ServerRequestInterface $request) : ServerRequestInterface
@@ -38,15 +34,11 @@ class DepartmentDeleteController implements ControllerInterface, RequestFilterIn
 
     public function validateRequest(ServerRequestInterface $request) : void
     {
-        $validator = new Validator();
-        $validator->required('department_id')->uuid();
-        $validator->required('ticket_action')->inArray(['delete', 'move']);
-        $validator->optional('ticket_department_id')->uuid();
-
-        $validationResult = $validator->validate((array) $request->getParsedBody());
-        if (!$validationResult->isValid()) {
-            throw new ValidationFailedException($validationResult->getMessages());
-        }
+        ValidationService::validate($request, [
+            'department_id' => new UuidValidator(),
+            'ticket_action' => new InArray(['haystack' => ['delete', 'move']]),
+            'ticket_department_id' => new UuidValidator(),
+        ], ['ticket_department_id']);
     }
 
     public function execute(ServerRequestInterface $request) : ResponseInterface

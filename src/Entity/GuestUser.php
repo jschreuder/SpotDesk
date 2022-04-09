@@ -5,18 +5,20 @@ namespace jschreuder\SpotDesk\Entity;
 use jschreuder\SpotDesk\Exception\SpotDeskException;
 use jschreuder\SpotDesk\Service\AuthorizationService\AuthorizableControllerInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Zend\Permissions\Rbac\Role;
-use Zend\Permissions\Rbac\RoleInterface;
+use Laminas\Permissions\Rbac\Role;
+use Laminas\Permissions\Rbac\RoleInterface;
 
 class GuestUser extends User
 {
     public function __construct()
     {
+        $guestRole = new Role('guest');
+        $guestRole->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC);
         parent::__construct(
             EmailAddressValue::get('guest@spotdev.local'),
             'Guest',
             '',
-            (new Role('guest'))->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC),
+            $guestRole,
             true
         );
     }

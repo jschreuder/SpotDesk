@@ -2,6 +2,8 @@
 
 namespace jschreuder\SpotDesk\Command;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Entity\Status;
 use jschreuder\SpotDesk\Entity\Ticket;
@@ -11,6 +13,7 @@ use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
+use OutOfBoundsException;
 use PhpImap\Mailbox as ImapConnection;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Command\Command;
@@ -20,33 +23,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckMailboxesCommand extends Command
 {
-    /** @var  MailboxRepository */
-    private $mailboxRepository;
-
-    /** @var  TicketRepository */
-    private $ticketRepository;
-
-    /** @var  StatusRepository */
-    private $statusRepository;
-
-    /** @var  SendMailServiceInterface */
-    private $mailService;
-
-    /** @var  UserRepository */
-    private $userRepository;
-
     public function __construct(
-        MailboxRepository $mailboxRepository,
-        TicketRepository $ticketRepository,
-        StatusRepository $statusRepository,
-        SendMailServiceInterface $mailService,
-        UserRepository $userRepository
-    ) {
-        $this->mailboxRepository = $mailboxRepository;
-        $this->ticketRepository = $ticketRepository;
-        $this->statusRepository = $statusRepository;
-        $this->mailService = $mailService;
-        $this->userRepository = $userRepository;
+        private MailboxRepository $mailboxRepository,
+        private TicketRepository $ticketRepository,
+        private StatusRepository $statusRepository,
+        private SendMailServiceInterface $mailService,
+        private UserRepository $userRepository
+    )
+    {
         parent::__construct();
     }
 
@@ -70,7 +54,6 @@ class CheckMailboxesCommand extends Command
         }
     }
 
-    /** @throws  \PhpImap\Exception */
     private function createConnection(Mailbox $mailbox) : ImapConnection
     {
         $path = '{' . $mailbox->getImapServer() . ':' . $mailbox->getImapPort() . '/imap';
@@ -119,7 +102,7 @@ class CheckMailboxesCommand extends Command
                 $email = EmailAddressValue::get($mail->fromAddress);
                 $subject = $mail->subject;
                 $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
-                $createdAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
+                $createdAt = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
 
                 if ($ticket = $this->getTicketFromEmail($subject)) {
                     $this->processTicketUpdate($mailbox, $ticket, $email, $message, $createdAt);
@@ -152,7 +135,7 @@ class CheckMailboxesCommand extends Command
         $id = Uuid::fromString($matches['uuid']);
         try {
             return $this->ticketRepository->getTicket($id);
-        } catch (\OutOfBoundsException $exception) {
+        } catch (OutOfBoundsException $exception) {
             return null;
         }
     }
@@ -162,7 +145,7 @@ class CheckMailboxesCommand extends Command
         EmailAddressValue $email,
         string $subject,
         string $message,
-        \DateTimeInterface $createdAt
+        DateTimeInterface $createdAt
     ) : void
     {
         $department = $mailbox->getDepartment();
@@ -181,7 +164,7 @@ class CheckMailboxesCommand extends Command
         Ticket $ticket,
         EmailAddressValue $email,
         string $message,
-        \DateTimeInterface $createdAt
+        DateTimeInterface $createdAt
     ) : void
     {
         // Count as reply when sender matches either the original poster or a known user
@@ -198,7 +181,7 @@ class CheckMailboxesCommand extends Command
                 // Subscriber, use subscription "internal" setting
                 $subscription = $subscriptions->getByEmailAddress($email);
                 $internal = $subscription->isInternal();
-            } catch (\OutOfBoundsException $exception) {
+            } catch (OutOfBoundsException $exception) {
                 // No user, department, creator or subscriber. Thus can't update ticket, create a new one instead
                 $this->processTicket($mailbox, $email, $ticket->getSubject(), $message, $createdAt);
                 return;

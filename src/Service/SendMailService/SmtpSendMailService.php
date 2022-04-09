@@ -11,33 +11,14 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 
 final class SmtpSendMailService implements SendMailServiceInterface
 {
-    /** @var  TicketMailingRepository */
-    private $ticketMailingRepository;
-
-    /** @var  \Swift_Mailer */
-    private $swiftMailer;
-
-    /** @var  MailTemplateFactoryInterface */
-    private $mailTemplateFactory;
-
-    /** @var  EmailAddressValue */
-    private $defaultFrom;
-
-    /** @var  string */
-    private $siteName;
-
     public function __construct(
-        TicketMailingRepository $ticketMailingRepository,
-        \Swift_Mailer $swiftMailer,
-        MailTemplateFactoryInterface $mailTemplateFactory,
-        EmailAddressValue $defaultFrom,
-        string $siteName
-    ) {
-        $this->ticketMailingRepository = $ticketMailingRepository;
-        $this->swiftMailer = $swiftMailer;
-        $this->mailTemplateFactory = $mailTemplateFactory;
-        $this->defaultFrom = $defaultFrom;
-        $this->siteName = $siteName;
+        private TicketMailingRepository $ticketMailingRepository,
+        private \Swift_Mailer $swiftMailer,
+        private MailTemplateFactoryInterface $mailTemplateFactory,
+        private EmailAddressValue $defaultFrom,
+        private string $siteName
+    )
+    {
     }
 
     public function addTicketMailing(Ticket $ticket, string $type, ?TicketUpdate $ticketUpdate = null) : void

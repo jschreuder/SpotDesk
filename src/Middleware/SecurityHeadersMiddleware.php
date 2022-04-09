@@ -9,12 +9,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class SecurityHeadersMiddleware implements MiddlewareInterface
 {
-    /** @var  string */
-    private $siteUrl;
-
-    public function __construct($siteUrl)
+    public function __construct(private string $siteUrl)
     {
-        $this->siteUrl = $siteUrl;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $requestHandler) : ResponseInterface

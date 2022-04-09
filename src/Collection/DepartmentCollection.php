@@ -2,9 +2,13 @@
 
 namespace jschreuder\SpotDesk\Collection;
 
+use ArrayAccess;
+use Countable;
+use Iterator;
 use jschreuder\SpotDesk\Entity\Department;
+use OutOfBoundsException;
 
-class DepartmentCollection implements \ArrayAccess, \Countable, \Iterator
+class DepartmentCollection implements ArrayAccess, Countable, Iterator
 {
     use CollectionTrait;
 
@@ -28,7 +32,7 @@ class DepartmentCollection implements \ArrayAccess, \Countable, \Iterator
     public function offsetGet($departmentId) : Department
     {
         if (!isset($this[strval($departmentId)])) {
-            throw new \OutOfBoundsException('No such department: ' . $departmentId);
+            throw new OutOfBoundsException('No such department: ' . $departmentId);
         }
         return $this->collection[strval($departmentId)];
     }

@@ -12,20 +12,12 @@ use Lcobucci\JWT\ValidationData;
 
 final class JwtSessionStorage implements SessionStorageInterface
 {
-    /** @var  string */
-    private $siteUrl;
-
-    /** @var  Signer */
-    private $jwtSigner;
-
-    /** @var  mixed */
-    private $jwtKey;
-
-    public function __construct(string $siteUrl, Signer $jwtSigner, $jwtKey)
+    public function __construct(
+        private string $siteUrl, 
+        private Signer $jwtSigner, 
+        private mixed $jwtKey
+    )
     {
-        $this->siteUrl = $siteUrl;
-        $this->jwtSigner = $jwtSigner;
-        $this->jwtKey = $jwtKey;
     }
 
     /**

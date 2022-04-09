@@ -2,38 +2,25 @@
 
 namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
+use InvalidArgumentException;
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use Zend\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\Rbac;
+use OutOfBoundsException;
 
 final class AuthenticationService implements AuthenticationServiceInterface
 {
     const AUTHORIZATION_HEADER = 'SpotDesk-Authorization';
 
-    /** @var  UserRepository */
-    private $userRepository;
-
-    /** @var  Rbac */
-    private $rbac;
-
-    /** @var  int */
-    private $passwordAlgorithm;
-
-    /** @var  array */
-    private $passwordOptions;
-
     public function __construct(
-        UserRepository $userRepository,
-        Rbac $rbac,
-        int $passwordAlgorithm,
-        array $passwordOptions
-    ) {
-        $this->userRepository = $userRepository;
-        $this->rbac = $rbac;
-        $this->passwordAlgorithm = $passwordAlgorithm;
-        $this->passwordOptions = $passwordOptions;
+        private UserRepository $userRepository,
+        private Rbac $rbac,
+        private int $passwordAlgorithm,
+        private array $passwordOptions
+    )
+    {
     }
 
     private function hashPassword(string $password) : string
@@ -73,7 +60,7 @@ final class AuthenticationService implements AuthenticationServiceInterface
         // Attempt to fetch user from database, just return on failure
         try {
             $user = $this->userRepository->getUserByEmail(EmailAddressValue::get($email));
-        } catch (\OutOfBoundsException | \InvalidArgumentException $exception) {
+        } catch (OutOfBoundsException | InvalidArgumentException $exception) {
             return false;
         }
 

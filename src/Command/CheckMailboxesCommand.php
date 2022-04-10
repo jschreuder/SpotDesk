@@ -82,11 +82,11 @@ class CheckMailboxesCommand extends Command
         foreach ($mailIds as $mailId) {
             try {
                 // Retrieve mail by ID and fetch the relevant values from it
-                $mail = $connection->fetchMailById($mailId);
-                $email = EmailAddressValue::get($mail->fromAddress);
-                $subject = $mail->subject;
-                $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
-                $createdAt = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $mail->date);
+                $fetchedMail = $connection->fetchMailById($mailId);
+                $email = $fetchedMail->getFromEmailAddres();
+                $subject = $fetchedMail->getSubject();
+                $message = $fetchedMail->getTextBody() ?: $this->stripHtml($fetchedMail->getHtmlBody());
+                $createdAt = $fetchedMail->getSentDate();
 
                 if ($ticket = $this->getTicketFromEmail($subject)) {
                     $this->processTicketUpdate($mailbox, $ticket, $email, $message, $createdAt);

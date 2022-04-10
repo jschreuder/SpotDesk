@@ -35,7 +35,9 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Permissions\Rbac\Rbac;
 use Laminas\Permissions\Rbac\Role;
+use Lcobucci\JWT\Configuration as JwtConfiguration;
 use Lcobucci\JWT\Signer\Hmac\Sha512;
+use Lcobucci\JWT\Signer\Key\InMemory;
 use PDO;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
@@ -139,8 +141,10 @@ class MainServiceProvider implements ServiceProviderInterface
         $container['session.storage'] = function () use ($container) {
             return new JwtSessionStorage(
                 $container['site.url'],
-                new Sha512(),
-                $container['session.secret_key']
+                JwtConfiguration::forSymmetricSigner(
+                    new Sha512(),
+                    InMemory::plainText($container['session.secret_key'])
+                )
             );
         };
 

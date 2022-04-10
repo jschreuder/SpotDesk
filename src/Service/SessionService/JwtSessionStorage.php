@@ -2,22 +2,43 @@
 
 namespace jschreuder\SpotDesk\Service\SessionService;
 
+use DateTimeImmutable;
 use jschreuder\Middle\Session\Session;
 use jschreuder\Middle\Session\SessionInterface;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Claim;
-use Lcobucci\JWT\Parser;
-use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\ValidationData;
+use Lcobucci\JWT\Configuration as JwtConfiguration;
+use Lcobucci\JWT\Token\Builder;
+use Lcobucci\JWT\UnencryptedToken;
+use Lcobucci\JWT\Validation\Constraint\IssuedBy;
+use Lcobucci\JWT\Validation\Constraint\PermittedFor;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
+use Lcobucci\JWT\Validator;
 
 final class JwtSessionStorage implements SessionStorageInterface
 {
     public function __construct(
-        private string $siteUrl, 
-        private Signer $jwtSigner, 
-        private mixed $jwtKey
+        private string $siteUrl,
+        private JwtConfiguration $jwtConfiguration
     )
     {
+    }
+
+    private function createTokenBuilder(int $sessionDuration) : Builder
+    {
+        return $this->jwtConfiguration->builder()
+            ->issuedBy($this->siteUrl)
+            ->permittedFor($this->siteUrl)
+            ->issuedAt(new DateTimeImmutable())
+            ->expiresAt(new DateTimeImmutable('+'.$sessionDuration.' seconds'));
+    }
+
+    private function parseToken(string $sessionData) : UnencryptedToken
+    {
+        return $this->jwtConfiguration->parser()->parse($sessionData);
+    }
+
+    private function getValidator() : Validator
+    {
+        return $this->jwtConfiguration->validator();
     }
 
     /**
@@ -25,16 +46,15 @@ final class JwtSessionStorage implements SessionStorageInterface
      */
     public function create(array $sessionData, int $sessionDuration) : string
     {
-        $token = (new Builder())
-            ->setIssuer($this->siteUrl)
-            ->setAudience($this->siteUrl)
-            ->setIssuedAt(time())
-            ->setExpiration(time() + $sessionDuration);
+        $tokenBuilder = $this->createTokenBuilder($sessionDuration);
         foreach ($sessionData as $key => $value) {
-            $token->set($key, $value);
+            $tokenBuilder->withClaim($key, $value);
         }
 
-        return strval($token->sign($this->jwtSigner, $this->jwtKey)->getToken());
+        return $tokenBuilder->getToken(
+            $this->jwtConfiguration->signer(), 
+            $this->jwtConfiguration->signingKey()
+        )->toString();
     }
 
     /**
@@ -45,28 +65,24 @@ final class JwtSessionStorage implements SessionStorageInterface
     {
         // Attempt to parse the Token, return empty session when that fails
         try {
-            $token = (new Parser())->parse($sessionData);
+            $token = $this->parseToken($sessionData);
         } catch (\Throwable $exception) {
             return new Session();
         }
 
-        // Check signature, return empty session when it's not valid
-        if (!$token->verify($this->jwtSigner, $this->jwtKey)) {
-            return new Session();
-        }
-
         // Check claims, reject & return empty session when that fails
-        $validation = new ValidationData();
-        $validation->setIssuer($this->siteUrl);
-        $validation->setAudience($this->siteUrl);
-        if (!$token->validate($validation)) {
+        $validator = $this->getValidator();
+        $validates = $validator->validate(
+            $token,
+            new SignedWith($this->jwtConfiguration->signer(), $this->jwtConfiguration->signingKey()),
+            new IssuedBy($this->siteUrl),
+            new PermittedFor($this->siteUrl),
+        );
+        if (!$validates) {
             return new Session();
         }
 
-        $data = $token->getClaims();
-        return new Session(array_map(function (Claim $claim) {
-            return $claim->getValue();
-        }, $data));
+        return new Session($token->claims()->all());
     }
 
     public function needsRefresh(SessionInterface $session, int $refreshTimeframe) : bool

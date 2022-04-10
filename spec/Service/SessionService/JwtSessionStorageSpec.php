@@ -4,7 +4,7 @@ namespace spec\jschreuder\SpotDesk\Service\SessionService;
 
 use jschreuder\Middle\Session\SessionInterface;
 use jschreuder\SpotDesk\Service\SessionService\JwtSessionStorage;
-use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Configuration as JwtConfiguration;
 use PhpSpec\ObjectBehavior;
 
 class JwtSessionStorageSpec extends ObjectBehavior
@@ -12,18 +12,14 @@ class JwtSessionStorageSpec extends ObjectBehavior
     /** @var  string */
     private $siteUrl;
 
-    /** @var  Signer */
-    private $jwtSigner;
-
-    /** @var  mixed */
-    private $jwtKey;
+    /** @var  JwtConfiguration */
+    private $jwtConfiguration;
 
     public function let() : void
     {
         $this->beConstructedWith(
             $this->siteUrl = 'http://localhost/',
-            $this->jwtSigner = new Signer\Hmac\Sha256(),
-            $this->jwtKey = 'my-super-duper-secret-key'
+            $this->jwtConfiguration = JwtConfiguration::forUnsecuredSigner()
         );
     }
 

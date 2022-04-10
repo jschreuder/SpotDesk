@@ -11,10 +11,10 @@ use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
+use jschreuder\SpotDesk\Service\FetchMailService\FetchMailServiceInterface;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
 use OutOfBoundsException;
-use PhpImap\Mailbox as ImapConnection;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +28,8 @@ class CheckMailboxesCommand extends Command
         private TicketRepository $ticketRepository,
         private StatusRepository $statusRepository,
         private SendMailServiceInterface $mailService,
-        private UserRepository $userRepository
+        private UserRepository $userRepository,
+        private FetchMailServiceInterface $fetchMailService
     )
     {
         parent::__construct();
@@ -54,22 +55,6 @@ class CheckMailboxesCommand extends Command
         }
     }
 
-    private function createConnection(Mailbox $mailbox) : ImapConnection
-    {
-        $path = '{' . $mailbox->getImapServer() . ':' . $mailbox->getImapPort() . '/imap';
-        switch ($mailbox->getImapSecurity()->toString()) {
-            case 'ssl':
-                $path .= '/ssl';
-                break;
-            case 'tls':
-                $path .= '/tls';
-                break;
-        }
-        $path .= '}INBOX';
-
-        return new ImapConnection($path, $mailbox->getImapUser(), $mailbox->getImapPass());
-    }
-
     private function isUser(EmailAddressValue $emailAddress) : bool
     {
         static $userEmailAddresses = null;
@@ -84,13 +69,12 @@ class CheckMailboxesCommand extends Command
 
     private function checkMailbox(Mailbox $mailbox, OutputInterface $output) : void
     {
+        $connection = $this->fetchMailService->getMailboxConnection($mailbox);
         try {
-            // Setup connection and retrieve unread mails
-            $connection = $this->createConnection($mailbox);
-            $mailIds = $connection->searchMailbox('UNSEEN');
+            $mailIds = $connection->fetchMailIds($mailbox);
         } catch (\Throwable $exception) {
             $output->writeln(
-                'ERROR CREATING MAILBOX ' . $mailbox->getName() . ': ' . $exception->getMessage()
+                'ERROR CREATING MAILBOX CONNECTION FOR ' . $mailbox->getName() . ': ' . $exception->getMessage()
             );
             return;
         }
@@ -98,7 +82,7 @@ class CheckMailboxesCommand extends Command
         foreach ($mailIds as $mailId) {
             try {
                 // Retrieve mail by ID and fetch the relevant values from it
-                $mail = $connection->getMail($mailId, false);
+                $mail = $connection->fetchMailById($mailId);
                 $email = EmailAddressValue::get($mail->fromAddress);
                 $subject = $mail->subject;
                 $message = $mail->textPlain ?: $this->stripHtml($mail->textHtml);
@@ -210,7 +194,7 @@ class CheckMailboxesCommand extends Command
     {
         $message = preg_replace('#<br\s*\/?>#i', "\n", $message);
         $message = preg_replace('#<p\s*[^>]*>#i', "\n\n", $message);
-        $message = filter_var($message, FILTER_SANITIZE_STRING);
+        $message = htmlspecialchars($message);
         return htmlentities($message, ENT_QUOTES, 'UTF-8');
     }
 }

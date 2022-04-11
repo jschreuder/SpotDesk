@@ -2,7 +2,6 @@
 
 namespace jschreuder\SpotDesk\Command;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Entity\Status;

@@ -28,6 +28,7 @@ build:
     environment:
         php:
             version: 8.1
+            compile_options: '--with-imap'
             ini:
                 'xdebug.mode': 'coverage'
     nodes:

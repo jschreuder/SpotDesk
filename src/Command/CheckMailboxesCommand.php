@@ -11,6 +11,7 @@ use jschreuder\SpotDesk\Repository\MailboxRepository;
 use jschreuder\SpotDesk\Repository\StatusRepository;
 use jschreuder\SpotDesk\Repository\TicketRepository;
 use jschreuder\SpotDesk\Repository\UserRepository;
+use jschreuder\SpotDesk\Service\FetchMailService\FetchedMailInterface;
 use jschreuder\SpotDesk\Service\FetchMailService\FetchMailServiceInterface;
 use jschreuder\SpotDesk\Service\SendMailService\SendMailServiceInterface;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
@@ -70,19 +71,11 @@ class CheckMailboxesCommand extends Command
     private function checkMailbox(Mailbox $mailbox, OutputInterface $output) : void
     {
         $connection = $this->fetchMailService->getMailboxConnection($mailbox);
-        try {
-            $mailIds = $connection->fetchMailIds($mailbox);
-        } catch (\Throwable $exception) {
-            $output->writeln(
-                'ERROR CREATING MAILBOX CONNECTION FOR ' . $mailbox->getName() . ': ' . $exception->getMessage()
-            );
-            return;
-        }
 
-        foreach ($mailIds as $mailId) {
+        /** @var  FetchedMailInterface $fetchedMail */
+        foreach ($connection->fetchMail() as $fetchedMail) {
             try {
                 // Retrieve mail by ID and fetch the relevant values from it
-                $fetchedMail = $connection->fetchMailById($mailId);
                 $email = $fetchedMail->getFromEmailAddres();
                 $subject = $fetchedMail->getSubject();
                 $message = $fetchedMail->getTextBody() ?: $this->stripHtml($fetchedMail->getHtmlBody());
@@ -95,7 +88,7 @@ class CheckMailboxesCommand extends Command
                 }
 
                 // Mark e-mail as read once the ticket has been created or duplicate was detected
-                $connection->markMailAsRead($mailId);
+                $connection->markMailAsRead($fetchedMail);
             } catch (\Throwable $exception) {
                 // Output errors to the output
                 $output->writeln(

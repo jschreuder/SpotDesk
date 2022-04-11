@@ -7,6 +7,7 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 final class FetchedMail extends FetchedMailInterface
 {
     public function __construct(
+        private mixed $id,
         private EmailAddressValue $fromEmailAddress,
         private string $subject,
         private ?string $textBody,
@@ -14,6 +15,11 @@ final class FetchedMail extends FetchedMailInterface
         private \DateTimeInterface $sentDate
     )
     {
+    }
+
+    public function getId() : mixed
+    {
+        return $this->id;
     }
 
     public function getFromEmailAddres() : EmailAddressValue

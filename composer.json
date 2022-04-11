@@ -32,12 +32,13 @@
         "laminas/laminas-permissions-rbac": "^3.2"
     },
     "require-dev": {
+        "ext-imap": "*",
         "phpspec/phpspec": "^7.2",
         "phploc/phploc": "^7.0",
         "phpmd/phpmd": "^2.12",
         "fakerphp/faker": "^1.19",
         "friends-of-phpspec/phpspec-code-coverage": "^6.1",
-        "webklex/php-imap": "^3.2"
+        "php-imap/php-imap": "^5.0"
     },
     "suggest": {
         "webklex/php-imap": "For reading e-mails into tickets"

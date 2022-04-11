@@ -2,7 +2,9 @@
 
 namespace jschreuder\SpotDesk\Service\FetchMailService;
 
+use Generator;
 use jschreuder\SpotDesk\Entity\Mailbox;
+use jschreuder\SpotDesk\Value\EmailAddressValue;
 use PhpImap\Mailbox as ImapConnection;
 
 final class PhpImapMailBoxConnection implements MailBoxConnectionInterface
@@ -36,18 +38,25 @@ final class PhpImapMailBoxConnection implements MailBoxConnectionInterface
         return $this->connection;
     }
 
-    public function fetchMailIds() : array
+    /** @return  Generator<FetchedMailInterface> */
+    public function fetchMail() : Generator
     {
-        return $this->getConnection()->searchMailbox('UNSEEN');
+        $mailIds = $this->getConnection()->searchMailbox('UNSEEN');
+        foreach ($mailIds as $mailId) {
+            $email = $this->getConnection()->getMail($mailId, false);
+            yield new FetchedMail(
+                $mailId,
+                EmailAddressValue::get($email->fromAddress),
+                $email->subject,
+                $email->textPlain,
+                $email->textHtml,
+                \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $email->date)
+            );
+        }
     }
 
-    public function fetchMailById(int $mailId) : FetchedMailInterface
+    public function markMailAsRead(FetchedMailInterface $fetchedMail) : void
     {
-        return $this->getConnection()->getMail($mailId, false);
-    }
-
-    public function markMailAsRead(int $mailId) : void
-    {
-        $this->getConnection()->markMailAsRead($mailId);
+        $this->getConnection()->markMailAsRead($fetchedMail->getId());
     }
 }

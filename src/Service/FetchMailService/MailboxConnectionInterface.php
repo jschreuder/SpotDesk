@@ -2,11 +2,11 @@
 
 namespace jschreuder\SpotDesk\Service\FetchMailService;
 
+use Generator;
+
 interface MailBoxConnectionInterface
 {
-    public function fetchMailIds() : array;
+    public function fetchMail() : Generator;
 
-    public function fetchMailById(int $mailId) : FetchedMailInterface;
-
-    public function markMailAsRead(int $mailId) : void;
+    public function markMailAsRead(FetchedMailInterface $fetchedMail) : void;
 }

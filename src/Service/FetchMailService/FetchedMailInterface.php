@@ -6,6 +6,7 @@ use jschreuder\SpotDesk\Value\EmailAddressValue;
 
 interface FetchedMailInterface
 {
+    public function getId() : mixed;
     public function getFromEmailAddres() : EmailAddressValue;
     public function getSubject() : string;
     public function getTextBody() : ?string;

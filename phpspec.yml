@@ -1,16 +1,11 @@
 suites:
-    acme_suite:
+    spotdesk:
         namespace: jschreuder\SpotDesk
         psr4_prefix: jschreuder\SpotDesk
 
 extensions:
-    LeanPHP\PhpSpec\CodeCoverage\CodeCoverageExtension:
+    FriendsOfPhpSpec\PhpSpec\CodeCoverage\CodeCoverageExtension:
         format:
             - clover
         output:
             clover: coverage.xml
-        whitelist:
-            - src
-        blacklist_files:
-            - src/MainRoutingProvider.php
-            - src/MainServiceProvider.php

@@ -1,18 +1,16 @@
 <?php declare(strict_types = 1);
 
-return [
-    'logger' => function () {
-        $logger = new \Monolog\Logger('spotdesk');
-        $logger->pushHandler((new \Monolog\Handler\StreamHandler(
-            __DIR__ . '/../var/logs/' . (php_sapi_name() === 'cli' ? 'cli' : 'web') . '-' . date('Ymd') . '.log',
-            \Monolog\Logger::NOTICE
-        ))->setFormatter(new \Monolog\Formatter\LineFormatter()));
-        return $logger;
-    },
+use Psr\Log\LogLevel;
 
+return [
     // Note: if the site URL starts with https:// the SecurityHeadersMiddleware will activate HSTS
     'site.url' => 'http://localhost:8080',
     'site.title' => 'SpotDesk',
+
+    // Logging settings
+    'logger.name' => 'spotdesk',
+    'logger.path' => __DIR__ . '/../var/logs/' . (php_sapi_name() === 'cli' ? 'cli' : 'web') . '-' . date('Ymd') . '.log',
+    'logger.level' => LogLevel::NOTICE,
 
     // Database settings
     'db.dsn' => 'mysql:host=localhost;charset=utf8',

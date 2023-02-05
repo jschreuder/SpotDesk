@@ -1,32 +1,35 @@
 #!/usr/bin/php
 <?php declare(strict_types = 1);
 
-/** @var  \Pimple\Container $container */
+use jschreuder\SpotDesk\ServiceContainer;
+
+/** @var  ServiceContainer $container */
 $container = require __DIR__ . '/config/app_init.php';
 
 $application = new \Symfony\Component\Console\Application();
 
 // user: namespace
-$application->add(new jschreuder\SpotDesk\Command\CreateUserCommand($container['service.authentication']));
+$application->add(new jschreuder\SpotDesk\Command\CreateUserCommand($container->getAuthenticationService()));
 $application->add(new \jschreuder\SpotDesk\Command\AssignUserToDepartmentCommand(
-    $container['repository.users'], $container['repository.departments']
+    $container->getUserRepository(), $container->getDepartmentRepository()
 ));
 
 // mail: namespace
 $application->add(new \jschreuder\SpotDesk\Command\CheckMailboxesCommand(
-    $container['repository.mailboxes'],
-    $container['repository.tickets'],
-    $container['repository.statuses'],
-    $container['service.mail'],
-    $container['repository.users']
+    $container->getMailboxRepository(),
+    $container->getTicketRepository(),
+    $container->getStatusRepository(),
+    $container->getSendMailService(),
+    $container->getUserRepository(),
+    $container->getFetchMailService()
 ));
 $application->add(new \jschreuder\SpotDesk\Command\SendMailingsCommand(
-    $container['repository.ticket_mailings'], $container['service.mail']
+    $container->getTicketMailingRepository(), $container->getSendMailService()
 ));
 
 // dev: namespace
 $application->add(new \jschreuder\SpotDesk\Command\DevCreateFakerTicketsCommand(
-    $container['repository.tickets'], $container['repository.departments'], $container['repository.statuses']
+    $container->getTicketRepository(), $container->getDepartmentRepository(), $container->getStatusRepository()
 ));
 $application->add(new \jschreuder\SpotDesk\Command\DevCronCommand());
 

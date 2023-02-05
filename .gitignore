@@ -1,4 +1,5 @@
 /.idea/
+/.vscode/
 /bin/
 /config/env.php
 /config/dev.php

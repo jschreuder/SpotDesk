@@ -1,5 +1,7 @@
 filter:
     excluded_paths:
+        - "config/app_init.php"
+        - "spec/*"
         - "src/MainRoutingProvider.php"
         - "src/MainServiceProvider.php"
 

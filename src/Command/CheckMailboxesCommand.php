@@ -103,7 +103,7 @@ class CheckMailboxesCommand extends Command
 
     private function getTicketFromEmail(string $subject) : ?Ticket
     {
-        $pattern = '#\[(?P<uuid>' . trim(Uuid::VALID_PATTERN, '^$') . ')\]#';
+        $pattern = '#^\[(?P<uuid>[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})\]$#';
         if (preg_match($pattern, $subject, $matches) < 1) {
             return null;
         }

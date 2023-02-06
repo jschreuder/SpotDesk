@@ -5,58 +5,48 @@ namespace jschreuder\SpotDesk\Service\FetchMailService;
 use Generator;
 use jschreuder\SpotDesk\Entity\Mailbox;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
-use PhpImap\Mailbox as ImapConnection;
+use Webklex\PHPIMAP\Client as ImapClient;
+use Webklex\PHPIMAP\ClientManager;
 
 final class PhpImapMailBoxConnection implements MailBoxConnectionInterface
 {
-    private ImapConnection $connection;
+    private ImapClient $client;
 
     public function __construct(private Mailbox $mailbox)
     {
-    }
-
-    private function getConnection()
-    {
-        if (!isset($this->connection)) {
-            $path = '{' . $this->mailbox->getImapServer() . ':' . $this->mailbox->getImapPort() . '/imap';
-            switch ($this->mailbox->getImapSecurity()->toString()) {
-                case 'ssl':
-                    $path .= '/ssl';
-                    break;
-                case 'tls':
-                    $path .= '/tls';
-                    break;
-            }
-            $path .= '}INBOX';
-    
-            $this->connection = new ImapConnection(
-                $path, 
-                $this->mailbox->getImapUser(), 
-                $this->mailbox->getImapPass()
-            );
-        }
-        return $this->connection;
+        $this->client = (new ClientManager())->make([
+            'host'          => $mailbox->getImapServer(),
+            'port'          => $mailbox->getImapPort(),
+            'encryption'    => $mailbox->getImapSecurity(),
+            'validate_cert' => true,
+            'username'      => $mailbox->getImapUser(),
+            'password'      => $mailbox->getImapPass(),
+            'protocol'      => 'imap'
+        ]);
+        $this->client->connect();
     }
 
     /** @return  Generator<FetchedMailInterface> */
     public function fetchMail() : Generator
     {
-        $mailIds = $this->getConnection()->searchMailbox('UNSEEN');
-        foreach ($mailIds as $mailId) {
-            $email = $this->getConnection()->getMail($mailId, false);
+        $folder = $this->client->getFolder('INBOX');
+        $messages = $folder->query()->unseen()->get();
+
+        /** @var \Webklex\PHPIMAP\Message $message */
+        foreach ($messages as $message) {
             yield new FetchedMail(
-                $mailId,
-                EmailAddressValue::get($email->fromAddress),
-                $email->subject,
-                $email->textPlain,
-                $email->textHtml,
-                \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $email->date)
+                $message->uid,
+                EmailAddressValue::get(strval($message->from)),
+                strval($message->subject),
+                $message->getTextBody(),
+                $message->getHTMLBody(),
+                \DateTimeImmutable::createFromFormat('Y-m-d H:i:s', strval($message->date))
             );
         }
     }
 
     public function markMailAsRead(FetchedMailInterface $fetchedMail) : void
     {
-        $this->getConnection()->markMailAsRead($fetchedMail->getId());
+        $this->client->getFolder('INBOX')->query()->getMessage($fetchedMail->getId())->setFlag('SEEN');
     }
 }

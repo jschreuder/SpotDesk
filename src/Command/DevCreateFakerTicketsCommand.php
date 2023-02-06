@@ -22,11 +22,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevCreateFakerTicketsCommand extends Command
 {
+    private FakerGenerator $faker;
+
     public function __construct(
         private TicketRepository $ticketRepository,
         private DepartmentRepository $departmentRepository,
         private StatusRepository $statusRepository,
-        private ?FakerGenerator $faker = null
+        ?FakerGenerator $faker = null
     )
     {
         $faker || $this->faker = FakerFactory::create();

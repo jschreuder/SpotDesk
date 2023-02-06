@@ -15,7 +15,11 @@ trait CollectionTrait
 
     public function key() : string
     {
-        return key($this->collection);
+        $key = key($this->collection);
+        if (is_null($key)) {
+            throw new \OutOfBoundsException();
+        }
+        return $key;
     }
 
     public function valid() : bool

@@ -22,6 +22,7 @@ build:
         php:
             ini:
                 'xdebug.mode': 'coverage'
+                'error_reporting': 3
     nodes:
         analysis:
             environment:

@@ -1,7 +1,7 @@
 <?php declare(strict_types = 1);
 
-$env = require __DIR__ . '/etc/env.php';
-$db = require __DIR__ . '/etc/' . $env . '.php';
+$env = require __DIR__ . '/config/env.php';
+$db = require __DIR__ . '/config/' . $env . '.php';
 
 preg_match(
     '#^(?P<type>[a-z]+):.*(?:host=(?P<host>[^;]+)).*?(?:;port=(?P<port>[^;]+))?.*$#uiD',

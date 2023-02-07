@@ -10,10 +10,8 @@ use Laminas\Permissions\Rbac\RoleInterface;
 
 class GuestUser extends User
 {
-    public function __construct()
+    public function __construct(RoleInterface $guestRole)
     {
-        $guestRole = new Role('guest');
-        $guestRole->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC);
         parent::__construct(
             EmailAddressValue::get('guest@spotdev.local'),
             'Guest',

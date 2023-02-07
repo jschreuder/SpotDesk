@@ -143,10 +143,15 @@ class ServiceContainer
     public function getRbac(): Rbac
     {
         $rbac = new Rbac();
-        $rbac->addRole((new Role('admin'))
-            ->addPermission(AuthorizableControllerInterface::ROLE_ADMIN));
-        $rbac->addRole((new Role('guest'))
-            ->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC));
+        
+        $admin = new Role('admin');
+        $admin->addPermission(AuthorizableControllerInterface::ROLE_ADMIN);
+        $rbac->addRole($admin);
+
+        $guest = new Role('guest');
+        $guest->addPermission(AuthorizableControllerInterface::ROLE_PUBLIC);
+        $rbac->addRole($guest);
+        
         return $rbac;
     }
 

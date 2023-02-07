@@ -4,6 +4,7 @@ namespace jschreuder\SpotDesk\Service\AuthenticationService;
 
 use InvalidArgumentException;
 use jschreuder\Middle\Session\SessionInterface;
+use jschreuder\SpotDesk\Entity\GuestUser;
 use jschreuder\SpotDesk\Entity\User;
 use jschreuder\SpotDesk\Repository\UserRepository;
 use jschreuder\SpotDesk\Value\EmailAddressValue;
@@ -43,6 +44,11 @@ final class AuthenticationService implements AuthenticationServiceInterface
     public function fetchUser(string $emailAddress) : User
     {
         return $this->userRepository->getUserByEmail(EmailAddressValue::get($emailAddress));
+    }
+
+    public function fetchGuest(): User
+    {
+        return new GuestUser($this->rbac->getRole('guest'));
     }
 
     public function changePassword(User $user, string $newPassword) : void

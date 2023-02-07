@@ -38,7 +38,7 @@ final class AuthenticationMiddleware implements MiddlewareInterface
                 throw new AuthenticationException('Inactive user');
             }
         } catch (InvalidArgumentException | OutOfBoundsException $exception) {
-            $user = new GuestUser();
+            $user = $this->authenticationService->fetchGuest();
         }
 
         // Process request with authenticated user attribute added

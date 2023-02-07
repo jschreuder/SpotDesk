@@ -18,6 +18,11 @@ interface AuthenticationServiceInterface
     public function fetchUser(string $email) : User;
 
     /**
+     * Fetches a guest-user
+     */
+    public function fetchGuest(): User;
+
+    /**
      * Modifies the given user's password
      */
     public function changePassword(User $user, string $newPassword) : void;

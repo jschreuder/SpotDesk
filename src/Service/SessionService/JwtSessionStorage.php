@@ -48,7 +48,9 @@ final class JwtSessionStorage implements SessionStorageInterface
     {
         $tokenBuilder = $this->createTokenBuilder($sessionDuration);
         foreach ($sessionData as $key => $value) {
-            $tokenBuilder->withClaim($key, $value);
+            if (!in_array($key, ['iss', 'sub', 'aud', 'exp', 'nbf', 'iat', 'jti'])) {
+                $tokenBuilder->withClaim($key, $value);
+            }
         }
 
         return $tokenBuilder->getToken(
